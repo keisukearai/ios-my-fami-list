@@ -19,7 +19,7 @@ enum APIError: Error, LocalizedError {
 final class APIClient {
     static let shared = APIClient()
 
-    let baseURL = "https://ios.kotoragk.com"
+    let baseURL = "http://localhost:8000"
     private let keychain = KeychainHelper.shared
 
     private let decoder: JSONDecoder = {

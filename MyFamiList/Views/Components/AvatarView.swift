@@ -4,6 +4,7 @@ struct AvatarView: View {
     let name: String
     let size: CGFloat
     var colorHex: String? = nil
+    var emoji: String? = nil
 
     private static let palette = [
         "#16A368", "#D9695F", "#5690C9",
@@ -28,9 +29,14 @@ struct AvatarView: View {
     var body: some View {
         ZStack {
             Circle().fill(bgColor)
-            Text(initials.isEmpty ? "?" : initials.uppercased())
-                .font(.system(size: size * 0.38, weight: .semibold))
-                .foregroundStyle(.white)
+            if let emoji, !emoji.isEmpty {
+                Text(emoji)
+                    .font(.system(size: size * 0.52))
+            } else {
+                Text(initials.isEmpty ? "?" : initials.uppercased())
+                    .font(.system(size: size * 0.38, weight: .semibold))
+                    .foregroundStyle(.white)
+            }
         }
         .frame(width: size, height: size)
     }
