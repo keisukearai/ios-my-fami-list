@@ -20,6 +20,7 @@ final class APIClient {
     static let shared = APIClient()
 
     let baseURL = "http://localhost:8000"
+    static let apiBase = "/api/fami_list"
     private let keychain = KeychainHelper.shared
 
     private let decoder: JSONDecoder = {
@@ -112,7 +113,7 @@ final class APIClient {
     private func refreshAccessToken() async throws {
         guard let refresh = refreshToken else { throw APIError.unauthorized }
         struct Resp: Decodable { let access: String }
-        let resp: Resp = try await request("/api/fami_list/auth/refresh/", method: "POST", body: ["refresh": refresh], retry: false)
+        let resp: Resp = try await request("\(Self.apiBase)/auth/refresh/", method: "POST", body: ["refresh": refresh], retry: false)
         keychain.set("access_token", value: resp.access)
     }
 }
