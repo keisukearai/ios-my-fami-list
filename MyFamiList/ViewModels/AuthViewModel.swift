@@ -22,7 +22,7 @@ final class AuthViewModel: NSObject {
         isLoading = true
         defer { isLoading = false }
         do {
-            currentUser = try await api.request("/api/auth/me/")
+            currentUser = try await api.request("/api/fami_list/auth/me/")
         } catch {
             api.clearTokens()
         }
@@ -55,7 +55,7 @@ final class AuthViewModel: NSObject {
             let displayName = [credential.fullName?.givenName, credential.fullName?.familyName]
                 .compactMap { $0 }
                 .joined(separator: " ")
-            await signIn(provider: "/api/auth/apple/",
+            await signIn(provider: "/api/fami_list/auth/apple/",
                          body: ["id_token": idToken, "display_name": displayName])
 
         case .failure(let error):
@@ -83,7 +83,7 @@ final class AuthViewModel: NSObject {
                 errorMessage = "Google Sign In に失敗しました"
                 return
             }
-            await signIn(provider: "/api/auth/google/", body: ["id_token": idToken])
+            await signIn(provider: "/api/fami_list/auth/google/", body: ["id_token": idToken])
         } catch {
             if (error as? GIDSignInError)?.code != .canceled {
                 errorMessage = error.localizedDescription
@@ -102,7 +102,7 @@ final class AuthViewModel: NSObject {
         do {
             let resp: TokenResp = try await api.request(path, method: "POST", body: body)
             api.saveTokens(access: resp.access, refresh: resp.refresh)
-            currentUser = try await api.request("/api/auth/me/")
+            currentUser = try await api.request("/api/fami_list/auth/me/")
         } catch {
             errorMessage = error.localizedDescription
         }

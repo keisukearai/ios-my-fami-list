@@ -28,11 +28,11 @@ final class GroupViewModel {
 
     private func fetchAll() async {
         do {
-            groups = try await api.request("/api/groups/")
+            groups = try await api.request("/api/fami_list/groups/")
             if let id = currentGroup?.id {
-                currentGroup = try await api.request("/api/groups/\(id)/")
+                currentGroup = try await api.request("/api/fami_list/groups/\(id)/")
             } else if let first = groups.first {
-                currentGroup = try await api.request("/api/groups/\(first.id)/")
+                currentGroup = try await api.request("/api/fami_list/groups/\(first.id)/")
             }
         } catch {
             if !(error is CancellationError) {
@@ -43,21 +43,21 @@ final class GroupViewModel {
 
     func selectGroup(_ id: Int) async {
         do {
-            currentGroup = try await api.request("/api/groups/\(id)/")
+            currentGroup = try await api.request("/api/fami_list/groups/\(id)/")
         } catch {
             errorMessage = error.localizedDescription
         }
     }
 
     func createGroup(name: String) async throws {
-        let group: FamilyGroup = try await api.request("/api/groups/", method: "POST", body: ["name": name])
+        let group: FamilyGroup = try await api.request("/api/fami_list/groups/", method: "POST", body: ["name": name])
         await fetchAll()
         currentGroup = group
     }
 
     func joinGroup(inviteCode: String) async throws {
         let group: FamilyGroup = try await api.request(
-            "/api/groups/join/",
+            "/api/fami_list/groups/join/",
             method: "POST",
             body: ["invite_code": inviteCode]
         )
@@ -69,11 +69,11 @@ final class GroupViewModel {
         guard let groupId = currentGroup?.id else { return }
         do {
             let _: ShoppingListBrief = try await api.request(
-                "/api/groups/\(groupId)/lists/",
+                "/api/fami_list/groups/\(groupId)/lists/",
                 method: "POST",
                 body: ["name": name]
             )
-            currentGroup = try await api.request("/api/groups/\(groupId)/")
+            currentGroup = try await api.request("/api/fami_list/groups/\(groupId)/")
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -82,8 +82,8 @@ final class GroupViewModel {
     func deleteList(_ list: ShoppingListBrief) async {
         guard let groupId = currentGroup?.id else { return }
         do {
-            try await api.requestVoid("/api/groups/\(groupId)/lists/\(list.id)/", method: "DELETE")
-            currentGroup = try await api.request("/api/groups/\(groupId)/")
+            try await api.requestVoid("/api/fami_list/groups/\(groupId)/lists/\(list.id)/", method: "DELETE")
+            currentGroup = try await api.request("/api/fami_list/groups/\(groupId)/")
         } catch {
             errorMessage = error.localizedDescription
         }

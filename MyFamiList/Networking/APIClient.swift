@@ -112,7 +112,7 @@ final class APIClient {
     private func refreshAccessToken() async throws {
         guard let refresh = refreshToken else { throw APIError.unauthorized }
         struct Resp: Decodable { let access: String }
-        let resp: Resp = try await request("/api/auth/refresh/", method: "POST", body: ["refresh": refresh], retry: false)
+        let resp: Resp = try await request("/api/fami_list/auth/refresh/", method: "POST", body: ["refresh": refresh], retry: false)
         keychain.set("access_token", value: resp.access)
     }
 }

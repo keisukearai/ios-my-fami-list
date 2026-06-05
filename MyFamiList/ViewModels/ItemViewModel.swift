@@ -20,7 +20,7 @@ final class ItemViewModel {
         self.listId = listId
     }
 
-    private var basePath: String { "/api/groups/\(groupId)/lists/\(listId)/items/" }
+    private var basePath: String { "/api/fami_list/groups/\(groupId)/lists/\(listId)/items/" }
 
     func start() {
         pollingTask?.cancel()
