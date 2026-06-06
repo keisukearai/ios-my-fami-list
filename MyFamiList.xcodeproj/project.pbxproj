@@ -9,16 +9,23 @@
 /* Begin PBXBuildFile section */
 		C6ED00A52FD0DE650016D0E2 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = C6ED00A42FD0DE650016D0E2 /* GoogleSignIn */; };
 		C6ED00A72FD0DE650016D0E2 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C6ED00A62FD0DE650016D0E2 /* GoogleSignInSwift */; };
+		TE000001000000000000001 /* MyFamiList.app in Frameworks */ = {isa = PBXBuildFile; fileRef = C6AD4E582FCF96B9003D4749 /* MyFamiList.app */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		C6AD4E582FCF96B9003D4749 /* MyFamiList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyFamiList.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		TE000002000000000000001 /* MyFamiListTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyFamiListTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		C6AD4E5A2FCF96B9003D4749 /* MyFamiList */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = MyFamiList;
+			sourceTree = "<group>";
+		};
+		TE000003000000000000001 /* MyFamiListTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = MyFamiListTests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -30,6 +37,14 @@
 			files = (
 				C6ED00A52FD0DE650016D0E2 /* GoogleSignIn in Frameworks */,
 				C6ED00A72FD0DE650016D0E2 /* GoogleSignInSwift in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		TE000004000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				TE000001000000000000001 /* MyFamiList.app in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -48,6 +63,7 @@
 			isa = PBXGroup;
 			children = (
 				C6AD4E582FCF96B9003D4749 /* MyFamiList.app */,
+				TE000002000000000000001 /* MyFamiListTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -79,6 +95,27 @@
 			productReference = C6AD4E582FCF96B9003D4749 /* MyFamiList.app */;
 			productType = "com.apple.product-type.application";
 		};
+		TE000007000000000000001 /* MyFamiListTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = TE00000C000000000000001 /* Build configuration list for PBXNativeTarget "MyFamiListTests" */;
+			buildPhases = (
+				TE000006000000000000001 /* Sources */,
+				TE000004000000000000001 /* Frameworks */,
+				TE000005000000000000001 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				TE000009000000000000001 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				TE000003000000000000001 /* MyFamiListTests */,
+			);
+			name = MyFamiListTests;
+			productName = MyFamiListTests;
+			productReference = TE000002000000000000001 /* MyFamiListTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -91,6 +128,10 @@
 				TargetAttributes = {
 					C6AD4E572FCF96B9003D4749 = {
 						CreatedOnToolsVersion = 26.3;
+					};
+					TE000007000000000000001 = {
+						CreatedOnToolsVersion = 26.3;
+						TestTargetID = C6AD4E572FCF96B9003D4749;
 					};
 				};
 			};
@@ -112,12 +153,30 @@
 			projectRoot = "";
 			targets = (
 				C6AD4E572FCF96B9003D4749 /* MyFamiList */,
+				TE000007000000000000001 /* MyFamiListTests */,
 			);
 		};
 /* End PBXProject section */
 
+/* Begin PBXContainerItemProxy section */
+		TE000008000000000000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C6AD4E502FCF96B9003D4749 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C6AD4E572FCF96B9003D4749;
+			remoteInfo = MyFamiList;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXResourcesBuildPhase section */
 		C6AD4E562FCF96B9003D4749 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		TE000005000000000000001 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -134,7 +193,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		TE000006000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		TE000009000000000000001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C6AD4E572FCF96B9003D4749 /* MyFamiList */;
+			targetProxy = TE000008000000000000001 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		C6AD4E612FCF96BA003D4749 /* Debug */ = {
@@ -334,6 +408,52 @@
 			};
 			name = Release;
 		};
+		TE00000A000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = HFZSU3MJLR;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.keisukearai.MyFamiListTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyFamiList.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MyFamiList";
+			};
+			name = Debug;
+		};
+		TE00000B000000000000001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = HFZSU3MJLR;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.keisukearai.MyFamiListTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyFamiList.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MyFamiList";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -351,6 +471,15 @@
 			buildConfigurations = (
 				C6AD4E642FCF96BA003D4749 /* Debug */,
 				C6AD4E652FCF96BA003D4749 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		TE00000C000000000000001 /* Build configuration list for PBXNativeTarget "MyFamiListTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				TE00000A000000000000001 /* Debug */,
+				TE00000B000000000000001 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

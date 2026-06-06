@@ -41,6 +41,14 @@ struct ListDetailView: View {
                 Task { await itemVM.clearCheckedItems() }
             }
         }
+        .alert("エラー", isPresented: Binding(
+            get: { itemVM.errorMessage != nil },
+            set: { if !$0 { itemVM.errorMessage = nil } }
+        )) {
+            Button("OK") { itemVM.errorMessage = nil }
+        } message: {
+            Text(itemVM.errorMessage ?? "")
+        }
         .task { itemVM.start() }
         .onDisappear { itemVM.stop() }
     }
