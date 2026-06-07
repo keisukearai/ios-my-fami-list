@@ -62,11 +62,39 @@ struct SettingsView: View {
     }
 
     private var settingsGroups: some View {
-        settingsCard {
-            settingsRow(icon: "rectangle.portrait.and.arrow.right", iconColor: Color(hex: "#D9695F"), label: "サインアウト") {
-                EmptyView()
+        VStack(spacing: AppTheme.secGap) {
+            settingsCard {
+                settingsRow(icon: "bell.fill", iconColor: Color(hex: "#5690C9"), label: "プッシュ通知") {
+                    Toggle("", isOn: .constant(true))
+                        .tint(AppTheme.primary)
+                        .labelsHidden()
+                }
+                Divider().padding(.leading, 58)
+                settingsRow(icon: "clock.fill", iconColor: Color(hex: "#E0A03A"), label: "リマインダー") {
+                    Text("土 10:00")
+                        .font(.system(size: 14))
+                        .foregroundStyle(AppTheme.textSec)
+                }
             }
-            .onTapGesture { showSignOutConfirm = true }
+
+            settingsCard {
+                settingsRow(icon: "tag.fill", iconColor: Color(hex: "#54A862"), label: "カテゴリの管理") {
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 13))
+                        .foregroundStyle(AppTheme.textTer)
+                }
+                Divider().padding(.leading, 58)
+                settingsRow(icon: "questionmark.circle.fill", iconColor: Color(hex: "#7C8AA1"), label: "ヘルプ") {
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 13))
+                        .foregroundStyle(AppTheme.textTer)
+                }
+                Divider().padding(.leading, 58)
+                settingsRow(icon: "rectangle.portrait.and.arrow.right", iconColor: Color(hex: "#D9695F"), label: "サインアウト") {
+                    EmptyView()
+                }
+                .onTapGesture { showSignOutConfirm = true }
+            }
         }
     }
 

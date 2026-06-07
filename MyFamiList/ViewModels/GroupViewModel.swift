@@ -9,7 +9,11 @@ final class GroupViewModel {
     var errorMessage: String?
 
     private var pollingTask: Task<Void, Never>?
-    private let api = APIClient.shared
+    private let api: APIClient
+
+    init(api: APIClient = .shared) {
+        self.api = api
+    }
 
     func start() {
         pollingTask?.cancel()

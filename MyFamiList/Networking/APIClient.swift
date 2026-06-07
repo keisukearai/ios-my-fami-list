@@ -19,7 +19,7 @@ enum APIError: Error, LocalizedError {
 final class APIClient {
     static let shared = APIClient()
 
-    let baseURL = "http://localhost:8000"
+    let baseURL: String
     static let apiBase = "/api/fami_list"
     private let keychain = KeychainHelper.shared
 
@@ -29,7 +29,17 @@ final class APIClient {
         return d
     }()
 
-    private init() {}
+    init(baseURL: String? = nil) {
+        #if targetEnvironment(simulator)
+        let defaultURL = "http://localhost:8000"
+        #else
+        let defaultURL = "https://ios.kotoragk.com"
+        #endif
+        self.baseURL = baseURL
+            ?? ProcessInfo.processInfo.environment["API_BASE_URL"]
+            ?? Bundle.main.infoDictionary?["API_BASE_URL"] as? String
+            ?? defaultURL
+    }
 
     var accessToken: String?  { keychain.get("access_token") }
     var refreshToken: String? { keychain.get("refresh_token") }

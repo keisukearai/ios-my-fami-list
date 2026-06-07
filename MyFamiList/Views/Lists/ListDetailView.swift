@@ -320,12 +320,23 @@ struct ItemRowView: View {
                         .lineLimit(1)
                 }
             } else if !item.addedByName.isEmpty {
-                Text("\(item.addedByName)が追加")
+                Text("\(item.addedByName)が追加 ・ \(relativeTime(from: item.createdAt))")
                     .font(.system(size: 12.5))
                     .foregroundStyle(AppTheme.textTer)
             }
         }
     }
+}
+
+private func relativeTime(from iso: String) -> String {
+    let fmt = ISO8601DateFormatter()
+    fmt.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+    guard let date = fmt.date(from: iso) ?? ISO8601DateFormatter().date(from: iso) else { return "" }
+    let secs = Int(-date.timeIntervalSinceNow)
+    if secs < 60 { return "たった今" }
+    if secs < 3600 { return "\(secs / 60)分前" }
+    if secs < 86400 { return "\(secs / 3600)時間前" }
+    return "\(secs / 86400)日前"
 }
 
 // MARK: - Item Edit Sheet

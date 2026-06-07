@@ -10,11 +10,13 @@
 		C6ED00A52FD0DE650016D0E2 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = C6ED00A42FD0DE650016D0E2 /* GoogleSignIn */; };
 		C6ED00A72FD0DE650016D0E2 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C6ED00A62FD0DE650016D0E2 /* GoogleSignInSwift */; };
 		TE000001000000000000001 /* MyFamiList.app in Frameworks */ = {isa = PBXBuildFile; fileRef = C6AD4E582FCF96B9003D4749 /* MyFamiList.app */; };
+		AA0001000000000000000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA0002000000000000000002 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		C6AD4E582FCF96B9003D4749 /* MyFamiList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyFamiList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		TE000002000000000000001 /* MyFamiListTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyFamiListTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA0002000000000000000002 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = MyFamiList/Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -55,6 +57,7 @@
 			isa = PBXGroup;
 			children = (
 				C6AD4E5A2FCF96B9003D4749 /* MyFamiList */,
+				AA0002000000000000000002 /* Assets.xcassets */,
 				C6AD4E592FCF96B9003D4749 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -173,6 +176,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA0001000000000000000001 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -335,6 +339,7 @@
 		C6AD4E642FCF96BA003D4749 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				API_BASE_URL = "http://localhost:8000";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = MyFamiList/MyFamiList.entitlements;
@@ -373,6 +378,7 @@
 		C6AD4E652FCF96BA003D4749 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				API_BASE_URL = "https://ios.kotoragk.com";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = MyFamiList/MyFamiList.entitlements;

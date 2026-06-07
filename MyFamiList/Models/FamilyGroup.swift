@@ -10,6 +10,8 @@ struct ShoppingListBrief: Codable, Identifiable {
     let id: Int
     var name: String
     let itemCount: Int
+    let uncheckedCount: Int
+    let categories: [String]
     let createdAt: String
     let updatedAt: String
 }
@@ -32,6 +34,7 @@ struct FamilyGroupBrief: Codable, Identifiable {
     let inviteCode: String
     let isOwner: Bool
     let memberCount: Int
+    let listCount: Int
     let createdAt: String
     let updatedAt: String
 }

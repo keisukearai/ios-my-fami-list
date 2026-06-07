@@ -193,36 +193,91 @@ struct ListCard: View {
     let list: ShoppingListBrief
     let groupColor: Color
 
+    private var progress: Double {
+        guard list.itemCount > 0 else { return 0 }
+        let checked = list.itemCount - list.uncheckedCount
+        return Double(checked) / Double(list.itemCount)
+    }
+
+    private var isDone: Bool { list.itemCount > 0 && list.uncheckedCount == 0 }
+
+    private var subtitle: String {
+        if list.itemCount == 0 { return "商品なし" }
+        if isDone { return "完了 🎉" }
+        return "残り \(list.uncheckedCount)品 ・ 全\(list.itemCount)品"
+    }
+
     var body: some View {
-        HStack(spacing: 14) {
-            ZStack {
-                Circle()
-                    .stroke(groupColor.opacity(0.18), lineWidth: 3.5)
-                    .frame(width: 38, height: 38)
-                Image(systemName: "cart")
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundStyle(groupColor)
+        VStack(spacing: 0) {
+            HStack(spacing: 14) {
+                progressRing
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(list.name)
+                        .font(.system(size: 17.5, weight: .semibold))
+                        .foregroundStyle(AppTheme.text)
+                        .lineLimit(1)
+                    Text(subtitle)
+                        .font(.system(size: 13.5))
+                        .foregroundStyle(AppTheme.textSec)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(AppTheme.textTer)
             }
+            .padding(.horizontal, 15)
+            .padding(.vertical, 15)
 
-            VStack(alignment: .leading, spacing: 4) {
-                Text(list.name)
-                    .font(.system(size: 17, weight: .semibold))
-                    .foregroundStyle(AppTheme.text)
-                    .lineLimit(1)
-                Text(list.itemCount == 0 ? "商品なし" : "\(list.itemCount)品")
-                    .font(.system(size: 13))
-                    .foregroundStyle(AppTheme.textSec)
+            if !list.categories.isEmpty {
+                Divider()
+                    .background(AppTheme.hairline)
+                    .padding(.leading, 15)
+                categoryDots
+                    .padding(.horizontal, 15)
+                    .padding(.vertical, 10)
             }
-
-            Spacer()
-
-            Image(systemName: "chevron.right")
-                .font(.system(size: 13, weight: .medium))
-                .foregroundStyle(AppTheme.textTer)
         }
-        .padding(16)
         .background(AppTheme.surface)
         .clipShape(RoundedRectangle(cornerRadius: AppTheme.rCard))
         .cardShadow()
+    }
+
+    private var progressRing: some View {
+        ZStack {
+            Circle()
+                .stroke(groupColor.opacity(0.15), lineWidth: 3.5)
+            Circle()
+                .trim(from: 0, to: progress)
+                .stroke(groupColor, style: StrokeStyle(lineWidth: 3.5, lineCap: .round))
+                .rotationEffect(.degrees(-90))
+                .animation(.easeInOut(duration: 0.3), value: progress)
+            if isDone {
+                Image(systemName: "checkmark")
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundStyle(groupColor)
+            } else {
+                Text("\(list.uncheckedCount)")
+                    .font(.system(size: list.uncheckedCount >= 10 ? 10 : 12, weight: .semibold))
+                    .foregroundStyle(groupColor)
+            }
+        }
+        .frame(width: 38, height: 38)
+    }
+
+    private var categoryDots: some View {
+        HStack(spacing: 5) {
+            ForEach(list.categories, id: \.self) { cat in
+                HStack(spacing: 4) {
+                    Circle()
+                        .fill(AppTheme.categoryColor(cat))
+                        .frame(width: 8, height: 8)
+                    Text(cat)
+                        .font(.system(size: 12.5))
+                        .foregroundStyle(AppTheme.textTer)
+                        .lineLimit(1)
+                }
+            }
+            Spacer()
+        }
     }
 }

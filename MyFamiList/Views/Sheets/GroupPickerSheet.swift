@@ -78,7 +78,7 @@ struct GroupPickerSheet: View {
         return HStack(spacing: 14) {
             ZStack {
                 RoundedRectangle(cornerRadius: AppTheme.rTiny)
-                    .fill(AppTheme.primary.opacity(0.15))
+                    .fill(isSelected ? AppTheme.soft : AppTheme.fieldBg)
                     .frame(width: 42, height: 42)
                 Text("🏠").font(.system(size: 22))
             }
@@ -86,18 +86,24 @@ struct GroupPickerSheet: View {
                 Text(group.name)
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundStyle(AppTheme.text)
-                Text("\(group.memberCount)人のメンバー")
+                Text("\(group.listCount)個のリスト ・ \(group.memberCount)人")
                     .font(.system(size: 13))
                     .foregroundStyle(AppTheme.textSec)
             }
             Spacer()
-            Image(systemName: isSelected ? "checkmark" : "chevron.right")
-                .font(.system(size: isSelected ? 14 : 13, weight: isSelected ? .semibold : .regular))
-                .foregroundStyle(isSelected ? AppTheme.primary : AppTheme.textTer)
+            if isSelected {
+                Image(systemName: "checkmark")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(AppTheme.primary)
+            }
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 13)
         .background(isSelected ? AppTheme.soft : AppTheme.surface)
+        .overlay(
+            RoundedRectangle(cornerRadius: 0)
+                .stroke(isSelected ? AppTheme.primary.opacity(0.3) : Color.clear, lineWidth: 1)
+        )
     }
 
     private var noGroupsPlaceholder: some View {

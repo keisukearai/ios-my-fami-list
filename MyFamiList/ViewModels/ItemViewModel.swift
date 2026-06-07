@@ -11,13 +11,14 @@ final class ItemViewModel {
     var checkedItems: [Item] { items.filter { $0.isChecked } }
 
     private var pollingTask: Task<Void, Never>?
-    private let api = APIClient.shared
+    private let api: APIClient
     private let groupId: Int
     private let listId: Int
 
-    init(groupId: Int, listId: Int) {
+    init(groupId: Int, listId: Int, api: APIClient = .shared) {
         self.groupId = groupId
         self.listId = listId
+        self.api = api
     }
 
     private var basePath: String { "\(APIClient.apiBase)/groups/\(groupId)/lists/\(listId)/items/" }
