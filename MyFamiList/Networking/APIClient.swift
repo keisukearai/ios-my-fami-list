@@ -42,6 +42,10 @@ final class APIClient {
     }
 
     var accessToken: String?  { keychain.get("access_token") }
+
+    func registerDeviceToken(_ token: String) async {
+        try? await requestVoid("\(Self.apiBase)/auth/device-token/", method: "POST", body: ["device_token": token])
+    }
     var refreshToken: String? { keychain.get("refresh_token") }
 
     func saveTokens(access: String, refresh: String) {

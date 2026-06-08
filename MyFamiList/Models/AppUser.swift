@@ -6,5 +6,5 @@ struct AppUser: Codable, Identifiable {
     let provider: String
     var displayName: String
     var avatarEmoji: String
-    var fcmToken: String?
+    var deviceToken: String?
 }
