@@ -417,8 +417,8 @@ struct ItemDetailEditSheet: View {
                             .font(.system(size: 16, weight: .medium))
                             .frame(maxWidth: .infinity)
                             .frame(height: 52)
-                            .background(Color(hex: "#FBEAE8"))
-                            .foregroundStyle(Color(hex: "#D9695F"))
+                            .background(AppTheme.deleteBg)
+                            .foregroundStyle(AppTheme.deleteText)
                             .clipShape(RoundedRectangle(cornerRadius: AppTheme.rBtn))
                     }
                 }

@@ -1,23 +1,49 @@
 import SwiftUI
+import UIKit
 
 enum AppTheme {
+    private static func adaptive(_ light: String, _ dark: String) -> Color {
+        Color(UIColor { tc in
+            UIColor(tc.userInterfaceStyle == .dark ? Color(hex: dark) : Color(hex: light))
+        })
+    }
+
+    private static func adaptiveRGB(
+        lr: CGFloat, lg: CGFloat, lb: CGFloat, la: CGFloat,
+        dr: CGFloat, dg: CGFloat, db: CGFloat, da: CGFloat
+    ) -> Color {
+        Color(UIColor { tc in
+            tc.userInterfaceStyle == .dark
+                ? UIColor(red: dr, green: dg, blue: db, alpha: da)
+                : UIColor(red: lr, green: lg, blue: lb, alpha: la)
+        })
+    }
+
     static let primary      = Color(hex: "#16A368")
     static let primaryPress = Color(hex: "#138A58")
     static let onPrimary    = Color.white
-    static let soft         = Color(hex: "#E4F4EC")
-    static let softText     = Color(hex: "#0E7A4D")
-    static let bg           = Color(hex: "#EFF4F1")
+    static let soft         = adaptive("#E4F4EC", "#1A3028")
+    static let softText     = adaptive("#0E7A4D", "#4DC48A")
+    static let bg           = adaptive("#EFF4F1", "#121614")
 
-    static let surface  = Color.white
-    static let surface2 = Color(hex: "#FAFBFA")
+    static let surface  = adaptive("#FFFFFF", "#1E2421")
+    static let surface2 = adaptive("#FAFBFA", "#252C28")
 
-    static let text    = Color(hex: "#16201B")
-    static let textSec = Color(red: 40/255, green: 54/255, blue: 46/255).opacity(0.60)
-    static let textTer = Color(red: 40/255, green: 54/255, blue: 46/255).opacity(0.34)
+    static let text    = adaptive("#16201B", "#E5EDE8")
+    static let textSec = adaptiveRGB(lr: 40/255, lg: 54/255, lb: 46/255, la: 0.60,
+                                     dr: 185/255, dg: 210/255, db: 195/255, da: 0.70)
+    static let textTer = adaptiveRGB(lr: 40/255, lg: 54/255, lb: 46/255, la: 0.34,
+                                     dr: 185/255, dg: 210/255, db: 195/255, da: 0.40)
 
-    static let sep      = Color(red: 40/255, green: 54/255, blue: 46/255).opacity(0.10)
-    static let hairline = Color(red: 40/255, green: 54/255, blue: 46/255).opacity(0.08)
-    static let fieldBg  = Color(red: 40/255, green: 54/255, blue: 46/255).opacity(0.05)
+    static let sep      = adaptiveRGB(lr: 40/255, lg: 54/255, lb: 46/255, la: 0.10,
+                                      dr: 185/255, dg: 210/255, db: 195/255, da: 0.14)
+    static let hairline = adaptiveRGB(lr: 40/255, lg: 54/255, lb: 46/255, la: 0.08,
+                                      dr: 185/255, dg: 210/255, db: 195/255, da: 0.10)
+    static let fieldBg  = adaptiveRGB(lr: 40/255, lg: 54/255, lb: 46/255, la: 0.05,
+                                      dr: 185/255, dg: 210/255, db: 195/255, da: 0.08)
+
+    static let deleteBg   = adaptive("#FBEAE8", "#3D1A17")
+    static let deleteText = adaptive("#D9695F", "#FF8A80")
 
     static let shadowLight = Color(red: 20/255, green: 40/255, blue: 30/255)
 
