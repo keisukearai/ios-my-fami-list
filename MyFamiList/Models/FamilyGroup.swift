@@ -6,7 +6,7 @@ struct Member: Codable, Identifiable {
     let avatarEmoji: String
 }
 
-struct ShoppingListBrief: Codable, Identifiable {
+struct ShoppingListBrief: Codable, Identifiable, Hashable {
     let id: Int
     var name: String
     let itemCount: Int

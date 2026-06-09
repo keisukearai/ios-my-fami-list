@@ -7,6 +7,7 @@ struct MainTabView: View {
     @State private var groupVM = GroupViewModel()
     @State private var selectedTab = 0
     @State private var showGroupPicker = false
+    @State private var listsPath = NavigationPath()
 
     init(user: AppUser, onSignOut: @escaping () -> Void) {
         self.user = user
@@ -17,7 +18,7 @@ struct MainTabView: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             TabView(selection: $selectedTab) {
-                NavigationStack {
+                NavigationStack(path: $listsPath) {
                     ListsScreenView(
                         groupVM: groupVM,
                         onGroupPickerTap: { showGroupPicker = true }
@@ -36,7 +37,9 @@ struct MainTabView: View {
                 .tag(2)
             }
 
-            CustomTabBar(selectedTab: $selectedTab)
+            if listsPath.isEmpty {
+                CustomTabBar(selectedTab: $selectedTab)
+            }
         }
         .ignoresSafeArea(edges: .bottom)
         .sheet(isPresented: $showGroupPicker) {

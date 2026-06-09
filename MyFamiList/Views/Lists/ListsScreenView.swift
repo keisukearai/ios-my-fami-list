@@ -26,6 +26,15 @@ struct ListsScreenView: View {
         .navigationTitle("リスト")
         .toolbar { toolbarContent }
         .sheet(isPresented: $showAddSheet) { addListSheet }
+        .navigationDestination(for: ShoppingListBrief.self) { list in
+            let group = groupVM.currentGroup
+            ListDetailView(
+                list: list,
+                groupId: group?.id ?? 0,
+                groupColor: AppTheme.primary,
+                groupName: group?.name ?? ""
+            )
+        }
     }
 
     private func mainContent(group: FamilyGroup) -> some View {
@@ -35,9 +44,7 @@ struct ListsScreenView: View {
                     emptyListsView
                 } else {
                     ForEach(group.lists) { list in
-                        NavigationLink {
-                            ListDetailView(list: list, groupId: group.id, groupColor: AppTheme.primary)
-                        } label: {
+                        NavigationLink(value: list) {
                             ListCard(list: list, groupColor: AppTheme.primary)
                         }
                         .buttonStyle(.plain)

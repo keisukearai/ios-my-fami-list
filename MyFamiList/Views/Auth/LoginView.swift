@@ -3,6 +3,7 @@ import AuthenticationServices
 
 struct LoginView: View {
     @Environment(AuthViewModel.self) private var authVM
+    @State private var showEmailComingSoon = false
 
     var body: some View {
         ZStack {
@@ -108,8 +109,31 @@ struct LoginView: View {
                         .stroke(AppTheme.sep, lineWidth: 1)
                 )
             }
+
+            Button {
+                showEmailComingSoon = true
+            } label: {
+                HStack(spacing: 10) {
+                    Image(systemName: "envelope")
+                        .font(.system(size: 17, weight: .medium))
+                    Text("メールアドレスで続ける")
+                        .font(.system(size: 17, weight: .medium))
+                }
+                .frame(maxWidth: .infinity)
+                .frame(height: 54)
+                .background(AppTheme.surface)
+                .foregroundStyle(AppTheme.text)
+                .clipShape(RoundedRectangle(cornerRadius: AppTheme.rBtn))
+                .overlay(
+                    RoundedRectangle(cornerRadius: AppTheme.rBtn)
+                        .stroke(AppTheme.sep, lineWidth: 1)
+                )
+            }
         }
         .padding(.horizontal, 24)
+        .alert("メール認証は準備中です", isPresented: $showEmailComingSoon) {
+            Button("OK") {}
+        }
     }
 
     // MARK: - Google logo placeholder

@@ -5,6 +5,8 @@ struct SettingsView: View {
     let onSignOut: () -> Void
 
     @State private var showSignOutConfirm = false
+    @State private var notificationInterval: Int = 15
+    @State private var showIntervalPicker = false
 
     var body: some View {
         ScrollView {
@@ -19,6 +21,11 @@ struct SettingsView: View {
         }
         .background(AppTheme.bg)
         .navigationTitle("設定")
+        .task {
+            if let interval = try? await APIClient.shared.getNotificationInterval() {
+                notificationInterval = interval
+            }
+        }
         .confirmationDialog(
             "サインアウトしますか？",
             isPresented: $showSignOutConfirm,
@@ -53,6 +60,16 @@ struct SettingsView: View {
         .cardShadow()
     }
 
+    private func intervalLabel(_ minutes: Int) -> String {
+        switch minutes {
+        case 5:  return "5分"
+        case 15: return "15分"
+        case 30: return "30分"
+        case 60: return "1時間"
+        default: return "\(minutes)分"
+        }
+    }
+
     private var signInMethod: String {
         switch user.provider {
         case "apple": return "Apple ID でサインイン中"
@@ -70,11 +87,24 @@ struct SettingsView: View {
                         .labelsHidden()
                 }
                 Divider().padding(.leading, 58)
-                settingsRow(icon: "clock.fill", iconColor: Color(hex: "#E0A03A"), label: "リマインダー") {
-                    Text("土 10:00")
+                settingsRow(icon: "clock.arrow.circlepath", iconColor: Color(hex: "#E0A03A"), label: "通知間隔") {
+                    Text(intervalLabel(notificationInterval))
                         .font(.system(size: 14))
                         .foregroundStyle(AppTheme.textSec)
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 13))
+                        .foregroundStyle(AppTheme.textTer)
                 }
+                .onTapGesture { showIntervalPicker = true }
+            }
+            .confirmationDialog("通知間隔", isPresented: $showIntervalPicker, titleVisibility: .visible) {
+                ForEach([5, 15, 30, 60], id: \.self) { minutes in
+                    Button(intervalLabel(minutes)) {
+                        notificationInterval = minutes
+                        Task { try? await APIClient.shared.updateNotificationInterval(minutes) }
+                    }
+                }
+                Button("キャンセル", role: .cancel) {}
             }
 
             settingsCard {

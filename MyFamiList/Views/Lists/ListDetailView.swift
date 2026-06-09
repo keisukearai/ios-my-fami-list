@@ -4,6 +4,7 @@ struct ListDetailView: View {
     let list: ShoppingListBrief
     let groupId: Int
     let groupColor: Color
+    let groupName: String
 
     @State private var itemVM: ItemViewModel
     @State private var checkedExpanded = true
@@ -13,10 +14,11 @@ struct ListDetailView: View {
     @State private var selectedCategory = ""
     @FocusState private var composerFocused: Bool
 
-    init(list: ShoppingListBrief, groupId: Int, groupColor: Color) {
+    init(list: ShoppingListBrief, groupId: Int, groupColor: Color, groupName: String = "") {
         self.list = list
         self.groupId = groupId
         self.groupColor = groupColor
+        self.groupName = groupName
         _itemVM = State(initialValue: ItemViewModel(groupId: groupId, listId: list.id))
     }
 
@@ -80,24 +82,43 @@ struct ListDetailView: View {
 
     private var itemsScrollView: some View {
         ScrollView {
-            VStack(spacing: AppTheme.secGap) {
-                if !itemVM.uncheckedItems.isEmpty {
-                    itemsCard(items: itemVM.uncheckedItems)
-                } else if itemVM.isLoading {
-                    ProgressView()
-                        .frame(maxWidth: .infinity)
-                        .padding(.top, 40)
-                } else if itemVM.checkedItems.isEmpty {
-                    emptyState
+            VStack(spacing: 0) {
+                if !groupName.isEmpty {
+                    HStack(spacing: 6) {
+                        Text(groupName)
+                            .font(.system(size: 13.5))
+                            .foregroundStyle(AppTheme.textSec)
+                        Circle()
+                            .fill(AppTheme.textTer)
+                            .frame(width: 3, height: 3)
+                        Text("\(itemVM.uncheckedItems.count)品 未購入")
+                            .font(.system(size: 13.5))
+                            .foregroundStyle(AppTheme.textSec)
+                        Spacer()
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 8)
                 }
 
-                if !itemVM.checkedItems.isEmpty {
-                    checkedSection
+                VStack(spacing: AppTheme.secGap) {
+                    if !itemVM.uncheckedItems.isEmpty {
+                        itemsCard(items: itemVM.uncheckedItems)
+                    } else if itemVM.isLoading {
+                        ProgressView()
+                            .frame(maxWidth: .infinity)
+                            .padding(.top, 40)
+                    } else if itemVM.checkedItems.isEmpty {
+                        emptyState
+                    }
+
+                    if !itemVM.checkedItems.isEmpty {
+                        checkedSection
+                    }
                 }
+                .padding(.horizontal, 16)
+                .padding(.bottom, 140)
             }
-            .padding(.horizontal, 16)
             .padding(.top, AppTheme.secGap)
-            .padding(.bottom, 140)
         }
     }
 

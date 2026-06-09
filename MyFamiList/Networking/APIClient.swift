@@ -46,6 +46,16 @@ final class APIClient {
     func registerDeviceToken(_ token: String) async {
         try? await requestVoid("\(Self.apiBase)/auth/device-token/", method: "POST", body: ["device_token": token])
     }
+
+    func getNotificationInterval() async throws -> Int {
+        struct Resp: Decodable { let notificationInterval: Int }
+        let resp: Resp = try await request("\(Self.apiBase)/auth/notification-settings/")
+        return resp.notificationInterval
+    }
+
+    func updateNotificationInterval(_ interval: Int) async throws {
+        try await requestVoid("\(Self.apiBase)/auth/notification-settings/", method: "PATCH", body: ["notification_interval": interval])
+    }
     var refreshToken: String? { keychain.get("refresh_token") }
 
     func saveTokens(access: String, refresh: String) {
