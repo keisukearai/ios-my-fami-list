@@ -25,7 +25,9 @@ final class AuthViewModelTests: XCTestCase {
             "provider": "apple",
             "display_name": "田中太郎",
             "avatar_emoji": "😀",
-            "fcm_token": null
+            "avatar_color": "#16A368",
+            "avatar_photo": "",
+            "device_token": null
         }
         """.data(using: .utf8)!
 
@@ -35,10 +37,11 @@ final class AuthViewModelTests: XCTestCase {
         XCTAssertEqual(user.provider, "apple")
         XCTAssertEqual(user.displayName, "田中太郎")
         XCTAssertEqual(user.avatarEmoji, "😀")
-        XCTAssertNil(user.fcmToken)
+        XCTAssertEqual(user.avatarColor, "#16A368")
+        XCTAssertNil(user.deviceToken)
     }
 
-    func test_appUser_decodes_with_fcm_token() throws {
+    func test_appUser_decodes_with_avatar_photo() throws {
         let json = """
         {
             "id": 2,
@@ -46,13 +49,16 @@ final class AuthViewModelTests: XCTestCase {
             "provider": "google",
             "display_name": "佐藤花子",
             "avatar_emoji": "🌸",
-            "fcm_token": "fcm_token_abc123"
+            "avatar_color": "#D9695F",
+            "avatar_photo": "data:image/jpeg;base64,/9j/abc",
+            "device_token": null
         }
         """.data(using: .utf8)!
 
         let user = try decoder.decode(AppUser.self, from: json)
         XCTAssertEqual(user.provider, "google")
-        XCTAssertEqual(user.fcmToken, "fcm_token_abc123")
+        XCTAssertEqual(user.avatarColor, "#D9695F")
+        XCTAssertEqual(user.avatarPhoto, "data:image/jpeg;base64,/9j/abc")
     }
 
     // MARK: - AuthViewModel 初期状態
@@ -112,6 +118,7 @@ final class AuthViewModelTests: XCTestCase {
 
     private func makeUser(id: Int) -> AppUser {
         AppUser(id: id, uid: "uid_\(id)", provider: "apple",
-                displayName: "テストユーザー", avatarEmoji: "😀", fcmToken: nil)
+                displayName: "テストユーザー", avatarEmoji: "😀",
+                avatarColor: "", avatarPhoto: "", deviceToken: nil)
     }
 }

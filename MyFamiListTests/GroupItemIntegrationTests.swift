@@ -160,4 +160,61 @@ final class GroupItemIntegrationTests: XCTestCase {
         XCTAssertEqual(updated?.category, "日用品")
         XCTAssertNil(itemVM.errorMessage)
     }
+
+    // MARK: - Category CRUD
+
+    func test_createCategory_appearsInCustomCategories() async throws {
+        try await groupVM.createGroup(name: "TestGroup_\(Int(Date().timeIntervalSince1970))")
+        createdGroupId = groupVM.currentGroup?.id
+
+        let catName = "TestCat_\(Int(Date().timeIntervalSince1970))"
+        try await groupVM.createCategory(name: catName, color: "#FF0000")
+
+        XCTAssertTrue(groupVM.customCategories.contains(where: { $0.name == catName }))
+        XCTAssertNil(groupVM.errorMessage)
+    }
+
+    func test_deleteCategory_removesFromCustomCategories() async throws {
+        try await groupVM.createGroup(name: "TestGroup_\(Int(Date().timeIntervalSince1970))")
+        createdGroupId = groupVM.currentGroup?.id
+
+        try await groupVM.createCategory(name: "ToDelete", color: "#FF0000")
+        guard let cat = groupVM.customCategories.first(where: { $0.name == "ToDelete" }) else {
+            XCTFail("Category not created"); return
+        }
+
+        try await groupVM.deleteCategory(id: cat.id)
+        XCTAssertFalse(groupVM.customCategories.contains(where: { $0.id == cat.id }))
+    }
+
+    func test_updateCategory_reflectsChanges() async throws {
+        try await groupVM.createGroup(name: "TestGroup_\(Int(Date().timeIntervalSince1970))")
+        createdGroupId = groupVM.currentGroup?.id
+
+        try await groupVM.createCategory(name: "UpdateBefore", color: "#FF0000")
+        guard let cat = groupVM.customCategories.first(where: { $0.name == "UpdateBefore" }) else {
+            XCTFail("Category not created"); return
+        }
+
+        try await groupVM.updateCategory(id: cat.id, name: "UpdateAfter", color: "#00FF00")
+        let updated = groupVM.customCategories.first(where: { $0.id == cat.id })
+        XCTAssertEqual(updated?.name, "UpdateAfter")
+        XCTAssertEqual(updated?.color, "#00FF00")
+    }
+
+    // MARK: - refreshAll reflects updated avatar
+
+    func test_refreshAll_reflects_updated_avatarColor_in_members() async throws {
+        try await groupVM.createGroup(name: "TestGroup_\(Int(Date().timeIntervalSince1970))")
+        createdGroupId = groupVM.currentGroup?.id
+
+        let newColor = "#D9695F"
+        _ = try await api.updateProfile(avatarColor: newColor)
+
+        await groupVM.refreshAll()
+
+        let me = groupVM.currentGroup?.members.first
+        XCTAssertNotNil(me)
+        XCTAssertEqual(me?.avatarColor, newColor)
+    }
 }

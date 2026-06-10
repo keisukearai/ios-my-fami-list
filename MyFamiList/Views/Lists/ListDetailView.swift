@@ -5,6 +5,7 @@ struct ListDetailView: View {
     let groupId: Int
     let groupColor: Color
     let groupName: String
+    let customCategories: [GroupCategory]
 
     @State private var itemVM: ItemViewModel
     @State private var checkedExpanded = true
@@ -14,12 +15,17 @@ struct ListDetailView: View {
     @State private var selectedCategory = ""
     @FocusState private var composerFocused: Bool
 
-    init(list: ShoppingListBrief, groupId: Int, groupColor: Color, groupName: String = "") {
+    init(list: ShoppingListBrief, groupId: Int, groupColor: Color, groupName: String = "", customCategories: [GroupCategory] = []) {
         self.list = list
         self.groupId = groupId
         self.groupColor = groupColor
         self.groupName = groupName
+        self.customCategories = customCategories
         _itemVM = State(initialValue: ItemViewModel(groupId: groupId, listId: list.id))
+    }
+
+    var allCategories: [(name: String, color: Color)] {
+        AppTheme.categories + customCategories.map { (name: $0.name, color: Color(hex: $0.color)) }
     }
 
     var body: some View {
@@ -32,7 +38,7 @@ struct ListDetailView: View {
         .navigationBarTitleDisplayMode(.large)
         .toolbar { toolbarContent }
         .sheet(item: $editingItem) { item in
-            ItemDetailEditSheet(itemVM: itemVM, item: item, groupColor: groupColor)
+            ItemDetailEditSheet(itemVM: itemVM, item: item, groupColor: groupColor, customCategories: customCategories)
         }
         .confirmationDialog(
             "チェック済みをすべて削除しますか？",
@@ -197,7 +203,7 @@ struct ListDetailView: View {
             if composerFocused {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
-                        ForEach(AppTheme.categories, id: \.name) { cat in
+                        ForEach(allCategories, id: \.name) { cat in
                             Button {
                                 selectedCategory = (selectedCategory == cat.name) ? "" : cat.name
                             } label: {
@@ -366,6 +372,11 @@ struct ItemDetailEditSheet: View {
     let itemVM: ItemViewModel
     let item: Item
     let groupColor: Color
+    var customCategories: [GroupCategory] = []
+
+    var allCategories: [(name: String, color: Color)] {
+        AppTheme.categories + customCategories.map { (name: $0.name, color: Color(hex: $0.color)) }
+    }
 
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""
@@ -400,7 +411,7 @@ struct ItemDetailEditSheet: View {
                             columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 3),
                             spacing: 8
                         ) {
-                            ForEach(AppTheme.categories, id: \.name) { cat in
+                            ForEach(allCategories, id: \.name) { cat in
                                 Button {
                                     category = (category == cat.name) ? "" : cat.name
                                 } label: {
