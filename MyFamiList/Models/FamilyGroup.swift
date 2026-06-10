@@ -4,6 +4,14 @@ struct Member: Codable, Identifiable {
     let id: Int
     let displayName: String
     let avatarEmoji: String
+    let avatarColor: String
+    let avatarPhoto: String
+}
+
+struct GroupCategory: Codable, Identifiable {
+    let id: Int
+    var name: String
+    var color: String
 }
 
 struct ShoppingListBrief: Codable, Identifiable, Hashable {

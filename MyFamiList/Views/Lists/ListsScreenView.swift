@@ -98,9 +98,15 @@ struct ListsScreenView: View {
         let members = groupVM.currentGroup?.members ?? []
         return HStack(spacing: -8) {
             ForEach(Array(members.prefix(4).enumerated()), id: \.offset) { i, member in
-                AvatarView(name: member.displayName, size: 28, emoji: member.avatarEmoji)
-                    .overlay(Circle().stroke(AppTheme.bg, lineWidth: 2))
-                    .zIndex(Double(4 - i))
+                AvatarView(
+                    name: member.displayName,
+                    size: 28,
+                    colorHex: member.avatarColor.isEmpty ? nil : member.avatarColor,
+                    emoji: member.avatarEmoji.isEmpty ? nil : member.avatarEmoji,
+                    photo: member.avatarPhoto.isEmpty ? nil : member.avatarPhoto
+                )
+                .overlay(Circle().stroke(AppTheme.bg, lineWidth: 2))
+                .zIndex(Double(4 - i))
             }
         }
     }

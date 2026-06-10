@@ -56,6 +56,47 @@ final class APIClient {
     func updateNotificationInterval(_ interval: Int) async throws {
         try await requestVoid("\(Self.apiBase)/auth/notification-settings/", method: "PATCH", body: ["notification_interval": interval])
     }
+
+    func updateProfile(
+        displayName: String? = nil,
+        avatarEmoji: String? = nil,
+        avatarColor: String? = nil,
+        avatarPhoto: String? = nil
+    ) async throws -> AppUser {
+        var body: [String: Any] = [:]
+        if let v = displayName  { body["display_name"] = v }
+        if let v = avatarEmoji  { body["avatar_emoji"] = v }
+        if let v = avatarColor  { body["avatar_color"] = v }
+        if let v = avatarPhoto  { body["avatar_photo"] = v }
+        return try await request("\(Self.apiBase)/auth/me/", method: "PUT", body: body)
+    }
+
+    func fetchCategories(groupId: Int) async throws -> [GroupCategory] {
+        return try await request("\(Self.apiBase)/groups/\(groupId)/categories/")
+    }
+
+    func createCategory(groupId: Int, name: String, color: String) async throws -> GroupCategory {
+        return try await request(
+            "\(Self.apiBase)/groups/\(groupId)/categories/",
+            method: "POST",
+            body: ["name": name, "color": color]
+        )
+    }
+
+    func updateCategory(groupId: Int, catId: Int, name: String? = nil, color: String? = nil) async throws -> GroupCategory {
+        var body: [String: Any] = [:]
+        if let n = name  { body["name"] = n }
+        if let c = color { body["color"] = c }
+        return try await request(
+            "\(Self.apiBase)/groups/\(groupId)/categories/\(catId)/",
+            method: "PATCH",
+            body: body
+        )
+    }
+
+    func deleteCategory(groupId: Int, catId: Int) async throws {
+        try await requestVoid("\(Self.apiBase)/groups/\(groupId)/categories/\(catId)/", method: "DELETE")
+    }
     var refreshToken: String? { keychain.get("refresh_token") }
 
     func saveTokens(access: String, refresh: String) {

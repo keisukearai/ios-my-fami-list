@@ -5,6 +5,7 @@ import Foundation
 final class GroupViewModel {
     var groups: [FamilyGroupBrief] = []
     var currentGroup: FamilyGroup?
+    var customCategories: [GroupCategory] = []
     var isLoading = false
     var errorMessage: String?
 
@@ -30,6 +31,10 @@ final class GroupViewModel {
         pollingTask = nil
     }
 
+    func refreshAll() async {
+        await fetchAll()
+    }
+
     private func fetchAll() async {
         do {
             groups = try await api.request("\(APIClient.apiBase)/groups/")
@@ -38,6 +43,7 @@ final class GroupViewModel {
             } else if let first = groups.first {
                 currentGroup = try await api.request("\(APIClient.apiBase)/groups/\(first.id)/")
             }
+            await fetchCategories()
         } catch {
             if !(error is CancellationError) {
                 errorMessage = error.localizedDescription
@@ -48,9 +54,37 @@ final class GroupViewModel {
     func selectGroup(_ id: Int) async {
         do {
             currentGroup = try await api.request("\(APIClient.apiBase)/groups/\(id)/")
+            await fetchCategories()
         } catch {
             errorMessage = error.localizedDescription
         }
+    }
+
+    func fetchCategories() async {
+        guard let groupId = currentGroup?.id else { return }
+        if let cats = try? await api.fetchCategories(groupId: groupId) {
+            customCategories = cats
+        }
+    }
+
+    func createCategory(name: String, color: String) async throws {
+        guard let groupId = currentGroup?.id else { return }
+        let cat = try await api.createCategory(groupId: groupId, name: name, color: color)
+        customCategories.append(cat)
+    }
+
+    func updateCategory(id: Int, name: String? = nil, color: String? = nil) async throws {
+        guard let groupId = currentGroup?.id else { return }
+        let updated = try await api.updateCategory(groupId: groupId, catId: id, name: name, color: color)
+        if let idx = customCategories.firstIndex(where: { $0.id == id }) {
+            customCategories[idx] = updated
+        }
+    }
+
+    func deleteCategory(id: Int) async throws {
+        guard let groupId = currentGroup?.id else { return }
+        try await api.deleteCategory(groupId: groupId, catId: id)
+        customCategories.removeAll { $0.id == id }
     }
 
     func createGroup(name: String) async throws {

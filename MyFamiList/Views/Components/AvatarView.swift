@@ -1,12 +1,14 @@
 import SwiftUI
+import UIKit
 
 struct AvatarView: View {
     let name: String
     let size: CGFloat
     var colorHex: String? = nil
     var emoji: String? = nil
+    var photo: String? = nil
 
-    private static let palette = [
+    static let palette = [
         "#16A368", "#D9695F", "#5690C9",
         "#E0A03A", "#B179B0", "#D981A6", "#7C8AA1",
     ]
@@ -26,19 +28,41 @@ struct AvatarView: View {
         return Color(hex: Self.palette[abs(seed) % Self.palette.count])
     }
 
+    private var photoImage: UIImage? {
+        guard let photo, !photo.isEmpty else { return nil }
+        let b64: String
+        if let range = photo.range(of: ",") {
+            b64 = String(photo[range.upperBound...])
+        } else {
+            b64 = photo
+        }
+        guard let data = Data(base64Encoded: b64, options: .ignoreUnknownCharacters) else { return nil }
+        return UIImage(data: data)
+    }
+
     var body: some View {
-        ZStack {
-            Circle().fill(bgColor)
-            if let emoji, !emoji.isEmpty {
-                Text(emoji)
-                    .font(.system(size: size * 0.52))
+        Group {
+            if let img = photoImage {
+                Image(uiImage: img)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: size, height: size)
+                    .clipShape(Circle())
             } else {
-                Text(initials.isEmpty ? "?" : initials.uppercased())
-                    .font(.system(size: size * 0.38, weight: .semibold))
-                    .foregroundStyle(.white)
+                ZStack {
+                    Circle().fill(bgColor)
+                    if let emoji, !emoji.isEmpty {
+                        Text(emoji)
+                            .font(.system(size: size * 0.52))
+                    } else {
+                        Text(initials.isEmpty ? "?" : initials.uppercased())
+                            .font(.system(size: size * 0.38, weight: .semibold))
+                            .foregroundStyle(.white)
+                    }
+                }
+                .frame(width: size, height: size)
             }
         }
-        .frame(width: size, height: size)
     }
 }
 

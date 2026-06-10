@@ -32,7 +32,7 @@ struct MainTabView: View {
                 .tag(1)
 
                 NavigationStack {
-                    SettingsView(user: user, onSignOut: onSignOut)
+                    SettingsView(user: user, groupVM: groupVM, onSignOut: onSignOut)
                 }
                 .tag(2)
             }

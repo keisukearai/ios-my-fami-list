@@ -2,11 +2,17 @@ import SwiftUI
 
 struct SettingsView: View {
     let user: AppUser
+    let groupVM: GroupViewModel
     let onSignOut: () -> Void
 
+    @Environment(AuthViewModel.self) private var authVM
     @State private var showSignOutConfirm = false
+    @State private var showEditProfile = false
+    @State private var showCategoryManager = false
     @State private var notificationInterval: Int = 15
     @State private var showIntervalPicker = false
+
+    private var currentUser: AppUser { authVM.currentUser ?? user }
 
     var body: some View {
         ScrollView {
@@ -33,31 +39,49 @@ struct SettingsView: View {
         ) {
             Button("サインアウト", role: .destructive) { onSignOut() }
         }
+        .sheet(isPresented: $showEditProfile) {
+            EditProfileSheet(user: currentUser) { updatedUser in
+                authVM.currentUser = updatedUser
+                Task { await groupVM.refreshAll() }
+            }
+        }
+        .sheet(isPresented: $showCategoryManager) {
+            CategoryManagerSheet(groupVM: groupVM)
+        }
     }
 
     private var profileCard: some View {
-        HStack(spacing: 14) {
-            AvatarView(
-                name: user.displayName.isEmpty ? "U" : user.displayName,
-                size: 50,
-                emoji: user.avatarEmoji.isEmpty ? nil : user.avatarEmoji
-            )
+        Button { showEditProfile = true } label: {
+            HStack(spacing: 14) {
+                AvatarView(
+                    name: currentUser.displayName.isEmpty ? "U" : currentUser.displayName,
+                    size: 50,
+                    colorHex: currentUser.avatarColor.isEmpty ? nil : currentUser.avatarColor,
+                    emoji: currentUser.avatarEmoji.isEmpty ? nil : currentUser.avatarEmoji,
+                    photo: currentUser.avatarPhoto.isEmpty ? nil : currentUser.avatarPhoto
+                )
 
-            VStack(alignment: .leading, spacing: 4) {
-                Text(user.displayName.isEmpty ? "ユーザー" : user.displayName)
-                    .font(.system(size: 17, weight: .semibold))
-                    .foregroundStyle(AppTheme.text)
-                Text(signInMethod)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(currentUser.displayName.isEmpty ? "ユーザー" : currentUser.displayName)
+                        .font(.system(size: 17, weight: .semibold))
+                        .foregroundStyle(AppTheme.text)
+                    Text(signInMethod)
+                        .font(.system(size: 13))
+                        .foregroundStyle(AppTheme.textSec)
+                }
+
+                Spacer()
+
+                Image(systemName: "chevron.right")
                     .font(.system(size: 13))
-                    .foregroundStyle(AppTheme.textSec)
+                    .foregroundStyle(AppTheme.textTer)
             }
-
-            Spacer()
+            .padding(16)
+            .background(AppTheme.surface)
+            .clipShape(RoundedRectangle(cornerRadius: AppTheme.rCard))
+            .cardShadow()
         }
-        .padding(16)
-        .background(AppTheme.surface)
-        .clipShape(RoundedRectangle(cornerRadius: AppTheme.rCard))
-        .cardShadow()
+        .buttonStyle(.plain)
     }
 
     private func intervalLabel(_ minutes: Int) -> String {
@@ -71,10 +95,10 @@ struct SettingsView: View {
     }
 
     private var signInMethod: String {
-        switch user.provider {
+        switch currentUser.provider {
         case "apple": return "Apple ID でサインイン中"
         case "google": return "Google でサインイン中"
-        default: return user.provider
+        default: return currentUser.provider
         }
     }
 
@@ -113,6 +137,7 @@ struct SettingsView: View {
                         .font(.system(size: 13))
                         .foregroundStyle(AppTheme.textTer)
                 }
+                .onTapGesture { showCategoryManager = true }
                 Divider().padding(.leading, 58)
                 settingsRow(icon: "questionmark.circle.fill", iconColor: Color(hex: "#7C8AA1"), label: "ヘルプ") {
                     Image(systemName: "chevron.right")

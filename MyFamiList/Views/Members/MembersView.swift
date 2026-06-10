@@ -53,7 +53,13 @@ struct MembersView: View {
 
     private func memberRow(member: Member, group: FamilyGroup) -> some View {
         HStack(spacing: 14) {
-            AvatarView(name: member.displayName, size: 42, emoji: member.avatarEmoji)
+            AvatarView(
+                name: member.displayName,
+                size: 42,
+                colorHex: member.avatarColor.isEmpty ? nil : member.avatarColor,
+                emoji: member.avatarEmoji.isEmpty ? nil : member.avatarEmoji,
+                photo: member.avatarPhoto.isEmpty ? nil : member.avatarPhoto
+            )
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(member.displayName)
