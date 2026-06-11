@@ -124,9 +124,9 @@ struct EditProfileSheet: View {
             Text(label)
                 .font(.system(size: 16))
                 .foregroundStyle(AppTheme.text)
-            Spacer()
             content()
                 .foregroundStyle(AppTheme.textSec)
+                .frame(maxWidth: .infinity, alignment: .trailing)
         }
         .padding(.horizontal, 16)
         .frame(height: AppTheme.rowH)

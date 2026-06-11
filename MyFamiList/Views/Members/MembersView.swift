@@ -5,15 +5,25 @@ struct MembersView: View {
 
     @State private var showInvite = false
 
+    private var headerSub: String? {
+        guard let group else { return nil }
+        return "\(group.members.count)人が参加中"
+    }
+
     var body: some View {
-        Group {
-            if let group {
-                mainContent(group: group)
-            } else {
-                noGroupView
+        VStack(spacing: 0) {
+            AppHeader("メンバー", sub: headerSub)
+
+            Group {
+                if let group {
+                    mainContent(group: group)
+                } else {
+                    noGroupView
+                }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .navigationTitle("メンバー")
+        .toolbar(.hidden, for: .navigationBar)
         .sheet(isPresented: $showInvite) {
             if let group {
                 InviteCodeSheet(group: group)

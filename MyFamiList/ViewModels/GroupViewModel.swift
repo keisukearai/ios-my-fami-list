@@ -117,6 +117,54 @@ final class GroupViewModel {
         }
     }
 
+    func updateList(_ list: ShoppingListBrief, name: String) async {
+        guard let groupId = currentGroup?.id else { return }
+        do {
+            let updated: ShoppingListBrief = try await api.updateList(groupId: groupId, listId: list.id, name: name)
+            if let idx = currentGroup?.lists.firstIndex(where: { $0.id == list.id }) {
+                currentGroup?.lists[idx] = updated
+            }
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    func updateGroup(id: Int, name: String) async {
+        do {
+            let updated: FamilyGroup = try await api.request(
+                "\(APIClient.apiBase)/groups/\(id)/",
+                method: "PUT",
+                body: ["name": name]
+            )
+            if let idx = groups.firstIndex(where: { $0.id == id }) {
+                groups[idx].name = updated.name
+            }
+            if currentGroup?.id == id { currentGroup?.name = updated.name }
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    func deleteGroup(id: Int) async {
+        do {
+            try await api.requestVoid("\(APIClient.apiBase)/groups/\(id)/", method: "DELETE")
+            groups.removeAll { $0.id == id }
+            if currentGroup?.id == id { currentGroup = nil; await fetchAll() }
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    func leaveGroup(id: Int) async {
+        do {
+            try await api.requestVoid("\(APIClient.apiBase)/groups/\(id)/leave/", method: "POST")
+            groups.removeAll { $0.id == id }
+            if currentGroup?.id == id { currentGroup = nil; await fetchAll() }
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
     func deleteList(_ list: ShoppingListBrief) async {
         guard let groupId = currentGroup?.id else { return }
         do {

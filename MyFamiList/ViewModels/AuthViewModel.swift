@@ -108,6 +108,14 @@ final class AuthViewModel: NSObject {
         }
     }
 
+    // MARK: - Dev (DEBUG only)
+
+#if DEBUG
+    func devLogin() async {
+        await signIn(provider: "\(APIClient.apiBase)/auth/dev-login/", body: ["username": "devuser"])
+    }
+#endif
+
     private func randomNonceString(length: Int = 32) -> String {
         var bytes = [UInt8](repeating: 0, count: length)
         _ = SecRandomCopyBytes(kSecRandomDefault, bytes.count, &bytes)

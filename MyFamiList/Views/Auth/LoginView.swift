@@ -129,6 +129,17 @@ struct LoginView: View {
                         .stroke(AppTheme.sep, lineWidth: 1)
                 )
             }
+
+#if DEBUG
+            Button {
+                Task { await authVM.devLogin() }
+            } label: {
+                Text("🛠 開発用ログイン")
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundStyle(AppTheme.textSec)
+                    .frame(height: 44)
+            }
+#endif
         }
         .padding(.horizontal, 24)
         .alert("メール認証は準備中です", isPresented: $showEmailComingSoon) {

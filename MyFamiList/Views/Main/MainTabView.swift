@@ -41,6 +41,7 @@ struct MainTabView: View {
                 CustomTabBar(selectedTab: $selectedTab)
             }
         }
+        .environment(groupVM)
         .ignoresSafeArea(edges: .bottom)
         .sheet(isPresented: $showGroupPicker) {
             GroupPickerSheet(groupVM: groupVM)

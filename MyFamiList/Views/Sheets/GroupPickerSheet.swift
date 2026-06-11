@@ -10,6 +10,13 @@ struct GroupPickerSheet: View {
     @State private var inviteCode = ""
     @State private var isProcessing = false
     @State private var sheetError: String?
+    @State private var showRenameGroup = false
+    @State private var renameGroupId: Int? = nil
+    @State private var renameGroupText = ""
+    @State private var showDeleteGroupConfirm = false
+    @State private var pendingDeleteGroupId: Int? = nil
+    @State private var showLeaveGroupConfirm = false
+    @State private var pendingLeaveGroupId: Int? = nil
 
     var body: some View {
         NavigationStack {
@@ -45,6 +52,28 @@ struct GroupPickerSheet: View {
             }
             .sheet(isPresented: $showCreateGroup) { createGroupSheet }
             .sheet(isPresented: $showJoinGroup) { joinGroupSheet }
+            .alert("グループ名を変更", isPresented: $showRenameGroup) {
+                TextField("グループ名", text: $renameGroupText)
+                Button("保存") {
+                    guard let id = renameGroupId else { return }
+                    let name = renameGroupText.trimmingCharacters(in: .whitespaces)
+                    guard !name.isEmpty else { return }
+                    Task { await groupVM.updateGroup(id: id, name: name) }
+                }
+                Button("キャンセル", role: .cancel) {}
+            }
+            .confirmationDialog("グループを削除しますか？", isPresented: $showDeleteGroupConfirm, titleVisibility: .visible) {
+                Button("削除する", role: .destructive) {
+                    guard let id = pendingDeleteGroupId else { return }
+                    Task { await groupVM.deleteGroup(id: id); dismiss() }
+                }
+            }
+            .confirmationDialog("グループを脱退しますか？", isPresented: $showLeaveGroupConfirm, titleVisibility: .visible) {
+                Button("脱退する", role: .destructive) {
+                    guard let id = pendingLeaveGroupId else { return }
+                    Task { await groupVM.leaveGroup(id: id); dismiss() }
+                }
+            }
         }
         .presentationDetents([.medium, .large])
         .presentationDragIndicator(.visible)
@@ -62,6 +91,25 @@ struct GroupPickerSheet: View {
                     groupRow(group)
                 }
                 .buttonStyle(.plain)
+                .contextMenu {
+                    if group.isOwner {
+                        Button {
+                            renameGroupId = group.id
+                            renameGroupText = group.name
+                            showRenameGroup = true
+                        } label: { Label("グループ名を変更", systemImage: "pencil") }
+                        Divider()
+                        Button(role: .destructive) {
+                            pendingDeleteGroupId = group.id
+                            showDeleteGroupConfirm = true
+                        } label: { Label("グループを削除", systemImage: "trash") }
+                    } else {
+                        Button(role: .destructive) {
+                            pendingLeaveGroupId = group.id
+                            showLeaveGroupConfirm = true
+                        } label: { Label("グループを脱退", systemImage: "rectangle.portrait.and.arrow.right") }
+                    }
+                }
 
                 if group.id != groupVM.groups.last?.id {
                     Divider().padding(.leading, 60)

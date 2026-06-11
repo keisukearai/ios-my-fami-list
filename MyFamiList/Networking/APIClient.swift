@@ -71,6 +71,14 @@ final class APIClient {
         return try await request("\(Self.apiBase)/auth/me/", method: "PUT", body: body)
     }
 
+    func updateList(groupId: Int, listId: Int, name: String) async throws -> ShoppingListBrief {
+        return try await request(
+            "\(Self.apiBase)/groups/\(groupId)/lists/\(listId)/",
+            method: "PUT",
+            body: ["name": name]
+        )
+    }
+
     func fetchCategories(groupId: Int) async throws -> [GroupCategory] {
         return try await request("\(Self.apiBase)/groups/\(groupId)/categories/")
     }

@@ -1,22 +1,26 @@
 import SwiftUI
 
 struct ListDetailView: View {
-    let list: ShoppingListBrief
+    @State private var list: ShoppingListBrief
     let groupId: Int
     let groupColor: Color
     let groupName: String
     let customCategories: [GroupCategory]
 
+    @Environment(\.dismiss) private var dismiss
+    @Environment(GroupViewModel.self) private var groupVM
     @State private var itemVM: ItemViewModel
     @State private var checkedExpanded = true
     @State private var editingItem: Item?
     @State private var showClearConfirm = false
+    @State private var showRenameAlert = false
+    @State private var renameText = ""
     @State private var composerText = ""
     @State private var selectedCategory = ""
     @FocusState private var composerFocused: Bool
 
     init(list: ShoppingListBrief, groupId: Int, groupColor: Color, groupName: String = "", customCategories: [GroupCategory] = []) {
-        self.list = list
+        _list = State(initialValue: list)
         self.groupId = groupId
         self.groupColor = groupColor
         self.groupName = groupName
@@ -29,14 +33,18 @@ struct ListDetailView: View {
     }
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            itemsScrollView
-            composerBar
+        VStack(spacing: 0) {
+            AppHeader(list.name, onBack: { dismiss() }, right: {
+                ellipsisMenu
+            })
+
+            ZStack(alignment: .bottom) {
+                itemsScrollView
+                composerBar
+            }
+            .background(AppTheme.bg)
         }
-        .background(AppTheme.bg)
-        .navigationTitle(list.name)
-        .navigationBarTitleDisplayMode(.large)
-        .toolbar { toolbarContent }
+        .toolbar(.hidden, for: .navigationBar)
         .sheet(item: $editingItem) { item in
             ItemDetailEditSheet(itemVM: itemVM, item: item, groupColor: groupColor, customCategories: customCategories)
         }
@@ -48,6 +56,16 @@ struct ListDetailView: View {
             Button("削除する", role: .destructive) {
                 Task { await itemVM.clearCheckedItems() }
             }
+        }
+        .alert("リスト名を変更", isPresented: $showRenameAlert) {
+            TextField("リスト名", text: $renameText)
+            Button("保存") {
+                let name = renameText.trimmingCharacters(in: .whitespaces)
+                guard !name.isEmpty else { return }
+                list.name = name
+                Task { await groupVM.updateList(list, name: name) }
+            }
+            Button("キャンセル", role: .cancel) {}
         }
         .alert("エラー", isPresented: Binding(
             get: { itemVM.errorMessage != nil },
@@ -61,82 +79,70 @@ struct ListDetailView: View {
         .onDisappear { itemVM.stop() }
     }
 
-    @ToolbarContentBuilder
-    private var toolbarContent: some ToolbarContent {
-        ToolbarItem(placement: .topBarTrailing) {
-            Menu {
-                if !itemVM.checkedItems.isEmpty {
-                    Button(role: .destructive) {
-                        showClearConfirm = true
-                    } label: {
-                        Label("買い物完了（チェック済みを削除）", systemImage: "checkmark.circle")
-                    }
-                }
+    private var ellipsisMenu: some View {
+        Menu {
+            Button {
+                renameText = list.name
+                showRenameAlert = true
             } label: {
-                ZStack {
-                    Circle()
-                        .fill(AppTheme.surface)
-                        .frame(width: 34, height: 34)
-                        .shadow(color: AppTheme.sep, radius: 4)
-                    Image(systemName: "ellipsis")
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundStyle(AppTheme.text)
+                Label("リスト名を変更", systemImage: "pencil")
+            }
+            if !itemVM.checkedItems.isEmpty {
+                Button(role: .destructive) {
+                    showClearConfirm = true
+                } label: {
+                    Label("買い物完了（チェック済みを削除）", systemImage: "checkmark.circle")
                 }
+            }
+            if groupVM.currentGroup?.isOwner == true {
+                Button(role: .destructive) {
+                    Task { await groupVM.deleteList(list); dismiss() }
+                } label: {
+                    Label("リストを削除", systemImage: "trash")
+                }
+            }
+        } label: {
+            ZStack {
+                Circle()
+                    .fill(AppTheme.surface)
+                    .frame(width: 34, height: 34)
+                    .shadow(color: AppTheme.sep, radius: 4)
+                Image(systemName: "ellipsis")
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundStyle(AppTheme.text)
             }
         }
     }
 
     private var itemsScrollView: some View {
-        ScrollView {
-            VStack(spacing: 0) {
-                if !groupName.isEmpty {
-                    HStack(spacing: 6) {
-                        Text(groupName)
-                            .font(.system(size: 13.5))
-                            .foregroundStyle(AppTheme.textSec)
-                        Circle()
-                            .fill(AppTheme.textTer)
-                            .frame(width: 3, height: 3)
-                        Text("\(itemVM.uncheckedItems.count)品 未購入")
-                            .font(.system(size: 13.5))
-                            .foregroundStyle(AppTheme.textSec)
-                        Spacer()
-                    }
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 8)
+        List {
+            if !groupName.isEmpty {
+                HStack(spacing: 6) {
+                    Text(groupName)
+                        .font(.system(size: 13.5))
+                        .foregroundStyle(AppTheme.textSec)
+                    Circle()
+                        .fill(AppTheme.textTer)
+                        .frame(width: 3, height: 3)
+                    Text("\(itemVM.uncheckedItems.count)品 未購入")
+                        .font(.system(size: 13.5))
+                        .foregroundStyle(AppTheme.textSec)
+                    Spacer()
                 }
-
-                VStack(spacing: AppTheme.secGap) {
-                    if !itemVM.uncheckedItems.isEmpty {
-                        itemsCard(items: itemVM.uncheckedItems)
-                    } else if itemVM.isLoading {
-                        ProgressView()
-                            .frame(maxWidth: .infinity)
-                            .padding(.top, 40)
-                    } else if itemVM.checkedItems.isEmpty {
-                        emptyState
-                    }
-
-                    if !itemVM.checkedItems.isEmpty {
-                        checkedSection
-                    }
-                }
-                .padding(.horizontal, 16)
-                .padding(.bottom, 140)
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
             }
-            .padding(.top, AppTheme.secGap)
-        }
-    }
 
-    private func itemsCard(items: [Item]) -> some View {
-        VStack(spacing: 0) {
-            ForEach(Array(items.enumerated()), id: \.element.id) { i, item in
+            ForEach(itemVM.uncheckedItems) { item in
                 ItemRowView(
                     item: item,
                     groupColor: groupColor,
                     onCheck: { Task { await itemVM.toggleCheck(item) } },
                     onTap: { editingItem = item }
                 )
+                .listRowInsets(EdgeInsets())
+                .listRowBackground(AppTheme.surface)
+                .listRowSeparatorTint(AppTheme.hairline)
                 .swipeActions(edge: .trailing) {
                     Button(role: .destructive) {
                         Task { await itemVM.deleteItem(item) }
@@ -144,44 +150,69 @@ struct ListDetailView: View {
                         Label("削除", systemImage: "trash")
                     }
                 }
-                if i < items.count - 1 {
-                    Divider().padding(.leading, 54)
+            }
+
+            if itemVM.uncheckedItems.isEmpty {
+                if itemVM.isLoading {
+                    ProgressView()
+                        .frame(maxWidth: .infinity)
+                        .padding(.top, 40)
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                } else if itemVM.checkedItems.isEmpty {
+                    emptyState
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                }
+            }
+
+            if !itemVM.checkedItems.isEmpty {
+                Button {
+                    withAnimation(.spring(duration: 0.3)) { checkedExpanded.toggle() }
+                } label: {
+                    HStack {
+                        Text("カゴに入れた (\(itemVM.checkedItems.count))")
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundStyle(AppTheme.textSec)
+                        Spacer()
+                        Image(systemName: "chevron.down")
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundStyle(AppTheme.textTer)
+                            .rotationEffect(.degrees(checkedExpanded ? 0 : -90))
+                            .animation(.spring(duration: 0.3), value: checkedExpanded)
+                    }
+                }
+                .buttonStyle(.plain)
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+
+                if checkedExpanded {
+                    ForEach(itemVM.checkedItems) { item in
+                        ItemRowView(
+                            item: item,
+                            groupColor: groupColor,
+                            onCheck: { Task { await itemVM.toggleCheck(item) } },
+                            onTap: { editingItem = item }
+                        )
+                        .listRowInsets(EdgeInsets())
+                        .listRowBackground(AppTheme.surface)
+                        .listRowSeparatorTint(AppTheme.hairline)
+                        .opacity(0.78)
+                        .swipeActions(edge: .trailing) {
+                            Button(role: .destructive) {
+                                Task { await itemVM.deleteItem(item) }
+                            } label: {
+                                Label("削除", systemImage: "trash")
+                            }
+                        }
+                    }
                 }
             }
         }
-        .background(AppTheme.surface)
-        .clipShape(RoundedRectangle(cornerRadius: AppTheme.rCard))
-        .cardShadow()
-    }
-
-    private var checkedSection: some View {
-        VStack(spacing: AppTheme.gap) {
-            Button {
-                withAnimation(.spring(duration: 0.3)) {
-                    checkedExpanded.toggle()
-                }
-            } label: {
-                HStack {
-                    Text("カゴに入れた (\(itemVM.checkedItems.count))")
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundStyle(AppTheme.textSec)
-                    Spacer()
-                    Image(systemName: "chevron.down")
-                        .font(.system(size: 12, weight: .medium))
-                        .foregroundStyle(AppTheme.textTer)
-                        .rotationEffect(.degrees(checkedExpanded ? 0 : -90))
-                        .animation(.spring(duration: 0.3), value: checkedExpanded)
-                }
-                .padding(.horizontal, 4)
-            }
-            .buttonStyle(.plain)
-
-            if checkedExpanded {
-                itemsCard(items: itemVM.checkedItems)
-                    .transition(.opacity.combined(with: .move(edge: .top)))
-                    .opacity(0.78)
-            }
-        }
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .background(AppTheme.bg)
+        .safeAreaInset(edge: .bottom) { Color.clear.frame(height: 140) }
     }
 
     private var emptyState: some View {

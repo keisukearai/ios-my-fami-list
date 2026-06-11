@@ -15,18 +15,22 @@ struct SettingsView: View {
     private var currentUser: AppUser { authVM.currentUser ?? user }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: AppTheme.secGap) {
-                profileCard
-                settingsGroups
-                versionText
+        VStack(spacing: 0) {
+            AppHeader("設定", sub: "無料プラン")
+
+            ScrollView {
+                VStack(spacing: AppTheme.secGap) {
+                    profileCard
+                    settingsGroups
+                    versionText
+                }
+                .padding(.horizontal, 16)
+                .padding(.top, 16)
+                .padding(.bottom, 40)
             }
-            .padding(.horizontal, 16)
-            .padding(.top, 16)
-            .padding(.bottom, 40)
+            .background(AppTheme.bg)
         }
-        .background(AppTheme.bg)
-        .navigationTitle("設定")
+        .toolbar(.hidden, for: .navigationBar)
         .task {
             if let interval = try? await APIClient.shared.getNotificationInterval() {
                 notificationInterval = interval
@@ -86,6 +90,7 @@ struct SettingsView: View {
 
     private func intervalLabel(_ minutes: Int) -> String {
         switch minutes {
+        case 0:  return "なし"
         case 5:  return "5分"
         case 15: return "15分"
         case 30: return "30分"
@@ -105,12 +110,6 @@ struct SettingsView: View {
     private var settingsGroups: some View {
         VStack(spacing: AppTheme.secGap) {
             settingsCard {
-                settingsRow(icon: "bell.fill", iconColor: Color(hex: "#5690C9"), label: "プッシュ通知") {
-                    Toggle("", isOn: .constant(true))
-                        .tint(AppTheme.primary)
-                        .labelsHidden()
-                }
-                Divider().padding(.leading, 58)
                 settingsRow(icon: "clock.arrow.circlepath", iconColor: Color(hex: "#E0A03A"), label: "通知間隔") {
                     Text(intervalLabel(notificationInterval))
                         .font(.system(size: 14))
@@ -122,7 +121,7 @@ struct SettingsView: View {
                 .onTapGesture { showIntervalPicker = true }
             }
             .confirmationDialog("通知間隔", isPresented: $showIntervalPicker, titleVisibility: .visible) {
-                ForEach([5, 15, 30, 60], id: \.self) { minutes in
+                ForEach([0, 5, 15, 30, 60], id: \.self) { minutes in
                     Button(intervalLabel(minutes)) {
                         notificationInterval = minutes
                         Task { try? await APIClient.shared.updateNotificationInterval(minutes) }

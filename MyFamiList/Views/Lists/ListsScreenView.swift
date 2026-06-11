@@ -8,23 +8,32 @@ struct ListsScreenView: View {
     @State private var newListName = ""
 
     var body: some View {
-        Group {
-            if groupVM.isLoading && groupVM.groups.isEmpty {
-                ProgressView()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(AppTheme.bg)
-            } else if groupVM.groups.isEmpty {
-                noGroupsView
-            } else if let group = groupVM.currentGroup {
-                mainContent(group: group)
-            } else {
-                ProgressView()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(AppTheme.bg)
+        VStack(spacing: 0) {
+            AppHeader("リスト") {
+                groupPickerPill
+            } right: {
+                memberAvatarStack
+                    .onTapGesture { onGroupPickerTap() }
             }
+
+            Group {
+                if groupVM.isLoading && groupVM.groups.isEmpty {
+                    ProgressView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(AppTheme.bg)
+                } else if groupVM.groups.isEmpty {
+                    noGroupsView
+                } else if let group = groupVM.currentGroup {
+                    mainContent(group: group)
+                } else {
+                    ProgressView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(AppTheme.bg)
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .navigationTitle("リスト")
-        .toolbar { toolbarContent }
+        .toolbar(.hidden, for: .navigationBar)
         .sheet(isPresented: $showAddSheet) { addListSheet }
         .navigationDestination(for: ShoppingListBrief.self) { list in
             let group = groupVM.currentGroup
@@ -39,36 +48,38 @@ struct ListsScreenView: View {
     }
 
     private func mainContent(group: FamilyGroup) -> some View {
-        ScrollView {
-            VStack(spacing: AppTheme.gap) {
-                if group.lists.isEmpty {
-                    emptyListsView
-                } else {
-                    ForEach(group.lists) { list in
-                        NavigationLink(value: list) {
-                            ListCard(list: list, groupColor: AppTheme.primary)
+        List {
+            if group.lists.isEmpty {
+                emptyListsView
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+            } else {
+                ForEach(group.lists) { list in
+                    NavigationLink(value: list) {
+                        ListCard(list: list, groupColor: AppTheme.primary)
+                    }
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: AppTheme.gap, trailing: 16))
+                    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                        if group.isOwner {
+                            Button(role: .destructive) {
+                                Task { await groupVM.deleteList(list) }
+                            } label: {
+                                Label("削除", systemImage: "trash")
+                            }
                         }
-                        .buttonStyle(.plain)
                     }
                 }
-                addListButton
             }
-            .padding(.horizontal, 16)
-            .padding(.top, 8)
-            .padding(.bottom, 28)
+            addListButton
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+                .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
         }
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
         .background(AppTheme.bg)
-    }
-
-    @ToolbarContentBuilder
-    private var toolbarContent: some ToolbarContent {
-        ToolbarItem(placement: .topBarLeading) {
-            groupPickerPill
-        }
-        ToolbarItem(placement: .topBarTrailing) {
-            memberAvatarStack
-                .onTapGesture { onGroupPickerTap() }
-        }
     }
 
     private var groupPickerPill: some View {
