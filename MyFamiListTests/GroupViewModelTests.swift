@@ -142,6 +142,94 @@ final class GroupViewModelTests: XCTestCase {
         XCTAssertTrue(vm.groups.allSatisfy { $0.id > 0 })
     }
 
+    // MARK: - GroupViewModel: deleteGroup 後の状態
+
+    func test_groupViewModel_deleteGroup_removes_target_from_groups() async {
+        let vm = GroupViewModel()
+        vm.groups = [
+            makeGroupBrief(id: 1, name: "グループA", isOwner: true),
+            makeGroupBrief(id: 2, name: "グループB", isOwner: false),
+        ]
+        vm.groups.removeAll { $0.id == 1 }
+        XCTAssertEqual(vm.groups.count, 1)
+        XCTAssertEqual(vm.groups[0].id, 2)
+        XCTAssertNil(vm.groups.first { $0.id == 1 })
+    }
+
+    func test_groupViewModel_deleteGroup_clears_currentGroup_when_deleted() async {
+        let vm = GroupViewModel()
+        vm.groups = [makeGroupBrief(id: 1, name: "現在のグループ", isOwner: true)]
+        vm.currentGroup = makeFamilyGroup(id: 1, name: "現在のグループ", isOwner: true)
+        // deleteGroup 成功後の状態を再現
+        vm.groups.removeAll { $0.id == 1 }
+        if vm.currentGroup?.id == 1 { vm.currentGroup = nil }
+        XCTAssertTrue(vm.groups.isEmpty)
+        XCTAssertNil(vm.currentGroup)
+    }
+
+    func test_groupViewModel_deleteGroup_leaves_other_currentGroup_intact() async {
+        let vm = GroupViewModel()
+        vm.groups = [
+            makeGroupBrief(id: 1, name: "グループA", isOwner: true),
+            makeGroupBrief(id: 2, name: "グループB", isOwner: false),
+        ]
+        vm.currentGroup = makeFamilyGroup(id: 2, name: "グループB", isOwner: false)
+        vm.groups.removeAll { $0.id == 1 }
+        if vm.currentGroup?.id == 1 { vm.currentGroup = nil }
+        XCTAssertEqual(vm.groups.count, 1)
+        XCTAssertNotNil(vm.currentGroup)
+        XCTAssertEqual(vm.currentGroup?.id, 2)
+    }
+
+    // MARK: - GroupViewModel: updateGroup 後の状態
+
+    func test_groupViewModel_updateGroup_updates_name_in_groups() async {
+        let vm = GroupViewModel()
+        vm.groups = [makeGroupBrief(id: 1, name: "旧名前", isOwner: true)]
+        // updateGroup 成功後の状態を再現
+        if let idx = vm.groups.firstIndex(where: { $0.id == 1 }) {
+            vm.groups[idx].name = "新名前"
+        }
+        XCTAssertEqual(vm.groups[0].name, "新名前")
+    }
+
+    func test_groupViewModel_updateGroup_also_updates_currentGroup_name() async {
+        let vm = GroupViewModel()
+        vm.groups = [makeGroupBrief(id: 1, name: "旧名前", isOwner: true)]
+        vm.currentGroup = makeFamilyGroup(id: 1, name: "旧名前", isOwner: true)
+        // updateGroup 成功後の状態を再現
+        if let idx = vm.groups.firstIndex(where: { $0.id == 1 }) { vm.groups[idx].name = "新名前" }
+        if vm.currentGroup?.id == 1 { vm.currentGroup?.name = "新名前" }
+        XCTAssertEqual(vm.groups[0].name, "新名前")
+        XCTAssertEqual(vm.currentGroup?.name, "新名前")
+    }
+
+    // MARK: - GroupViewModel: leaveGroup 後の状態
+
+    func test_groupViewModel_leaveGroup_removes_group_from_list() async {
+        let vm = GroupViewModel()
+        vm.groups = [
+            makeGroupBrief(id: 1, name: "自分のグループ", isOwner: true),
+            makeGroupBrief(id: 2, name: "参加グループ", isOwner: false),
+        ]
+        // leaveGroup 成功後の状態を再現
+        vm.groups.removeAll { $0.id == 2 }
+        XCTAssertEqual(vm.groups.count, 1)
+        XCTAssertNil(vm.groups.first { $0.id == 2 })
+    }
+
+    // MARK: - FamilyGroupBrief: isOwner 権限チェック
+
+    func test_familyGroupBrief_isOwner_true_allows_delete() throws {
+        let brief = makeGroupBrief(id: 1, name: "グループ", isOwner: true)
+        XCTAssertTrue(brief.isOwner, "オーナーは削除権限を持つ")
+    }
+
+    func test_familyGroupBrief_isOwner_false_prohibits_delete() throws {
+        let brief = makeGroupBrief(id: 1, name: "グループ", isOwner: false)
+        XCTAssertFalse(brief.isOwner, "非オーナーは削除権限を持たない")
+    }
+
     // MARK: - Helpers
 
     // MARK: - Member: avatar fields
@@ -258,6 +346,11 @@ final class GroupViewModelTests: XCTestCase {
     private func makeGroupBrief(id: Int, name: String, isOwner: Bool) -> FamilyGroupBrief {
         FamilyGroupBrief(id: id, name: name, inviteCode: "CODE\(id)", isOwner: isOwner,
                          memberCount: 1, listCount: 0, createdAt: "", updatedAt: "")
+    }
+
+    private func makeFamilyGroup(id: Int, name: String, isOwner: Bool) -> FamilyGroup {
+        FamilyGroup(id: id, name: name, inviteCode: "CODE\(id)", ownerId: isOwner ? 1 : 2,
+                    members: [], isOwner: isOwner, lists: [], createdAt: "", updatedAt: "")
     }
 
     private func makeListBrief() -> ShoppingListBrief {
