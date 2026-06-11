@@ -29,3 +29,6 @@ GoogleService-Info.plist
 .DS_Store
 .AppleDouble
 .LSOverride
+
+# Design files (not committed to repo)
+MyFamiList_design/
