@@ -55,7 +55,8 @@ struct ListsScreenView: View {
                     .listRowSeparator(.hidden)
             } else {
                 ForEach(group.lists) { list in
-                    NavigationLink(value: list) {
+                    ZStack {
+                        NavigationLink(value: list) { EmptyView() }.opacity(0)
                         ListCard(list: list, groupColor: AppTheme.primary)
                     }
                     .listRowBackground(Color.clear)
@@ -80,6 +81,7 @@ struct ListsScreenView: View {
         .listStyle(.plain)
         .scrollContentBackground(.hidden)
         .background(AppTheme.bg)
+        .contentMargins(.top, 12, for: .scrollContent)
     }
 
     private var groupPickerPill: some View {

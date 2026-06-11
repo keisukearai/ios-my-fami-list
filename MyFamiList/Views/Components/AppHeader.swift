@@ -22,55 +22,57 @@ struct AppHeader<Top: View, Right: View>: View {
     }
 
     var body: some View {
-        ZStack(alignment: .topTrailing) {
-            Circle()
-                .fill(AppTheme.primary.opacity(0.08))
-                .frame(width: 210, height: 210)
-                .offset(x: 32, y: -60)
-
-            VStack(alignment: .leading, spacing: 10) {
-                top
-                HStack(alignment: .bottom, spacing: 0) {
-                    HStack(alignment: .center, spacing: 6) {
-                        if let onBack {
-                            Button(action: onBack) {
-                                Image(systemName: "chevron.left")
-                                    .font(.system(size: 22, weight: .semibold))
-                                    .foregroundStyle(AppTheme.primary)
-                            }
-                            .padding(.trailing, 2)
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(alignment: .bottom, spacing: 0) {
+                HStack(alignment: .center, spacing: 6) {
+                    if let onBack {
+                        Button(action: onBack) {
+                            Image(systemName: "chevron.left")
+                                .font(.system(size: 20, weight: .semibold))
+                                .foregroundStyle(AppTheme.primary)
                         }
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(title)
-                                .font(.system(size: 32, weight: .heavy))
-                                .foregroundStyle(AppTheme.text)
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.75)
-                            if let sub {
-                                Text(sub)
-                                    .font(.system(size: 13.5, weight: .medium))
-                                    .foregroundStyle(AppTheme.textSec)
-                            }
+                        .padding(.trailing, 2)
+                    }
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(title)
+                            .font(.system(size: 26, weight: .heavy))
+                            .foregroundStyle(AppTheme.text)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.75)
+                        if let sub {
+                            Text(sub)
+                                .font(.system(size: 13, weight: .medium))
+                                .foregroundStyle(AppTheme.textSec)
                         }
                     }
-                    Spacer(minLength: 12)
-                    right.padding(.bottom, 4)
                 }
-                .frame(minHeight: 48)
+                Spacer(minLength: 12)
+                right.padding(.bottom, 2)
             }
-            .padding(.top, 16)
-            .padding(.horizontal, 20)
-            .padding(.bottom, 16)
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(minHeight: 40)
+            ZStack(alignment: .leading) {
+                Color.clear.frame(height: 34)
+                top
+            }
         }
-        .clipped()
+        .padding(.top, 10)
+        .padding(.horizontal, 20)
+        .padding(.bottom, 10)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .background {
-            AppTheme.soft
-                .clipShape(UnevenRoundedRectangle(
-                    bottomLeadingRadius: AppTheme.rCard + 10,
-                    bottomTrailingRadius: AppTheme.rCard + 10
-                ))
-                .ignoresSafeArea(edges: .top)
+            ZStack(alignment: .topTrailing) {
+                AppTheme.soft
+                    .clipShape(UnevenRoundedRectangle(
+                        bottomLeadingRadius: AppTheme.rCard + 10,
+                        bottomTrailingRadius: AppTheme.rCard + 10
+                    ))
+                    .ignoresSafeArea(edges: .top)
+                Circle()
+                    .fill(AppTheme.primary.opacity(0.08))
+                    .frame(width: 210, height: 210)
+                    .offset(x: 32, y: -60)
+            }
+            .clipped()
         }
     }
 }
