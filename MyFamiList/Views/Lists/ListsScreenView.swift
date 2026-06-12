@@ -41,8 +41,7 @@ struct ListsScreenView: View {
                 list: list,
                 groupId: group?.id ?? 0,
                 groupColor: AppTheme.primary,
-                groupName: group?.name ?? "",
-                customCategories: groupVM.customCategories
+                groupName: group?.name ?? ""
             )
         }
     }

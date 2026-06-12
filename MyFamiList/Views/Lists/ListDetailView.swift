@@ -5,7 +5,6 @@ struct ListDetailView: View {
     let groupId: Int
     let groupColor: Color
     let groupName: String
-    let customCategories: [GroupCategory]
 
     @Environment(\.dismiss) private var dismiss
     @Environment(GroupViewModel.self) private var groupVM
@@ -19,17 +18,16 @@ struct ListDetailView: View {
     @State private var selectedCategory = ""
     @FocusState private var composerFocused: Bool
 
-    init(list: ShoppingListBrief, groupId: Int, groupColor: Color, groupName: String = "", customCategories: [GroupCategory] = []) {
+    init(list: ShoppingListBrief, groupId: Int, groupColor: Color, groupName: String = "") {
         _list = State(initialValue: list)
         self.groupId = groupId
         self.groupColor = groupColor
         self.groupName = groupName
-        self.customCategories = customCategories
         _itemVM = State(initialValue: ItemViewModel(groupId: groupId, listId: list.id))
     }
 
     var allCategories: [(name: String, color: Color)] {
-        AppTheme.categories + customCategories.map { (name: $0.name, color: Color(hex: $0.color)) }
+        AppTheme.categories + groupVM.customCategories.map { (name: $0.name, color: Color(hex: $0.color)) }
     }
 
     var body: some View {
@@ -46,7 +44,7 @@ struct ListDetailView: View {
         }
         .toolbar(.hidden, for: .navigationBar)
         .sheet(item: $editingItem) { item in
-            ItemDetailEditSheet(itemVM: itemVM, item: item, groupColor: groupColor, customCategories: customCategories)
+            ItemDetailEditSheet(itemVM: itemVM, item: item, groupColor: groupColor, customCategories: groupVM.customCategories)
         }
         .confirmationDialog(
             "チェック済みをすべて削除しますか？",
@@ -62,8 +60,12 @@ struct ListDetailView: View {
             Button("保存") {
                 let name = renameText.trimmingCharacters(in: .whitespaces)
                 guard !name.isEmpty else { return }
-                list.name = name
-                Task { await groupVM.updateList(list, name: name) }
+                Task {
+                    await groupVM.updateList(list, name: name)
+                    if let updated = groupVM.currentGroup?.lists.first(where: { $0.id == list.id }) {
+                        list = updated
+                    }
+                }
             }
             Button("キャンセル", role: .cancel) {}
         }

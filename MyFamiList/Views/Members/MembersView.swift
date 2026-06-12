@@ -26,6 +26,14 @@ struct MembersView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .toolbar(.hidden, for: .navigationBar)
+        .alert("エラー", isPresented: Binding(
+            get: { groupVM.errorMessage != nil },
+            set: { if !$0 { groupVM.errorMessage = nil } }
+        )) {
+            Button("OK") {}
+        } message: {
+            Text(groupVM.errorMessage ?? "")
+        }
         .sheet(isPresented: $showInvite) {
             if let group {
                 InviteCodeSheet(group: group)

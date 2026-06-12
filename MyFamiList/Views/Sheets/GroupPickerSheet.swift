@@ -77,6 +77,14 @@ struct GroupPickerSheet: View {
         }
         .presentationDetents([.medium, .large])
         .presentationDragIndicator(.visible)
+        .alert("エラー", isPresented: Binding(
+            get: { groupVM.errorMessage != nil },
+            set: { if !$0 { groupVM.errorMessage = nil } }
+        )) {
+            Button("OK") {}
+        } message: {
+            Text(groupVM.errorMessage ?? "")
+        }
     }
 
     private var groupListCard: some View {
