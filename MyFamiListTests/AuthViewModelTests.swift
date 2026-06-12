@@ -38,7 +38,6 @@ final class AuthViewModelTests: XCTestCase {
         XCTAssertEqual(user.displayName, "田中太郎")
         XCTAssertEqual(user.avatarEmoji, "😀")
         XCTAssertEqual(user.avatarColor, "#16A368")
-        XCTAssertNil(user.deviceToken)
     }
 
     func test_appUser_decodes_with_avatar_photo() throws {
@@ -119,6 +118,6 @@ final class AuthViewModelTests: XCTestCase {
     private func makeUser(id: Int) -> AppUser {
         AppUser(id: id, uid: "uid_\(id)", provider: "apple",
                 displayName: "テストユーザー", avatarEmoji: "😀",
-                avatarColor: "", avatarPhoto: "", deviceToken: nil)
+                avatarColor: "", avatarPhoto: "")
     }
 }

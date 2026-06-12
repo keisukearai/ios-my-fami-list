@@ -325,37 +325,7 @@ final class GroupViewModelTests: XCTestCase {
         XCTAssertEqual(vm.customCategories[1].color, "#00FF00")
     }
 
-    // MARK: - ListDetailView: allCategories merging
-
-    func test_listDetailView_allCategories_contains_only_defaults_when_no_custom() {
-        let view = ListDetailView(
-            list: makeListBrief(),
-            groupId: 1,
-            groupColor: .green,
-            customCategories: []
-        )
-        XCTAssertEqual(view.allCategories.count, AppTheme.categories.count)
-        XCTAssertEqual(view.allCategories.map(\.name), AppTheme.categories.map(\.name))
-    }
-
-    func test_listDetailView_allCategories_appends_custom_after_defaults() {
-        let customs = [
-            GroupCategory(id: 1, name: "マイカテゴリ", color: "#FF0000"),
-            GroupCategory(id: 2, name: "テストカテゴリ", color: "#0000FF"),
-        ]
-        let view = ListDetailView(
-            list: makeListBrief(),
-            groupId: 1,
-            groupColor: .green,
-            customCategories: customs
-        )
-        let names = view.allCategories.map(\.name)
-        let defaultCount = AppTheme.categories.count
-        XCTAssertEqual(view.allCategories.count, defaultCount + 2)
-        XCTAssertEqual(Array(names.prefix(defaultCount)), AppTheme.categories.map(\.name))
-        XCTAssertTrue(names.contains("マイカテゴリ"))
-        XCTAssertTrue(names.contains("テストカテゴリ"))
-    }
+    // MARK: - ItemDetailEditSheet: allCategories merging
 
     func test_itemDetailEditSheet_allCategories_appends_custom() {
         let customs = [GroupCategory(id: 1, name: "カスタム", color: "#123456")]
