@@ -110,6 +110,7 @@ struct ListsScreenView: View {
 
     private var memberAvatarStack: some View {
         let members = groupVM.currentGroup?.members ?? []
+        let overflow = members.count - 4
         return HStack(spacing: -8) {
             ForEach(Array(members.prefix(4).enumerated()), id: \.offset) { i, member in
                 AvatarView(
@@ -121,6 +122,17 @@ struct ListsScreenView: View {
                 )
                 .overlay(Circle().stroke(AppTheme.bg, lineWidth: 2))
                 .zIndex(Double(4 - i))
+            }
+            if overflow > 0 {
+                ZStack {
+                    Circle().fill(AppTheme.surface2)
+                    Text("+\(overflow)")
+                        .font(.system(size: 10, weight: .semibold))
+                        .foregroundStyle(AppTheme.textSec)
+                }
+                .frame(width: 28, height: 28)
+                .overlay(Circle().stroke(AppTheme.bg, lineWidth: 2))
+                .zIndex(0)
             }
         }
     }

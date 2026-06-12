@@ -39,7 +39,12 @@ final class GroupViewModel {
         do {
             groups = try await api.request("\(APIClient.apiBase)/groups/")
             if let id = currentGroup?.id {
-                currentGroup = try await api.request("\(APIClient.apiBase)/groups/\(id)/")
+                if groups.contains(where: { $0.id == id }) {
+                    currentGroup = try await api.request("\(APIClient.apiBase)/groups/\(id)/")
+                } else {
+                    // キックされたか、グループが消えた場合は先頭グループへ切り替え
+                    currentGroup = groups.isEmpty ? nil : try await api.request("\(APIClient.apiBase)/groups/\(groups[0].id)/")
+                }
             } else if let first = groups.first {
                 currentGroup = try await api.request("\(APIClient.apiBase)/groups/\(first.id)/")
             }
@@ -150,6 +155,19 @@ final class GroupViewModel {
             try await api.requestVoid("\(APIClient.apiBase)/groups/\(id)/", method: "DELETE")
             groups.removeAll { $0.id == id }
             if currentGroup?.id == id { currentGroup = nil; await fetchAll() }
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    func kickMember(groupId: Int, userId: Int) async {
+        do {
+            try await api.requestVoid(
+                "\(APIClient.apiBase)/groups/\(groupId)/kick/",
+                method: "POST",
+                body: ["user_id": userId]
+            )
+            currentGroup?.members.removeAll { $0.id == userId }
         } catch {
             errorMessage = error.localizedDescription
         }

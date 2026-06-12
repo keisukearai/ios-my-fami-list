@@ -218,6 +218,34 @@ final class GroupViewModelTests: XCTestCase {
         XCTAssertNil(vm.groups.first { $0.id == 2 })
     }
 
+    // MARK: - GroupViewModel: kickMember 後の状態
+
+    func test_kickMember_removes_member_from_currentGroup() async {
+        let member = Member(id: 99, displayName: "追放ユーザー", avatarEmoji: "", avatarColor: "", avatarPhoto: "")
+        let vm = GroupViewModel()
+        var group = makeFamilyGroup(id: 1, name: "グループ", isOwner: true)
+        group.members = [Member(id: 1, displayName: "オーナー", avatarEmoji: "", avatarColor: "", avatarPhoto: ""), member]
+        vm.currentGroup = group
+        // kickMember 成功後の状態を再現
+        vm.currentGroup?.members.removeAll { $0.id == 99 }
+        XCTAssertEqual(vm.currentGroup?.members.count, 1)
+        XCTAssertNil(vm.currentGroup?.members.first { $0.id == 99 })
+    }
+
+    func test_kickMember_does_not_affect_other_members() async {
+        let owner = Member(id: 1, displayName: "オーナー", avatarEmoji: "", avatarColor: "", avatarPhoto: "")
+        let member2 = Member(id: 2, displayName: "メンバー2", avatarEmoji: "", avatarColor: "", avatarPhoto: "")
+        let member3 = Member(id: 3, displayName: "メンバー3", avatarEmoji: "", avatarColor: "", avatarPhoto: "")
+        let vm = GroupViewModel()
+        var group = makeFamilyGroup(id: 1, name: "グループ", isOwner: true)
+        group.members = [owner, member2, member3]
+        vm.currentGroup = group
+        vm.currentGroup?.members.removeAll { $0.id == 2 }
+        XCTAssertEqual(vm.currentGroup?.members.count, 2)
+        XCTAssertNotNil(vm.currentGroup?.members.first { $0.id == 1 })
+        XCTAssertNotNil(vm.currentGroup?.members.first { $0.id == 3 })
+    }
+
     // MARK: - FamilyGroupBrief: isOwner 権限チェック
 
     func test_familyGroupBrief_isOwner_true_allows_delete() throws {

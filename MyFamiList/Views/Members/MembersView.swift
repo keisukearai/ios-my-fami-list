@@ -3,7 +3,9 @@ import SwiftUI
 struct MembersView: View {
     let group: FamilyGroup?
 
+    @Environment(GroupViewModel.self) private var groupVM
     @State private var showInvite = false
+    @State private var kickTargetMember: Member?
 
     private var headerSub: String? {
         guard let group else { return nil }
@@ -29,6 +31,18 @@ struct MembersView: View {
                 InviteCodeSheet(group: group)
             }
         }
+        .confirmationDialog(
+            "「\(kickTargetMember?.displayName ?? "")」をグループから削除しますか？",
+            isPresented: Binding(get: { kickTargetMember != nil }, set: { if !$0 { kickTargetMember = nil } }),
+            titleVisibility: .visible
+        ) {
+            Button("削除する", role: .destructive) {
+                if let member = kickTargetMember, let groupId = group?.id {
+                    Task { await groupVM.kickMember(groupId: groupId, userId: member.id) }
+                }
+                kickTargetMember = nil
+            }
+        }
     }
 
     private func mainContent(group: FamilyGroup) -> some View {
@@ -51,6 +65,15 @@ struct MembersView: View {
         VStack(spacing: 0) {
             ForEach(Array(group.members.enumerated()), id: \.element.id) { i, member in
                 memberRow(member: member, group: group)
+                    .contextMenu {
+                        if group.isOwner && member.id != group.ownerId {
+                            Button(role: .destructive) {
+                                kickTargetMember = member
+                            } label: {
+                                Label("グループから削除", systemImage: "person.fill.xmark")
+                            }
+                        }
+                    }
                 if i < group.members.count - 1 {
                     Divider().padding(.leading, 70)
                 }

@@ -116,100 +116,107 @@ struct ListDetailView: View {
 
     private var itemsScrollView: some View {
         List {
-            if !groupName.isEmpty {
-                HStack(spacing: 6) {
-                    Text(groupName)
-                        .font(.system(size: 13.5))
-                        .foregroundStyle(AppTheme.textSec)
-                    Circle()
-                        .fill(AppTheme.textTer)
-                        .frame(width: 3, height: 3)
-                    Text("\(itemVM.uncheckedItems.count)品 未購入")
-                        .font(.system(size: 13.5))
-                        .foregroundStyle(AppTheme.textSec)
-                    Spacer()
-                }
-                .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
-            }
-
-            ForEach(itemVM.uncheckedItems) { item in
-                ItemRowView(
-                    item: item,
-                    groupColor: groupColor,
-                    onCheck: { Task { await itemVM.toggleCheck(item) } },
-                    onTap: { editingItem = item }
-                )
-                .listRowInsets(EdgeInsets())
-                .listRowBackground(AppTheme.surface)
-                .listRowSeparatorTint(AppTheme.hairline)
-                .swipeActions(edge: .trailing) {
-                    Button(role: .destructive) {
-                        Task { await itemVM.deleteItem(item) }
-                    } label: {
-                        Label("削除", systemImage: "trash")
+            Section {
+                ForEach(itemVM.uncheckedItems) { item in
+                    ItemRowView(
+                        item: item,
+                        groupColor: groupColor,
+                        onCheck: { Task { await itemVM.toggleCheck(item) } },
+                        onTap: { editingItem = item }
+                    )
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(AppTheme.surface)
+                    .listRowSeparatorTint(AppTheme.hairline)
+                    .swipeActions(edge: .trailing) {
+                        Button(role: .destructive) {
+                            Task { await itemVM.deleteItem(item) }
+                        } label: {
+                            Label("削除", systemImage: "trash")
+                        }
                     }
                 }
-            }
 
-            if itemVM.uncheckedItems.isEmpty {
-                if itemVM.isLoading {
-                    ProgressView()
-                        .frame(maxWidth: .infinity)
-                        .padding(.top, 40)
-                        .listRowBackground(Color.clear)
-                        .listRowSeparator(.hidden)
-                } else if itemVM.checkedItems.isEmpty {
-                    emptyState
-                        .listRowBackground(Color.clear)
-                        .listRowSeparator(.hidden)
+                if itemVM.uncheckedItems.isEmpty {
+                    if itemVM.isLoading {
+                        ProgressView()
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 40)
+                            .listRowBackground(AppTheme.surface)
+                            .listRowSeparator(.hidden)
+                    } else if itemVM.checkedItems.isEmpty {
+                        emptyState
+                            .listRowBackground(AppTheme.surface)
+                            .listRowSeparator(.hidden)
+                    }
+                }
+            } header: {
+                if !groupName.isEmpty {
+                    HStack(spacing: 6) {
+                        Text(groupName)
+                            .font(.system(size: 13.5))
+                            .foregroundStyle(AppTheme.textSec)
+                        Circle()
+                            .fill(AppTheme.textTer)
+                            .frame(width: 3, height: 3)
+                        Text("\(itemVM.uncheckedItems.count)品 未購入")
+                            .font(.system(size: 13.5))
+                            .foregroundStyle(AppTheme.textSec)
+                        Spacer()
+                    }
+                    .textCase(nil)
+                    .padding(.horizontal, 4)
+                    .padding(.bottom, 4)
                 }
             }
 
             if !itemVM.checkedItems.isEmpty {
-                Button {
-                    withAnimation(.spring(duration: 0.3)) { checkedExpanded.toggle() }
-                } label: {
-                    HStack {
-                        Text("カゴに入れた (\(itemVM.checkedItems.count))")
-                            .font(.system(size: 14, weight: .medium))
-                            .foregroundStyle(AppTheme.textSec)
-                        Spacer()
-                        Image(systemName: "chevron.down")
-                            .font(.system(size: 12, weight: .medium))
-                            .foregroundStyle(AppTheme.textTer)
-                            .rotationEffect(.degrees(checkedExpanded ? 0 : -90))
-                            .animation(.spring(duration: 0.3), value: checkedExpanded)
-                    }
-                }
-                .buttonStyle(.plain)
-                .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
-
-                if checkedExpanded {
-                    ForEach(itemVM.checkedItems) { item in
-                        ItemRowView(
-                            item: item,
-                            groupColor: groupColor,
-                            onCheck: { Task { await itemVM.toggleCheck(item) } },
-                            onTap: { editingItem = item }
-                        )
-                        .listRowInsets(EdgeInsets())
-                        .listRowBackground(AppTheme.surface)
-                        .listRowSeparatorTint(AppTheme.hairline)
-                        .opacity(0.78)
-                        .swipeActions(edge: .trailing) {
-                            Button(role: .destructive) {
-                                Task { await itemVM.deleteItem(item) }
-                            } label: {
-                                Label("削除", systemImage: "trash")
+                Section {
+                    if checkedExpanded {
+                        ForEach(itemVM.checkedItems) { item in
+                            ItemRowView(
+                                item: item,
+                                groupColor: groupColor,
+                                onCheck: { Task { await itemVM.toggleCheck(item) } },
+                                onTap: { editingItem = item }
+                            )
+                            .listRowInsets(EdgeInsets())
+                            .listRowBackground(AppTheme.surface)
+                            .listRowSeparatorTint(AppTheme.hairline)
+                            .opacity(0.78)
+                            .swipeActions(edge: .trailing) {
+                                Button(role: .destructive) {
+                                    Task { await itemVM.deleteItem(item) }
+                                } label: {
+                                    Label("削除", systemImage: "trash")
+                                }
                             }
                         }
                     }
+                } header: {
+                    Button {
+                        withAnimation(.spring(duration: 0.3)) { checkedExpanded.toggle() }
+                    } label: {
+                        HStack {
+                            Text("カゴに入れた (\(itemVM.checkedItems.count))")
+                                .font(.system(size: 14, weight: .medium))
+                                .foregroundStyle(AppTheme.textSec)
+                            Spacer()
+                            Image(systemName: "chevron.down")
+                                .font(.system(size: 12, weight: .medium))
+                                .foregroundStyle(AppTheme.textTer)
+                                .rotationEffect(.degrees(checkedExpanded ? 0 : -90))
+                                .animation(.spring(duration: 0.3), value: checkedExpanded)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    .textCase(nil)
+                    .padding(.horizontal, 4)
+                    .padding(.bottom, 4)
                 }
             }
         }
-        .listStyle(.plain)
+        .listStyle(.insetGrouped)
+        .listSectionSpacing(AppTheme.gap)
         .scrollContentBackground(.hidden)
         .background(AppTheme.bg)
         .safeAreaInset(edge: .bottom) { Color.clear.frame(height: 140) }
