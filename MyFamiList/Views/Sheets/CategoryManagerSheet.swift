@@ -42,11 +42,14 @@ struct CategoryManagerSheet: View {
             .sheet(item: $editTarget) { cat in
                 CategoryFormSheet(groupVM: groupVM, editing: cat)
             }
-            .alert("エラー", isPresented: .constant(errorMessage != nil), actions: {
-                Button("OK") { errorMessage = nil }
-            }, message: {
+            .alert("エラー", isPresented: Binding(
+                get: { errorMessage != nil },
+                set: { if !$0 { errorMessage = nil } }
+            )) {
+                Button("OK") {}
+            } message: {
                 Text(errorMessage ?? "")
-            })
+            }
         }
         .presentationDetents([.large])
     }
@@ -206,11 +209,14 @@ struct CategoryFormSheet: View {
                         .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty || isSaving)
                 }
             }
-            .alert("エラー", isPresented: .constant(errorMessage != nil), actions: {
-                Button("OK") { errorMessage = nil }
-            }, message: {
+            .alert("エラー", isPresented: Binding(
+                get: { errorMessage != nil },
+                set: { if !$0 { errorMessage = nil } }
+            )) {
+                Button("OK") {}
+            } message: {
                 Text(errorMessage ?? "")
-            })
+            }
         }
         .presentationDetents([.medium])
         .onAppear {
