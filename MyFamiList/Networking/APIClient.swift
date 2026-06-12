@@ -43,6 +43,12 @@ final class APIClient {
 
     var accessToken: String?  { keychain.get("access_token") }
 
+    func regenerateInviteCode(groupId: Int) async throws -> String {
+        struct Resp: Decodable { let inviteCode: String }
+        let resp: Resp = try await request("\(Self.apiBase)/groups/\(groupId)/invite/regenerate/", method: "POST")
+        return resp.inviteCode
+    }
+
     func deleteAccount() async throws {
         var body: [String: Any] = [:]
         if let token = refreshToken { body["refresh"] = token }

@@ -8,5 +8,4 @@ struct AppUser: Codable, Identifiable {
     var avatarEmoji: String
     var avatarColor: String
     var avatarPhoto: String
-    var deviceToken: String?
 }

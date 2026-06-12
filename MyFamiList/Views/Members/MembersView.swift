@@ -159,6 +159,13 @@ struct InviteCodeSheet: View {
     let group: FamilyGroup
     @Environment(\.dismiss) private var dismiss
     @State private var copied = false
+    @State private var currentCode: String
+    @State private var isRegenerating = false
+
+    init(group: FamilyGroup) {
+        self.group = group
+        _currentCode = State(initialValue: group.inviteCode)
+    }
 
     var body: some View {
         NavigationStack {
@@ -168,7 +175,7 @@ struct InviteCodeSheet: View {
                     .foregroundStyle(AppTheme.textSec)
                     .multilineTextAlignment(.center)
 
-                Text(group.inviteCode)
+                Text(currentCode)
                     .font(.system(size: 34, weight: .bold, design: .monospaced))
                     .foregroundStyle(AppTheme.primary)
                     .padding(.vertical, 24)
@@ -185,6 +192,29 @@ struct InviteCodeSheet: View {
                         .background(AppTheme.primary)
                         .foregroundStyle(.white)
                         .clipShape(RoundedRectangle(cornerRadius: AppTheme.rBtn))
+                }
+
+                if group.isOwner {
+                    Button {
+                        Task {
+                            isRegenerating = true
+                            if let newCode = try? await APIClient.shared.regenerateInviteCode(groupId: group.id) {
+                                currentCode = newCode
+            }
+                            isRegenerating = false
+                        }
+                    } label: {
+                        Group {
+                            if isRegenerating {
+                                ProgressView().tint(AppTheme.textSec)
+                            } else {
+                                Label("招待コードを再生成", systemImage: "arrow.clockwise")
+                                    .font(.system(size: 14))
+                                    .foregroundStyle(AppTheme.textSec)
+                            }
+                        }
+                    }
+                    .disabled(isRegenerating)
                 }
 
                 Text("アプリをインストールした相手にこのコードを入力してもらうとグループに参加できます。")
@@ -208,7 +238,7 @@ struct InviteCodeSheet: View {
     }
 
     private func copyCode() {
-        UIPasteboard.general.string = group.inviteCode
+        UIPasteboard.general.string = currentCode
         copied = true
         Task {
             try? await Task.sleep(for: .seconds(2))
