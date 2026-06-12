@@ -43,6 +43,12 @@ final class APIClient {
 
     var accessToken: String?  { keychain.get("access_token") }
 
+    func deleteAccount() async throws {
+        var body: [String: Any] = [:]
+        if let token = refreshToken { body["refresh"] = token }
+        try await requestVoid("\(Self.apiBase)/auth/delete-account/", method: "DELETE", body: body.isEmpty ? nil : body)
+    }
+
     func registerDeviceToken(_ token: String) async {
         try? await requestVoid("\(Self.apiBase)/auth/device-token/", method: "POST", body: ["device_token": token])
     }

@@ -33,6 +33,18 @@ final class AuthViewModel: NSObject {
         currentUser = nil
     }
 
+    func deleteAccount() async {
+        isLoading = true
+        defer { isLoading = false }
+        do {
+            try await api.deleteAccount()
+            api.clearTokens()
+            currentUser = nil
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
     // MARK: - Apple Sign In
 
     func prepareAppleSignIn() -> String {

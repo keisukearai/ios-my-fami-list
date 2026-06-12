@@ -6,13 +6,23 @@ struct SettingsView: View {
     let onSignOut: () -> Void
 
     @Environment(AuthViewModel.self) private var authVM
+    @Environment(\.openURL) private var openURL
     @State private var showSignOutConfirm = false
+    @State private var showDeleteAccountConfirm = false
     @State private var showEditProfile = false
     @State private var showCategoryManager = false
     @State private var notificationInterval: Int = 15
     @State private var showIntervalPicker = false
 
     private var currentUser: AppUser { authVM.currentUser ?? user }
+
+    private var deleteAccountWarning: String {
+        let ownedCount = groupVM.groups.filter { $0.isOwner }.count
+        if ownedCount > 0 {
+            return "アカウントを削除すると、あなたがオーナーの\(ownedCount)個のグループとすべてのリストも削除されます。この操作は取り消せません。"
+        }
+        return "アカウントとすべてのデータが削除されます。この操作は取り消せません。"
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -42,6 +52,15 @@ struct SettingsView: View {
             titleVisibility: .visible
         ) {
             Button("サインアウト", role: .destructive) { onSignOut() }
+        }
+        .confirmationDialog(
+            deleteAccountWarning,
+            isPresented: $showDeleteAccountConfirm,
+            titleVisibility: .visible
+        ) {
+            Button("アカウントを削除", role: .destructive) {
+                Task { await authVM.deleteAccount() }
+            }
         }
         .sheet(isPresented: $showEditProfile) {
             EditProfileSheet(user: currentUser) { updatedUser in
@@ -138,16 +157,24 @@ struct SettingsView: View {
                 }
                 .onTapGesture { showCategoryManager = true }
                 Divider().padding(.leading, 58)
-                settingsRow(icon: "questionmark.circle.fill", iconColor: Color(hex: "#7C8AA1"), label: "ヘルプ") {
+                settingsRow(icon: "questionmark.circle.fill", iconColor: Color(hex: "#7C8AA1"), label: "プライバシーポリシー") {
                     Image(systemName: "chevron.right")
                         .font(.system(size: 13))
                         .foregroundStyle(AppTheme.textTer)
+                }
+                .onTapGesture {
+                    openURL(URL(string: "https://kotoragk.com/familist/privacy")!)
                 }
                 Divider().padding(.leading, 58)
                 settingsRow(icon: "rectangle.portrait.and.arrow.right", iconColor: Color(hex: "#D9695F"), label: "サインアウト") {
                     EmptyView()
                 }
                 .onTapGesture { showSignOutConfirm = true }
+                Divider().padding(.leading, 58)
+                settingsRow(icon: "trash.fill", iconColor: Color(hex: "#C0392B"), label: "アカウントを削除") {
+                    EmptyView()
+                }
+                .onTapGesture { showDeleteAccountConfirm = true }
             }
         }
     }
