@@ -11,6 +11,7 @@ struct SettingsView: View {
     @State private var showDeleteAccountConfirm = false
     @State private var showEditProfile = false
     @State private var showCategoryManager = false
+    @State private var showPasswordChange = false
     @State private var notificationInterval: Int = 15
     @State private var showIntervalPicker = false
 
@@ -71,6 +72,9 @@ struct SettingsView: View {
         .sheet(isPresented: $showCategoryManager) {
             CategoryManagerSheet(groupVM: groupVM)
         }
+        .sheet(isPresented: $showPasswordChange) {
+            PasswordChangeSheet()
+        }
     }
 
     private var profileCard: some View {
@@ -120,11 +124,14 @@ struct SettingsView: View {
 
     private var signInMethod: String {
         switch currentUser.provider {
-        case "apple": return "Apple ID でサインイン中"
+        case "apple":  return "Apple ID でサインイン中"
         case "google": return "Google でサインイン中"
-        default: return currentUser.provider
+        case "email":  return currentUser.email.isEmpty ? "メールでサインイン中" : currentUser.email
+        default:       return currentUser.provider
         }
     }
+
+    private var isEmailUser: Bool { currentUser.provider == "email" }
 
     private var settingsGroups: some View {
         VStack(spacing: AppTheme.secGap) {
@@ -150,6 +157,15 @@ struct SettingsView: View {
             }
 
             settingsCard {
+                if isEmailUser {
+                    settingsRow(icon: "key.fill", iconColor: Color(hex: "#5690C9"), label: "パスワードを変更") {
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 13))
+                            .foregroundStyle(AppTheme.textTer)
+                    }
+                    .onTapGesture { showPasswordChange = true }
+                    Divider().padding(.leading, 58)
+                }
                 settingsRow(icon: "tag.fill", iconColor: Color(hex: "#54A862"), label: "カテゴリの管理") {
                     Image(systemName: "chevron.right")
                         .font(.system(size: 13))

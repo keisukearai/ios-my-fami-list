@@ -16,7 +16,7 @@ enum APIError: Error, LocalizedError {
     }
 }
 
-final class APIClient {
+class APIClient {
     static let shared = APIClient()
 
     let baseURL: String
@@ -42,6 +42,32 @@ final class APIClient {
     }
 
     var accessToken: String?  { keychain.get("access_token") }
+
+    struct TokenResp: Decodable { let access: String; let refresh: String }
+
+    func emailRegister(email: String, password: String) async throws -> TokenResp {
+        try await request("\(Self.apiBase)/auth/register/", method: "POST",
+                          body: ["email": email, "password": password])
+    }
+
+    func emailLogin(email: String, password: String) async throws -> TokenResp {
+        try await request("\(Self.apiBase)/auth/email-login/", method: "POST",
+                          body: ["email": email, "password": password])
+    }
+
+    func requestPasswordReset(email: String) async throws {
+        try await requestVoid("\(Self.apiBase)/auth/password-reset/", method: "POST", body: ["email": email])
+    }
+
+    func confirmPasswordReset(email: String, token: String, newPassword: String) async throws {
+        try await requestVoid("\(Self.apiBase)/auth/password-reset/confirm/", method: "POST",
+                              body: ["email": email, "token": token, "new_password": newPassword])
+    }
+
+    func changePassword(currentPassword: String, newPassword: String) async throws {
+        try await requestVoid("\(Self.apiBase)/auth/password-change/", method: "POST",
+                              body: ["current_password": currentPassword, "new_password": newPassword])
+    }
 
     func regenerateInviteCode(groupId: Int) async throws -> String {
         struct Resp: Decodable { let inviteCode: String }

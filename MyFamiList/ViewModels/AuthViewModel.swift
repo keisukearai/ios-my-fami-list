@@ -12,8 +12,13 @@ final class AuthViewModel: NSObject {
 
     var isAuthenticated: Bool { currentUser != nil }
 
-    private let api = APIClient.shared
+    private let api: APIClient
     private var currentNonce: String?
+
+    init(api: APIClient = .shared) {
+        self.api = api
+        super.init()
+    }
 
     // MARK: - Session
 
@@ -75,6 +80,46 @@ final class AuthViewModel: NSObject {
                 errorMessage = error.localizedDescription
             }
         }
+    }
+
+    // MARK: - Email Auth
+
+    func emailRegister(email: String, password: String) async {
+        isLoading = true
+        defer { isLoading = false }
+        errorMessage = nil
+        do {
+            let resp = try await api.emailRegister(email: email, password: password)
+            api.saveTokens(access: resp.access, refresh: resp.refresh)
+            currentUser = try await api.request("\(APIClient.apiBase)/auth/me/")
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    func emailLogin(email: String, password: String) async {
+        isLoading = true
+        defer { isLoading = false }
+        errorMessage = nil
+        do {
+            let resp = try await api.emailLogin(email: email, password: password)
+            api.saveTokens(access: resp.access, refresh: resp.refresh)
+            currentUser = try await api.request("\(APIClient.apiBase)/auth/me/")
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    func requestPasswordReset(email: String) async throws {
+        try await api.requestPasswordReset(email: email)
+    }
+
+    func confirmPasswordReset(email: String, token: String, newPassword: String) async throws {
+        try await api.confirmPasswordReset(email: email, token: token, newPassword: newPassword)
+    }
+
+    func changePassword(currentPassword: String, newPassword: String) async throws {
+        try await api.changePassword(currentPassword: currentPassword, newPassword: newPassword)
     }
 
     // MARK: - Google Sign In
