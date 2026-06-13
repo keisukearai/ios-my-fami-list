@@ -184,13 +184,28 @@ struct InviteCodeSheet: View {
                     .clipShape(RoundedRectangle(cornerRadius: AppTheme.rCard))
                     .onTapGesture { copyCode() }
 
+                if let inviteURL = URL(string: "https://ios.kotoragk.com/invite/\(currentCode)") {
+                    ShareLink(
+                        item: inviteURL,
+                        subject: Text("FamiList グループへの招待"),
+                        message: Text("FamiList でグループ「\(group.name)」に参加してください")
+                    ) {
+                        Label("リンクを共有", systemImage: "square.and.arrow.up")
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 52)
+                            .background(AppTheme.primary)
+                            .foregroundStyle(.white)
+                            .clipShape(RoundedRectangle(cornerRadius: AppTheme.rBtn))
+                    }
+                }
+
                 Button { copyCode() } label: {
                     Label(copied ? "コピーしました" : "コードをコピー",
                           systemImage: copied ? "checkmark" : "doc.on.doc")
                         .frame(maxWidth: .infinity)
                         .frame(height: 52)
-                        .background(AppTheme.primary)
-                        .foregroundStyle(.white)
+                        .background(AppTheme.soft)
+                        .foregroundStyle(AppTheme.primary)
                         .clipShape(RoundedRectangle(cornerRadius: AppTheme.rBtn))
                 }
 
@@ -217,7 +232,7 @@ struct InviteCodeSheet: View {
                     .disabled(isRegenerating)
                 }
 
-                Text("アプリをインストールした相手にこのコードを入力してもらうとグループに参加できます。")
+                Text("リンクをタップするとアプリが開いてグループに参加できます。アプリ未インストールの場合は App Store に案内されます。")
                     .font(.system(size: 13))
                     .foregroundStyle(AppTheme.textSec)
                     .multilineTextAlignment(.center)

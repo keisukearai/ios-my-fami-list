@@ -28,6 +28,13 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
         Task { await APIClient.shared.registerDeviceToken(token) }
     }
 
+    func application(_ application: UIApplication, continue userActivity: NSUserActivity,
+                     restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+        guard userActivity.activityType == NSUserActivityTypeBrowsingWeb,
+              let url = userActivity.webpageURL else { return false }
+        return InviteHandler.shared.handle(url: url)
+    }
+
     func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         willPresent notification: UNNotification
@@ -40,6 +47,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
 struct MyFamiListApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @State private var authVM = AuthViewModel()
+    @State private var inviteHandler = InviteHandler.shared
 
     var body: some Scene {
         WindowGroup {
@@ -51,8 +59,13 @@ struct MyFamiListApp: App {
                 }
             }
             .environment(authVM)
+            .environment(inviteHandler)
             .task { await authVM.checkAuth() }
-            .onOpenURL { GIDSignIn.sharedInstance.handle($0) }
+            .onOpenURL { url in
+                if !inviteHandler.handle(url: url) {
+                    GIDSignIn.sharedInstance.handle(url)
+                }
+            }
         }
     }
 }

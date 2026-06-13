@@ -8,6 +8,7 @@ struct MainTabView: View {
     @State private var selectedTab = 0
     @State private var showGroupPicker = false
     @State private var listsPath = NavigationPath()
+    @Environment(InviteHandler.self) private var inviteHandler
 
     init(user: AppUser, onSignOut: @escaping () -> Void) {
         self.user = user
@@ -45,6 +46,23 @@ struct MainTabView: View {
         .ignoresSafeArea(edges: .bottom)
         .sheet(isPresented: $showGroupPicker) {
             GroupPickerSheet(groupVM: groupVM)
+        }
+        .alert("グループへの招待", isPresented: Binding(
+            get: { inviteHandler.pendingCode != nil },
+            set: { if !$0 { inviteHandler.pendingCode = nil } }
+        )) {
+            Button("参加する") {
+                let code = inviteHandler.pendingCode ?? ""
+                inviteHandler.pendingCode = nil
+                Task { try? await groupVM.joinGroup(inviteCode: code) }
+            }
+            Button("キャンセル", role: .cancel) {
+                inviteHandler.pendingCode = nil
+            }
+        } message: {
+            if let code = inviteHandler.pendingCode {
+                Text("招待コード「\(code)」でグループに参加しますか？")
+            }
         }
         .task { groupVM.start() }
         .onDisappear { groupVM.stop() }
