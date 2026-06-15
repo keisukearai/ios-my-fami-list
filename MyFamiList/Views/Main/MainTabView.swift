@@ -95,6 +95,7 @@ private struct CustomTabBar: View {
                     }
                     .buttonStyle(.plain)
                     .frame(maxWidth: .infinity)
+                    .accessibilityIdentifier("tab_\(items[i].label)")
                 }
             }
             .padding(.top, 8)

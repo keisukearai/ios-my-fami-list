@@ -278,6 +278,7 @@ struct ListDetailView: View {
             HStack(spacing: 10) {
                 TextField("＋ 商品を追加…", text: $composerText)
                     .focused($composerFocused)
+                    .accessibilityIdentifier("itemComposer")
                     .font(.system(size: AppTheme.fs))
                     .padding(.horizontal, 14)
                     .frame(height: 46)

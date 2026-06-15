@@ -194,8 +194,11 @@ final class AuthViewModel: NSObject {
     // MARK: - Dev (DEBUG only)
 
 #if DEBUG
-    func devLogin() async {
-        await signIn(provider: "\(APIClient.apiBase)/auth/dev-login/", body: ["username": "devuser"])
+    func devLogin(username: String? = nil) async {
+        let name = username
+            ?? ProcessInfo.processInfo.environment["UI_TESTING_DEV_USERNAME"]
+            ?? "devuser"
+        await signIn(provider: "\(APIClient.apiBase)/auth/dev-login/", body: ["username": name])
     }
 #endif
 

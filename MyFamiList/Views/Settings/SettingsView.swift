@@ -206,6 +206,7 @@ struct SettingsView: View {
                     EmptyView()
                 }
                 .onTapGesture { showSignOutConfirm = true }
+                .accessibilityIdentifier("signOutRow")
                 Divider().padding(.leading, 58)
                 settingsRow(icon: "trash.fill", iconColor: Color(hex: "#C0392B"), label: "アカウントを削除") {
                     EmptyView()

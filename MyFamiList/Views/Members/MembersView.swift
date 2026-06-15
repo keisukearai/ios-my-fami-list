@@ -137,6 +137,7 @@ struct MembersView: View {
             .foregroundStyle(.white)
             .clipShape(RoundedRectangle(cornerRadius: AppTheme.rBtn))
         }
+        .accessibilityIdentifier("inviteButton")
     }
 
     private var noGroupView: some View {
@@ -182,6 +183,7 @@ struct InviteCodeSheet: View {
                     .padding(.horizontal, 32)
                     .background(AppTheme.soft)
                     .clipShape(RoundedRectangle(cornerRadius: AppTheme.rCard))
+                    .accessibilityIdentifier("inviteCodeText")
                     .onTapGesture { copyCode() }
 
                 if let inviteURL = URL(string: "https://ios.kotoragk.com/invite/\(currentCode)") {
