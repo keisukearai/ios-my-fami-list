@@ -72,7 +72,7 @@ final class AuthViewModel: NSObject {
             api.clearTokens()
             currentUser = nil
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = error.userFacingMessage
         }
     }
 
@@ -103,7 +103,7 @@ final class AuthViewModel: NSObject {
 
         case .failure(let error):
             if (error as? ASAuthorizationError)?.code != .canceled {
-                errorMessage = error.localizedDescription
+                errorMessage = error.userFacingMessage
             }
         }
     }
@@ -119,7 +119,7 @@ final class AuthViewModel: NSObject {
             api.saveTokens(access: resp.access, refresh: resp.refresh)
             currentUser = try await api.request("\(APIClient.apiBase)/auth/me/")
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = error.userFacingMessage
         }
     }
 
@@ -132,7 +132,7 @@ final class AuthViewModel: NSObject {
             api.saveTokens(access: resp.access, refresh: resp.refresh)
             currentUser = try await api.request("\(APIClient.apiBase)/auth/me/")
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = error.userFacingMessage
         }
     }
 
@@ -169,7 +169,7 @@ final class AuthViewModel: NSObject {
             await signIn(provider: "\(APIClient.apiBase)/auth/google/", body: ["id_token": idToken])
         } catch {
             if (error as? GIDSignInError)?.code != .canceled {
-                errorMessage = error.localizedDescription
+                errorMessage = error.userFacingMessage
             }
         }
     }
@@ -187,7 +187,7 @@ final class AuthViewModel: NSObject {
             api.saveTokens(access: resp.access, refresh: resp.refresh)
             currentUser = try await api.request("\(APIClient.apiBase)/auth/me/")
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = error.userFacingMessage
         }
     }
 

@@ -8,11 +8,30 @@ enum APIError: Error, LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .invalidURL:             return "URLが不正です"
-        case .unauthorized:           return "認証が必要です"
-        case .httpError(let c, let m): return m ?? "HTTPエラー \(c)"
-        case .decodingError(let e):   return "デコードエラー: \(e.localizedDescription)"
+        case .invalidURL:              return "URLが不正です"
+        case .unauthorized:            return "認証が必要です"
+        case .httpError(let c, let m): return m ?? "サーバーエラー (\(c))"
+        case .decodingError(let e):    return "データの読み込みに失敗しました: \(e.localizedDescription)"
         }
+    }
+}
+
+extension Error {
+    var userFacingMessage: String {
+        if let api = self as? APIError {
+            return api.localizedDescription ?? "不明なエラー"
+        }
+        if let url = self as? URLError {
+            switch url.code {
+            case .notConnectedToInternet:  return "インターネット接続がありません (NSURLErrorDomain \(url.code.rawValue))"
+            case .cannotConnectToHost:     return "サーバーに接続できません (NSURLErrorDomain \(url.code.rawValue))"
+            case .timedOut:                return "接続がタイムアウトしました (NSURLErrorDomain \(url.code.rawValue))"
+            case .networkConnectionLost:   return "ネットワーク接続が切断されました (NSURLErrorDomain \(url.code.rawValue))"
+            case .cannotFindHost:          return "サーバーが見つかりません (NSURLErrorDomain \(url.code.rawValue))"
+            default:                       return "通信エラー (NSURLErrorDomain \(url.code.rawValue))"
+            }
+        }
+        return localizedDescription
     }
 }
 

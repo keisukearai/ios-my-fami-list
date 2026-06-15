@@ -29,12 +29,18 @@ struct LoginView: View {
                 Spacer()
 
                 if let error = authVM.errorMessage {
-                    Text(error)
-                        .font(.caption)
-                        .foregroundStyle(.red)
-                        .padding(.horizontal)
-                        .multilineTextAlignment(.center)
-                        .padding(.bottom, 10)
+                    HStack(alignment: .top, spacing: 8) {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .font(.system(size: 13))
+                            .foregroundStyle(.red)
+                            .padding(.top, 1)
+                        Text(error)
+                            .font(.caption)
+                            .foregroundStyle(.red)
+                            .multilineTextAlignment(.leading)
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, 12)
                 }
 
                 buttonsArea
