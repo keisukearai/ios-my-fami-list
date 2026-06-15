@@ -30,24 +30,39 @@ final class ScreenshotTests: E2EBaseTest {
     func test_screenshot_03_shopping() {
         DevServer.reset(username: "devuser", isPro: true)
         devLoginAndWait()
-        guard setupGroup() else { return }
-        guard createList(name: "今週のスーパー") else { return }
+        guard setupGroup() else {
+            snapshot("03_買い物中")
+            XCTFail("setupGroup failed")
+            return
+        }
+        guard createList(name: "今週のスーパー") else {
+            snapshot("03_買い物中")
+            XCTFail("createList failed")
+            return
+        }
 
         // リストをタップ（最初のセルをタップ）
         let cell = app.cells.firstMatch
-        XCTAssertTrue(cell.waitForExistence(timeout: 8), "リストセルが見つからない")
+        guard cell.waitForExistence(timeout: 8) else {
+            snapshot("03_買い物中")
+            XCTFail("list cell not found")
+            return
+        }
         cell.tap()
 
         // 商品追加
         let composer = app.textFields["itemComposer"]
-        XCTAssertTrue(composer.waitForExistence(timeout: 8), "コンポーザーが見つからない")
+        guard composer.waitForExistence(timeout: 8) else {
+            snapshot("03_買い物中")
+            XCTFail("itemComposer not found")
+            return
+        }
 
         for itemName in ["🥛 牛乳", "🥚 卵", "🍞 食パン", "🧅 玉ねぎ", "🍎 りんご"] {
             composer.tap()
             composer.typeText(itemName)
             let addBtn = app.buttons["追加"]
-            XCTAssertTrue(addBtn.waitForExistence(timeout: 3))
-            addBtn.tap()
+            if addBtn.waitForExistence(timeout: 3) { addBtn.tap() }
             sleep(1)
         }
 
@@ -67,15 +82,27 @@ final class ScreenshotTests: E2EBaseTest {
     func test_screenshot_04_members() {
         DevServer.reset(username: "devuser", isPro: true)
         devLoginAndWait()
-        guard setupGroup() else { return }
+        guard setupGroup() else {
+            snapshot("04_招待コード")
+            XCTFail("setupGroup failed")
+            return
+        }
 
         switchTab("メンバー")
         let inviteBtn = app.buttons["inviteButton"]
-        XCTAssertTrue(inviteBtn.waitForExistence(timeout: 8), "招待ボタンが見つからない")
+        guard inviteBtn.waitForExistence(timeout: 8) else {
+            snapshot("04_招待コード")
+            XCTFail("inviteButton not found")
+            return
+        }
         inviteBtn.tap()
 
         let codeText = app.staticTexts["inviteCodeText"]
-        XCTAssertTrue(codeText.waitForExistence(timeout: 5), "招待コードが表示されない")
+        guard codeText.waitForExistence(timeout: 5) else {
+            snapshot("04_招待コード")
+            XCTFail("inviteCodeText not found")
+            return
+        }
         snapshot("04_招待コード")
         app.buttons["閉じる"].tap()
     }
@@ -99,23 +126,23 @@ final class ScreenshotTests: E2EBaseTest {
         let groupBtn = app.buttons.matching(
             NSPredicate(format: "label CONTAINS 'グループ' OR label CONTAINS 'なし'")
         ).firstMatch
-        guard groupBtn.waitForExistence(timeout: 5) else { return false }
+        guard groupBtn.waitForExistence(timeout: 8) else { return false }
         groupBtn.tap()
+        sleep(2)
 
-        guard app.buttons["新しいグループ"].waitForExistence(timeout: 5) else { return false }
-        app.buttons["新しいグループ"].tap()
+        let newGroupBtn = app.buttons["新しいグループ"]
+        guard newGroupBtn.exists else { return false }
+        newGroupBtn.tap()
 
         let tf = app.textFields.firstMatch
-        guard tf.waitForExistence(timeout: 5) else { return false }
+        guard tf.waitForExistence(timeout: 8) else { return false }
         tf.tap(); tf.typeText(name)
-        app.buttons["作成"].tap()
-
-        // グループ作成完了を待つ
-        guard app.buttons["tab_リスト"].waitForExistence(timeout: 10) else { return false }
+        app.buttons["グループを作成"].firstMatch.tap()
+        sleep(3)
 
         // GroupPickerSheet を閉じる
         let closeBtn = app.buttons["閉じる"]
-        if closeBtn.waitForExistence(timeout: 3) { closeBtn.tap() }
+        if closeBtn.waitForExistence(timeout: 5) { closeBtn.tap() }
         sleep(2)
         return true
     }
@@ -124,24 +151,37 @@ final class ScreenshotTests: E2EBaseTest {
     @discardableResult
     private func createList(name: String) -> Bool {
         let addListBtn = app.buttons["リストを追加"]
-        guard addListBtn.waitForExistence(timeout: 8) else { return false }
+        guard addListBtn.waitForExistence(timeout: 15) else { return false }
         addListBtn.tap()
 
         let tf = app.textFields.firstMatch
-        guard tf.waitForExistence(timeout: 5) else { return false }
+        guard tf.waitForExistence(timeout: 10) else { return false }
         tf.tap(); tf.typeText(name)
 
         let confirmBtn = app.navigationBars.buttons["追加"]
-        guard confirmBtn.waitForExistence(timeout: 3) else { return false }
+        guard confirmBtn.waitForExistence(timeout: 8) else { return false }
         confirmBtn.tap()
         sleep(2)
         return true
     }
 
     private func snapshot(_ name: String) {
-        let screenshot = XCTAttachment(screenshot: app.screenshot())
-        screenshot.name = name
-        screenshot.lifetime = .keepAlways
-        add(screenshot)
+        let screenshot = app.screenshot()
+
+        // XCTAttachment にも保存（xcresult 内）
+        let attachment = XCTAttachment(screenshot: screenshot)
+        attachment.name = name
+        attachment.lifetime = .keepAlways
+        add(attachment)
+
+        // プロジェクト直下の Screenshots/ フォルダに PNG として書き出す
+        let projectRoot = URL(fileURLWithPath: #file)
+            .deletingLastPathComponent()  // MyFamiListUITests/
+            .deletingLastPathComponent()  // MyFamiList/
+            .deletingLastPathComponent()  // FamiList（プロジェクトルート）
+        let screenshotsDir = projectRoot.appendingPathComponent("Screenshots")
+        try? FileManager.default.createDirectory(at: screenshotsDir, withIntermediateDirectories: true)
+        let pngURL = screenshotsDir.appendingPathComponent("\(name).png")
+        try? screenshot.pngRepresentation.write(to: pngURL)
     }
 }

@@ -69,6 +69,9 @@ struct MyFamiListApp: App {
                     APIClient.shared.clearTokens()
                     AuthViewModel.clearCachedUser()
                 }
+                authVM.onProStatusChanged = { [purchaseService] isPro in
+                    purchaseService.syncFromServer(isPro: isPro)
+                }
                 await authVM.checkAuth()
             }
             .onOpenURL { url in

@@ -48,6 +48,13 @@ class PurchaseService {
         try? await Product.products(for: [Self.productID]).first
     }
 
+    // サーバー側の is_pro を反映する（別デバイス購入・管理者付与に対応）
+    func syncFromServer(isPro: Bool) {
+        if isPro && !self.isPro {
+            self.isPro = true
+        }
+    }
+
     private func checkCurrentEntitlements() async {
         for await result in Transaction.currentEntitlements {
             if case .verified(let transaction) = result,

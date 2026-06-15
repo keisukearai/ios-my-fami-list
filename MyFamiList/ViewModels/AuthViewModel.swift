@@ -10,6 +10,9 @@ final class AuthViewModel: NSObject {
     var isLoading = false
     var errorMessage: String?
 
+    // ユーザーログイン後に isPro を PurchaseService へ伝えるコールバック
+    var onProStatusChanged: ((Bool) -> Void)?
+
     var isAuthenticated: Bool { currentUser != nil }
 
     private let api: APIClient
@@ -30,9 +33,11 @@ final class AuthViewModel: NSObject {
             let user: AppUser = try await api.request("\(APIClient.apiBase)/auth/me/")
             currentUser = user
             Self.cacheUser(user)
+            onProStatusChanged?(user.isPro)
         } catch {
             if let cached = Self.cachedUser() {
                 currentUser = cached
+                onProStatusChanged?(cached.isPro)
             } else {
                 api.clearTokens()
             }
@@ -117,7 +122,9 @@ final class AuthViewModel: NSObject {
         do {
             let resp = try await api.emailRegister(email: email, password: password)
             api.saveTokens(access: resp.access, refresh: resp.refresh)
-            currentUser = try await api.request("\(APIClient.apiBase)/auth/me/")
+            let user: AppUser = try await api.request("\(APIClient.apiBase)/auth/me/")
+            currentUser = user
+            onProStatusChanged?(user.isPro)
         } catch {
             errorMessage = error.userFacingMessage
         }
@@ -130,7 +137,9 @@ final class AuthViewModel: NSObject {
         do {
             let resp = try await api.emailLogin(email: email, password: password)
             api.saveTokens(access: resp.access, refresh: resp.refresh)
-            currentUser = try await api.request("\(APIClient.apiBase)/auth/me/")
+            let user: AppUser = try await api.request("\(APIClient.apiBase)/auth/me/")
+            currentUser = user
+            onProStatusChanged?(user.isPro)
         } catch {
             errorMessage = error.userFacingMessage
         }
@@ -185,7 +194,9 @@ final class AuthViewModel: NSObject {
         do {
             let resp: TokenResp = try await api.request(path, method: "POST", body: body)
             api.saveTokens(access: resp.access, refresh: resp.refresh)
-            currentUser = try await api.request("\(APIClient.apiBase)/auth/me/")
+            let user: AppUser = try await api.request("\(APIClient.apiBase)/auth/me/")
+            currentUser = user
+            onProStatusChanged?(user.isPro)
         } catch {
             errorMessage = error.userFacingMessage
         }
