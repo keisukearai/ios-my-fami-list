@@ -12,10 +12,11 @@ final class GroupViewModel {
 
     private var pollingTask: Task<Void, Never>?
     private let api: APIClient
-    private let store = LocalDataStore.shared
+    private let store: LocalDataStore
 
-    init(api: APIClient = .shared) {
+    init(api: APIClient = .shared, store: LocalDataStore = .shared) {
         self.api = api
+        self.store = store
     }
 
     // MARK: - Groups cache

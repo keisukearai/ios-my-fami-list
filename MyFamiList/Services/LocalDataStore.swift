@@ -8,9 +8,18 @@ final class LocalDataStore {
     var context: ModelContext { container.mainContext }
 
     private init() {
+        self.container = Self.makeContainer(inMemory: false)
+    }
+
+    init(inMemory: Bool) {
+        self.container = Self.makeContainer(inMemory: inMemory)
+    }
+
+    private static func makeContainer(inMemory: Bool) -> ModelContainer {
         let schema = Schema([LocalList.self, LocalItem.self])
+        let config = ModelConfiguration(isStoredInMemoryOnly: inMemory)
         do {
-            container = try ModelContainer(for: schema)
+            return try ModelContainer(for: schema, configurations: [config])
         } catch {
             fatalError("Failed to create LocalDataStore: \(error)")
         }

@@ -15,15 +15,16 @@ final class ItemViewModel {
     private let api: APIClient
     private let groupId: Int
     private let listId: Int
-    private let store = LocalDataStore.shared
+    private let store: LocalDataStore
 
     private var isLocalList: Bool { listId < 0 }
     private var basePath: String { "\(APIClient.apiBase)/groups/\(groupId)/lists/\(listId)/items/" }
 
-    init(groupId: Int, listId: Int, api: APIClient = .shared) {
+    init(groupId: Int, listId: Int, api: APIClient = .shared, store: LocalDataStore = .shared) {
         self.groupId = groupId
         self.listId = listId
         self.api = api
+        self.store = store
     }
 
     func start() {
