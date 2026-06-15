@@ -6,12 +6,14 @@ struct SettingsView: View {
     let onSignOut: () -> Void
 
     @Environment(AuthViewModel.self) private var authVM
+    @Environment(PurchaseService.self) private var purchaseService
     @Environment(\.openURL) private var openURL
     @State private var showSignOutConfirm = false
     @State private var showDeleteAccountConfirm = false
     @State private var showEditProfile = false
     @State private var showCategoryManager = false
     @State private var showPasswordChange = false
+    @State private var showPaywall = false
     @State private var notificationInterval: Int = 15
     @State private var showIntervalPicker = false
 
@@ -27,7 +29,7 @@ struct SettingsView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            AppHeader("設定", sub: "無料プラン")
+            AppHeader("設定", sub: purchaseService.isPro ? "Pro プラン" : "無料プラン")
 
             ScrollView {
                 VStack(spacing: AppTheme.secGap) {
@@ -74,6 +76,9 @@ struct SettingsView: View {
         }
         .sheet(isPresented: $showPasswordChange) {
             PasswordChangeSheet()
+        }
+        .sheet(isPresented: $showPaywall) {
+            PaywallSheet()
         }
     }
 
@@ -135,6 +140,20 @@ struct SettingsView: View {
 
     private var settingsGroups: some View {
         VStack(spacing: AppTheme.secGap) {
+            if !purchaseService.isPro {
+                settingsCard {
+                    settingsRow(icon: "crown.fill", iconColor: Color(hex: "#E0A03A"), label: "Pro にアップグレード") {
+                        Text("¥300")
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundStyle(AppTheme.textSec)
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 13))
+                            .foregroundStyle(AppTheme.textTer)
+                    }
+                    .onTapGesture { showPaywall = true }
+                }
+            }
+
             settingsCard {
                 settingsRow(icon: "clock.arrow.circlepath", iconColor: Color(hex: "#E0A03A"), label: "通知間隔") {
                     Text(intervalLabel(notificationInterval))

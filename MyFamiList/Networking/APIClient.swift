@@ -81,6 +81,10 @@ class APIClient {
         try await requestVoid("\(Self.apiBase)/auth/delete-account/", method: "DELETE", body: body.isEmpty ? nil : body)
     }
 
+    func activatePro(transactionId: String) async throws -> AppUser {
+        return try await request("\(Self.apiBase)/auth/activate-pro/", method: "POST", body: ["transaction_id": transactionId])
+    }
+
     func registerDeviceToken(_ token: String) async {
         try? await requestVoid("\(Self.apiBase)/auth/device-token/", method: "POST", body: ["device_token": token])
     }

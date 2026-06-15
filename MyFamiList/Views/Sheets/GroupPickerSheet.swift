@@ -3,9 +3,11 @@ import SwiftUI
 struct GroupPickerSheet: View {
     let groupVM: GroupViewModel
     @Environment(\.dismiss) private var dismiss
+    @Environment(PurchaseService.self) private var purchaseService
 
     @State private var showCreateGroup = false
     @State private var showJoinGroup = false
+    @State private var showPaywall = false
     @State private var newGroupName = ""
     @State private var inviteCode = ""
     @State private var isProcessing = false
@@ -52,6 +54,7 @@ struct GroupPickerSheet: View {
             }
             .sheet(isPresented: $showCreateGroup) { createGroupSheet }
             .sheet(isPresented: $showJoinGroup) { joinGroupSheet }
+            .sheet(isPresented: $showPaywall) { PaywallSheet() }
             .alert("グループ名を変更", isPresented: $showRenameGroup) {
                 TextField("グループ名", text: $renameGroupText)
                 Button("保存") {
@@ -192,7 +195,13 @@ struct GroupPickerSheet: View {
     }
 
     private var createGroupButton: some View {
-        Button { showCreateGroup = true } label: {
+        Button {
+            if purchaseService.isPro {
+                showCreateGroup = true
+            } else {
+                showPaywall = true
+            }
+        } label: {
             HStack(spacing: 10) {
                 Image(systemName: "plus")
                     .font(.system(size: 15, weight: .medium))

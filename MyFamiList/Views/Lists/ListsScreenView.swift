@@ -4,7 +4,9 @@ struct ListsScreenView: View {
     let groupVM: GroupViewModel
     let onGroupPickerTap: () -> Void
 
+    @Environment(PurchaseService.self) private var purchaseService
     @State private var showAddSheet = false
+    @State private var showPaywall = false
     @State private var newListName = ""
 
     var body: some View {
@@ -35,6 +37,7 @@ struct ListsScreenView: View {
         }
         .toolbar(.hidden, for: .navigationBar)
         .sheet(isPresented: $showAddSheet) { addListSheet }
+        .sheet(isPresented: $showPaywall) { PaywallSheet() }
         .navigationDestination(for: ShoppingListBrief.self) { list in
             let group = groupVM.currentGroup
             ListDetailView(
@@ -137,7 +140,14 @@ struct ListsScreenView: View {
     }
 
     private var addListButton: some View {
-        Button { showAddSheet = true } label: {
+        Button {
+            let listCount = groupVM.currentGroup?.lists.count ?? 0
+            if purchaseService.isPro || listCount < 2 {
+                showAddSheet = true
+            } else {
+                showPaywall = true
+            }
+        } label: {
             HStack(spacing: 8) {
                 Image(systemName: "plus")
                     .font(.system(size: 15, weight: .medium))

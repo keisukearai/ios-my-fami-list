@@ -9,12 +9,13 @@ struct AppUser: Codable, Identifiable {
     var avatarEmoji: String
     var avatarColor: String
     var avatarPhoto: String
+    var isPro: Bool
 
     init(id: Int, uid: String, provider: String, email: String = "",
-         displayName: String, avatarEmoji: String, avatarColor: String, avatarPhoto: String) {
+         displayName: String, avatarEmoji: String, avatarColor: String, avatarPhoto: String, isPro: Bool = false) {
         self.id = id; self.uid = uid; self.provider = provider; self.email = email
         self.displayName = displayName; self.avatarEmoji = avatarEmoji
-        self.avatarColor = avatarColor; self.avatarPhoto = avatarPhoto
+        self.avatarColor = avatarColor; self.avatarPhoto = avatarPhoto; self.isPro = isPro
     }
 
     init(from decoder: Decoder) throws {
@@ -27,5 +28,6 @@ struct AppUser: Codable, Identifiable {
         avatarEmoji  = try c.decode(String.self, forKey: .avatarEmoji)
         avatarColor  = try c.decode(String.self, forKey: .avatarColor)
         avatarPhoto  = try c.decode(String.self, forKey: .avatarPhoto)
+        isPro        = (try? c.decodeIfPresent(Bool.self, forKey: .isPro)) ?? false
     }
 }
