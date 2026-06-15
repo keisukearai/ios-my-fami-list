@@ -1,4 +1,5 @@
 import Foundation
+import SwiftData
 
 @Observable
 @MainActor
@@ -11,9 +12,35 @@ final class GroupViewModel {
 
     private var pollingTask: Task<Void, Never>?
     private let api: APIClient
+    private let store = LocalDataStore.shared
 
     init(api: APIClient = .shared) {
         self.api = api
+    }
+
+    // MARK: - Groups cache
+
+    private static let cachedGroupsKey = "cached_groups"
+    private static let cachedCurrentGroupKey = "cached_current_group"
+
+    private func cacheGroups() {
+        if let data = try? JSONEncoder().encode(groups) {
+            UserDefaults.standard.set(data, forKey: Self.cachedGroupsKey)
+        }
+        if let group = currentGroup, let data = try? JSONEncoder().encode(group) {
+            UserDefaults.standard.set(data, forKey: Self.cachedCurrentGroupKey)
+        }
+    }
+
+    private func loadCachedGroups() {
+        if let data = UserDefaults.standard.data(forKey: Self.cachedGroupsKey),
+           let cached = try? JSONDecoder().decode([FamilyGroupBrief].self, from: data) {
+            groups = cached
+        }
+        if let data = UserDefaults.standard.data(forKey: Self.cachedCurrentGroupKey),
+           let cached = try? JSONDecoder().decode(FamilyGroup.self, from: data) {
+            currentGroup = cached
+        }
     }
 
     func start() {
@@ -42,16 +69,29 @@ final class GroupViewModel {
                 if groups.contains(where: { $0.id == id }) {
                     currentGroup = try await api.request("\(APIClient.apiBase)/groups/\(id)/")
                 } else {
-                    // キックされたか、グループが消えた場合は先頭グループへ切り替え
                     currentGroup = groups.isEmpty ? nil : try await api.request("\(APIClient.apiBase)/groups/\(groups[0].id)/")
                 }
             } else if let first = groups.first {
                 currentGroup = try await api.request("\(APIClient.apiBase)/groups/\(first.id)/")
             }
             await fetchCategories()
+            appendLocalLists()
+            cacheGroups()
         } catch {
             if !(error is CancellationError) {
-                errorMessage = error.localizedDescription
+                if groups.isEmpty { loadCachedGroups() }
+                appendLocalLists()
+            }
+        }
+    }
+
+    private func appendLocalLists() {
+        guard let groupId = currentGroup?.id else { return }
+        let localLists = (try? store.localLists(forGroup: groupId)) ?? []
+        for localList in localLists where localList.apiId == nil {
+            let brief = localList.toShoppingListBrief()
+            if currentGroup?.lists.contains(where: { $0.id == brief.id }) == false {
+                currentGroup?.lists.append(brief)
             }
         }
     }
@@ -117,8 +157,12 @@ final class GroupViewModel {
                 body: ["name": name]
             )
             currentGroup = try await api.request("\(APIClient.apiBase)/groups/\(groupId)/")
+            appendLocalLists()
         } catch {
-            errorMessage = error.localizedDescription
+            let localList = LocalList(name: name, groupApiId: groupId)
+            store.context.insert(localList)
+            store.save()
+            currentGroup?.lists.append(localList.toShoppingListBrief())
         }
     }
 

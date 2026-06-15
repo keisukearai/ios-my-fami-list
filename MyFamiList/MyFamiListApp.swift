@@ -49,6 +49,7 @@ struct MyFamiListApp: App {
     @State private var authVM = AuthViewModel()
     @State private var inviteHandler = InviteHandler.shared
     @State private var purchaseService = PurchaseService()
+    @State private var networkMonitor = NetworkMonitor()
 
     var body: some Scene {
         WindowGroup {
@@ -62,6 +63,7 @@ struct MyFamiListApp: App {
             .environment(authVM)
             .environment(inviteHandler)
             .environment(purchaseService)
+            .environment(networkMonitor)
             .task { await authVM.checkAuth() }
             .onOpenURL { url in
                 if !inviteHandler.handle(url: url) {

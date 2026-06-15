@@ -5,6 +5,7 @@ struct ListsScreenView: View {
     let onGroupPickerTap: () -> Void
 
     @Environment(PurchaseService.self) private var purchaseService
+    @Environment(NetworkMonitor.self) private var networkMonitor
     @State private var showAddSheet = false
     @State private var showPaywall = false
     @State private var newListName = ""
@@ -14,8 +15,15 @@ struct ListsScreenView: View {
             AppHeader("リスト") {
                 groupPickerPill
             } right: {
-                memberAvatarStack
-                    .onTapGesture { onGroupPickerTap() }
+                HStack(spacing: 8) {
+                    if !networkMonitor.isConnected {
+                        Image(systemName: "wifi.slash")
+                            .font(.system(size: 14))
+                            .foregroundStyle(AppTheme.textTer)
+                    }
+                    memberAvatarStack
+                        .onTapGesture { onGroupPickerTap() }
+                }
             }
 
             Group {

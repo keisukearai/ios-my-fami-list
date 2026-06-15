@@ -8,6 +8,7 @@ struct ListDetailView: View {
 
     @Environment(\.dismiss) private var dismiss
     @Environment(GroupViewModel.self) private var groupVM
+    @Environment(NetworkMonitor.self) private var networkMonitor
     @State private var itemVM: ItemViewModel
     @State private var checkedExpanded = true
     @State private var editingItem: Item?
@@ -33,7 +34,14 @@ struct ListDetailView: View {
     var body: some View {
         VStack(spacing: 0) {
             AppHeader(list.name, onBack: { dismiss() }, right: {
-                ellipsisMenu
+                HStack(spacing: 8) {
+                    if !networkMonitor.isConnected {
+                        Image(systemName: "wifi.slash")
+                            .font(.system(size: 14))
+                            .foregroundStyle(AppTheme.textTer)
+                    }
+                    ellipsisMenu
+                }
             })
 
             ZStack(alignment: .bottom) {

@@ -27,15 +27,41 @@ final class AuthViewModel: NSObject {
         isLoading = true
         defer { isLoading = false }
         do {
-            currentUser = try await api.request("\(APIClient.apiBase)/auth/me/")
+            let user: AppUser = try await api.request("\(APIClient.apiBase)/auth/me/")
+            currentUser = user
+            Self.cacheUser(user)
         } catch {
-            api.clearTokens()
+            if let cached = Self.cachedUser() {
+                currentUser = cached
+            } else {
+                api.clearTokens()
+            }
         }
     }
 
     func signOut() {
         api.clearTokens()
+        Self.clearCachedUser()
         currentUser = nil
+    }
+
+    // MARK: - User cache
+
+    private static let cachedUserKey = "cached_app_user"
+
+    static func cacheUser(_ user: AppUser) {
+        if let data = try? JSONEncoder().encode(user) {
+            UserDefaults.standard.set(data, forKey: cachedUserKey)
+        }
+    }
+
+    static func cachedUser() -> AppUser? {
+        guard let data = UserDefaults.standard.data(forKey: cachedUserKey) else { return nil }
+        return try? JSONDecoder().decode(AppUser.self, from: data)
+    }
+
+    static func clearCachedUser() {
+        UserDefaults.standard.removeObject(forKey: cachedUserKey)
     }
 
     func deleteAccount() async {

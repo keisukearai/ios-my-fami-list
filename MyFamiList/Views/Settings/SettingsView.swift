@@ -7,6 +7,7 @@ struct SettingsView: View {
 
     @Environment(AuthViewModel.self) private var authVM
     @Environment(PurchaseService.self) private var purchaseService
+    @Environment(NetworkMonitor.self) private var networkMonitor
     @Environment(\.openURL) private var openURL
     @State private var showSignOutConfirm = false
     @State private var showDeleteAccountConfirm = false
@@ -210,6 +211,18 @@ struct SettingsView: View {
                     EmptyView()
                 }
                 .onTapGesture { showDeleteAccountConfirm = true }
+            }
+
+            settingsCard {
+                settingsRow(
+                    icon: networkMonitor.isConnected ? "wifi" : "wifi.slash",
+                    iconColor: networkMonitor.isConnected ? Color(hex: "#16A368") : Color(hex: "#7C8AA1"),
+                    label: "ネットワーク"
+                ) {
+                    Text(networkMonitor.isConnected ? "オンライン" : "オフライン")
+                        .font(.system(size: 14))
+                        .foregroundStyle(networkMonitor.isConnected ? Color(hex: "#16A368") : AppTheme.textSec)
+                }
             }
         }
     }
