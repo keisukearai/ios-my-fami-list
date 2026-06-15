@@ -34,13 +34,16 @@ struct LoginView: View {
                             .font(.system(size: 13))
                             .foregroundStyle(.red)
                             .padding(.top, 1)
+                            .accessibilityIdentifier("loginErrorIcon")
                         Text(error)
                             .font(.caption)
                             .foregroundStyle(.red)
                             .multilineTextAlignment(.leading)
+                            .accessibilityIdentifier("loginErrorText")
                     }
                     .padding(.horizontal, 24)
                     .padding(.bottom, 12)
+                    .accessibilityIdentifier("loginErrorBanner")
                 }
 
                 buttonsArea
@@ -145,6 +148,7 @@ struct LoginView: View {
                     .foregroundStyle(AppTheme.textSec)
                     .frame(height: 44)
             }
+            .accessibilityIdentifier("devLoginButton")
 #endif
         }
         .padding(.horizontal, 24)

@@ -64,7 +64,13 @@ struct MyFamiListApp: App {
             .environment(inviteHandler)
             .environment(purchaseService)
             .environment(networkMonitor)
-            .task { await authVM.checkAuth() }
+            .task {
+                if ProcessInfo.processInfo.arguments.contains("UI_TESTING_CLEAR_AUTH") {
+                    APIClient.shared.clearTokens()
+                    AuthViewModel.clearCachedUser()
+                }
+                await authVM.checkAuth()
+            }
             .onOpenURL { url in
                 if !inviteHandler.handle(url: url) {
                     GIDSignIn.sharedInstance.handle(url)
