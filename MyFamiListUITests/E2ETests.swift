@@ -3,7 +3,7 @@ import XCTest
 // MARK: - サーバーヘルパー
 
 /// ローカル Django サーバー（localhost:8000）を操作するヘルパー
-private enum DevServer {
+enum DevServer {
     static let base = "http://localhost:8000/api/fami_list"
 
     /// ユーザー状態をリセット（グループ全削除、Pro状態を指定）
