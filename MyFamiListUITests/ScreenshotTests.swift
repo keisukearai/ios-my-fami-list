@@ -154,7 +154,7 @@ final class ScreenshotTests: E2EBaseTest {
         guard addListBtn.waitForExistence(timeout: 15) else { return false }
         addListBtn.tap()
 
-        let tf = app.textFields.firstMatch
+        let tf = app.textFields["例: 今週のスーパー"]
         guard tf.waitForExistence(timeout: 10) else { return false }
         tf.tap(); tf.typeText(name)
 
