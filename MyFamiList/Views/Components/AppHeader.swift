@@ -62,17 +62,16 @@ struct AppHeader<Top: View, Right: View>: View {
         .background {
             ZStack(alignment: .topTrailing) {
                 AppTheme.soft
-                    .clipShape(UnevenRoundedRectangle(
-                        bottomLeadingRadius: AppTheme.rCard + 10,
-                        bottomTrailingRadius: AppTheme.rCard + 10
-                    ))
-                    .ignoresSafeArea(edges: .top)
                 Circle()
                     .fill(AppTheme.primary.opacity(0.08))
                     .frame(width: 210, height: 210)
                     .offset(x: 32, y: -60)
             }
-            .clipped()
+            .clipShape(UnevenRoundedRectangle(
+                bottomLeadingRadius: AppTheme.rCard + 10,
+                bottomTrailingRadius: AppTheme.rCard + 10
+            ))
+            .ignoresSafeArea()
         }
     }
 }
