@@ -17,20 +17,27 @@ struct SettingsView: View {
     @State private var showPaywall = false
     @State private var notificationInterval: Int = 15
     @State private var showIntervalPicker = false
+    @AppStorage(LanguageManager.userDefaultsKey) private var appLanguageRaw: String = "system"
+    @State private var showRestartAlert = false
+    @State private var showLanguagePicker = false
+
+    private var appLanguage: AppLanguage {
+        AppLanguage(rawValue: appLanguageRaw) ?? .system
+    }
 
     private var currentUser: AppUser { authVM.currentUser ?? user }
 
     private var deleteAccountWarning: String {
         let ownedCount = groupVM.groups.filter { $0.isOwner }.count
         if ownedCount > 0 {
-            return "アカウントを削除すると、あなたがオーナーの\(ownedCount)個のグループとすべてのリストも削除されます。この操作は取り消せません。"
+            return String(format: String(localized: "Deleting your account will also delete %d group(s) you own and all lists. This cannot be undone."), ownedCount)
         }
-        return "アカウントとすべてのデータが削除されます。この操作は取り消せません。"
+        return String(localized: "Your account and all data will be deleted. This cannot be undone.")
     }
 
     var body: some View {
         VStack(spacing: 0) {
-            AppHeader("設定", sub: purchaseService.isPro ? "Pro プラン" : "無料プラン")
+            AppHeader(String(localized: "Settings"), sub: purchaseService.isPro ? String(localized: "Pro Plan") : String(localized: "Free Plan"))
 
             ScrollView {
                 VStack(spacing: AppTheme.secGap) {
@@ -51,20 +58,23 @@ struct SettingsView: View {
             }
         }
         .confirmationDialog(
-            "サインアウトしますか？",
+            String(localized: "Sign out?"),
             isPresented: $showSignOutConfirm,
             titleVisibility: .visible
         ) {
-            Button("サインアウト", role: .destructive) { onSignOut() }
+            Button(String(localized: "Sign Out"), role: .destructive) { onSignOut() }
         }
         .confirmationDialog(
             deleteAccountWarning,
             isPresented: $showDeleteAccountConfirm,
             titleVisibility: .visible
         ) {
-            Button("アカウントを削除", role: .destructive) {
+            Button(String(localized: "Delete Account"), role: .destructive) {
                 Task { await authVM.deleteAccount() }
             }
+        }
+        .alert(String(localized: "Language changed. Please restart the app to apply."), isPresented: $showRestartAlert) {
+            Button(String(localized: "OK")) {}
         }
         .sheet(isPresented: $showEditProfile) {
             EditProfileSheet(user: currentUser) { updatedUser in
@@ -95,7 +105,7 @@ struct SettingsView: View {
                 )
 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(currentUser.displayName.isEmpty ? "ユーザー" : currentUser.displayName)
+                    Text(currentUser.displayName.isEmpty ? String(localized: "User") : currentUser.displayName)
                         .font(.system(size: 17, weight: .semibold))
                         .foregroundStyle(AppTheme.text)
                     Text(signInMethod)
@@ -119,20 +129,20 @@ struct SettingsView: View {
 
     private func intervalLabel(_ minutes: Int) -> String {
         switch minutes {
-        case 0:  return "なし"
-        case 5:  return "5分"
-        case 15: return "15分"
-        case 30: return "30分"
-        case 60: return "1時間"
-        default: return "\(minutes)分"
+        case 0:  return String(localized: "None")
+        case 5:  return String(localized: "5 min")
+        case 15: return String(localized: "15 min")
+        case 30: return String(localized: "30 min")
+        case 60: return String(localized: "1 hour")
+        default: return "\(minutes) min"
         }
     }
 
     private var signInMethod: String {
         switch currentUser.provider {
-        case "apple":  return "Apple ID でサインイン中"
-        case "google": return "Google でサインイン中"
-        case "email":  return currentUser.email.isEmpty ? "メールでサインイン中" : currentUser.email
+        case "apple":  return String(localized: "Signed in with Apple ID")
+        case "google": return String(localized: "Signed in with Google")
+        case "email":  return currentUser.email.isEmpty ? String(localized: "Signed in with Email") : currentUser.email
         default:       return currentUser.provider
         }
     }
@@ -143,7 +153,7 @@ struct SettingsView: View {
         VStack(spacing: AppTheme.secGap) {
             if !purchaseService.isPro {
                 settingsCard {
-                    settingsRow(icon: "crown.fill", iconColor: Color(hex: "#E0A03A"), label: "Pro にアップグレード") {
+                    settingsRow(icon: "crown.fill", iconColor: Color(hex: "#E0A03A"), label: String(localized: "Upgrade to Pro")) {
                         Text("¥300")
                             .font(.system(size: 14, weight: .semibold))
                             .foregroundStyle(AppTheme.textSec)
@@ -156,7 +166,7 @@ struct SettingsView: View {
             }
 
             settingsCard {
-                settingsRow(icon: "clock.arrow.circlepath", iconColor: Color(hex: "#E0A03A"), label: "通知間隔") {
+                settingsRow(icon: "clock.arrow.circlepath", iconColor: Color(hex: "#E0A03A"), label: String(localized: "Notification Interval")) {
                     Text(intervalLabel(notificationInterval))
                         .font(.system(size: 14))
                         .foregroundStyle(AppTheme.textSec)
@@ -166,19 +176,43 @@ struct SettingsView: View {
                 }
                 .onTapGesture { showIntervalPicker = true }
             }
-            .confirmationDialog("通知間隔", isPresented: $showIntervalPicker, titleVisibility: .visible) {
+            .confirmationDialog(String(localized: "Notification Interval"), isPresented: $showIntervalPicker, titleVisibility: .visible) {
                 ForEach([0, 5, 15, 30, 60], id: \.self) { minutes in
                     Button(intervalLabel(minutes)) {
                         notificationInterval = minutes
                         Task { try? await APIClient.shared.updateNotificationInterval(minutes) }
                     }
                 }
-                Button("キャンセル", role: .cancel) {}
+                Button(String(localized: "Cancel"), role: .cancel) {}
+            }
+
+            settingsCard {
+                settingsRow(icon: "globe", iconColor: Color(hex: "#5690C9"), label: String(localized: "Language")) {
+                    Text(appLanguage.displayName)
+                        .font(.system(size: 14))
+                        .foregroundStyle(AppTheme.textSec)
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 13))
+                        .foregroundStyle(AppTheme.textTer)
+                }
+                .onTapGesture { showLanguagePicker = true }
+                Divider().padding(.leading, 58)
+            }
+            .confirmationDialog(String(localized: "Language"), isPresented: $showLanguagePicker, titleVisibility: .visible) {
+                ForEach(AppLanguage.allCases, id: \.self) { lang in
+                    Button(lang.displayName) {
+                        let prev = LanguageManager.shared.currentLanguage
+                        LanguageManager.shared.setLanguage(lang)
+                        appLanguageRaw = lang.rawValue
+                        if lang != prev { showRestartAlert = true }
+                    }
+                }
+                Button(String(localized: "Cancel"), role: .cancel) {}
             }
 
             settingsCard {
                 if isEmailUser {
-                    settingsRow(icon: "key.fill", iconColor: Color(hex: "#5690C9"), label: "パスワードを変更") {
+                    settingsRow(icon: "key.fill", iconColor: Color(hex: "#5690C9"), label: String(localized: "Change Password")) {
                         Image(systemName: "chevron.right")
                             .font(.system(size: 13))
                             .foregroundStyle(AppTheme.textTer)
@@ -186,14 +220,14 @@ struct SettingsView: View {
                     .onTapGesture { showPasswordChange = true }
                     Divider().padding(.leading, 58)
                 }
-                settingsRow(icon: "tag.fill", iconColor: Color(hex: "#54A862"), label: "カテゴリの管理") {
+                settingsRow(icon: "tag.fill", iconColor: Color(hex: "#54A862"), label: String(localized: "Manage Categories")) {
                     Image(systemName: "chevron.right")
                         .font(.system(size: 13))
                         .foregroundStyle(AppTheme.textTer)
                 }
                 .onTapGesture { showCategoryManager = true }
                 Divider().padding(.leading, 58)
-                settingsRow(icon: "questionmark.circle.fill", iconColor: Color(hex: "#7C8AA1"), label: "プライバシーポリシー") {
+                settingsRow(icon: "questionmark.circle.fill", iconColor: Color(hex: "#7C8AA1"), label: String(localized: "Privacy Policy")) {
                     Image(systemName: "chevron.right")
                         .font(.system(size: 13))
                         .foregroundStyle(AppTheme.textTer)
@@ -202,13 +236,13 @@ struct SettingsView: View {
                     openURL(URL(string: "https://kotoragk.com/familist/privacy")!)
                 }
                 Divider().padding(.leading, 58)
-                settingsRow(icon: "rectangle.portrait.and.arrow.right", iconColor: Color(hex: "#D9695F"), label: "サインアウト") {
+                settingsRow(icon: "rectangle.portrait.and.arrow.right", iconColor: Color(hex: "#D9695F"), label: String(localized: "Sign Out")) {
                     EmptyView()
                 }
                 .onTapGesture { showSignOutConfirm = true }
                 .accessibilityIdentifier("signOutRow")
                 Divider().padding(.leading, 58)
-                settingsRow(icon: "trash.fill", iconColor: Color(hex: "#C0392B"), label: "アカウントを削除") {
+                settingsRow(icon: "trash.fill", iconColor: Color(hex: "#C0392B"), label: String(localized: "Delete Account")) {
                     EmptyView()
                 }
                 .onTapGesture { showDeleteAccountConfirm = true }
@@ -218,9 +252,9 @@ struct SettingsView: View {
                 settingsRow(
                     icon: networkMonitor.isConnected ? "wifi" : "wifi.slash",
                     iconColor: networkMonitor.isConnected ? Color(hex: "#16A368") : Color(hex: "#7C8AA1"),
-                    label: "ネットワーク"
+                    label: String(localized: "Network")
                 ) {
-                    Text(networkMonitor.isConnected ? "オンライン" : "オフライン")
+                    Text(networkMonitor.isConnected ? String(localized: "Online") : String(localized: "Offline"))
                         .font(.system(size: 14))
                         .foregroundStyle(networkMonitor.isConnected ? Color(hex: "#16A368") : AppTheme.textSec)
                 }

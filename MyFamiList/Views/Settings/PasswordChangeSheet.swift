@@ -26,11 +26,11 @@ struct PasswordChangeSheet: View {
                 .padding(.horizontal, 24)
                 .padding(.top, 32)
             }
-            .navigationTitle("パスワードを変更")
+            .navigationTitle(String(localized: "Change Password"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("キャンセル") { dismiss() }
+                    Button(String(localized: "Cancel")) { dismiss() }
                 }
             }
             .disabled(isLoading)
@@ -54,15 +54,15 @@ struct PasswordChangeSheet: View {
             }
 
             VStack(spacing: 0) {
-                SecureField("現在のパスワード", text: $currentPassword)
+                SecureField(String(localized: "Current Password"), text: $currentPassword)
                     .textContentType(.password)
                     .padding(14)
                 Divider()
-                SecureField("新しいパスワード（8文字以上）", text: $newPassword)
+                SecureField(String(localized: "New Password (8+ characters)"), text: $newPassword)
                     .textContentType(.newPassword)
                     .padding(14)
                 Divider()
-                SecureField("新しいパスワード（確認）", text: $confirmPassword)
+                SecureField(String(localized: "New Password (confirm)"), text: $confirmPassword)
                     .textContentType(.newPassword)
                     .padding(14)
             }
@@ -73,7 +73,7 @@ struct PasswordChangeSheet: View {
             Button {
                 Task { await submit() }
             } label: {
-                Text("変更する")
+                Text("Change")
                     .font(.system(size: 17, weight: .semibold))
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
@@ -89,10 +89,10 @@ struct PasswordChangeSheet: View {
             Image(systemName: "checkmark.circle.fill")
                 .font(.system(size: 56))
                 .foregroundStyle(AppTheme.primary)
-            Text("パスワードを変更しました")
+            Text("Password changed successfully")
                 .font(.system(size: 18, weight: .semibold))
                 .foregroundStyle(AppTheme.text)
-            Button("閉じる") { dismiss() }
+            Button(String(localized: "Close")) { dismiss() }
                 .font(.system(size: 17, weight: .semibold))
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity).frame(height: 54)
@@ -104,15 +104,15 @@ struct PasswordChangeSheet: View {
     private func submit() async {
         errorMessage = nil
         guard !currentPassword.isEmpty, !newPassword.isEmpty else {
-            errorMessage = "すべての項目を入力してください"
+            errorMessage = String(localized: "Please fill in all fields")
             return
         }
         guard newPassword.count >= 8 else {
-            errorMessage = "新しいパスワードは8文字以上にしてください"
+            errorMessage = String(localized: "New password must be at least 8 characters")
             return
         }
         guard newPassword == confirmPassword else {
-            errorMessage = "新しいパスワードが一致しません"
+            errorMessage = String(localized: "Passwords do not match")
             return
         }
         isLoading = true

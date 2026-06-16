@@ -8,10 +8,10 @@ enum APIError: Error, LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .invalidURL:              return "URLが不正です"
-        case .unauthorized:            return "認証が必要です"
-        case .httpError(let c, let m): return m ?? "サーバーエラー (\(c))"
-        case .decodingError(let e):    return "データの読み込みに失敗しました: \(e.localizedDescription)"
+        case .invalidURL:              return String(localized: "Invalid URL")
+        case .unauthorized:            return String(localized: "Authentication required")
+        case .httpError(let c, let m): return m ?? "Server error (\(c))"
+        case .decodingError(let e):    return "Failed to load data: \(e.localizedDescription)"
         }
     }
 }
@@ -19,16 +19,17 @@ enum APIError: Error, LocalizedError {
 extension Error {
     var userFacingMessage: String {
         if let api = self as? APIError {
-            return api.localizedDescription ?? "不明なエラー"
+            return api.localizedDescription
         }
         if let url = self as? URLError {
+            let code = "(NSURLErrorDomain \(url.code.rawValue))"
             switch url.code {
-            case .notConnectedToInternet:  return "インターネット接続がありません (NSURLErrorDomain \(url.code.rawValue))"
-            case .cannotConnectToHost:     return "サーバーに接続できません (NSURLErrorDomain \(url.code.rawValue))"
-            case .timedOut:                return "接続がタイムアウトしました (NSURLErrorDomain \(url.code.rawValue))"
-            case .networkConnectionLost:   return "ネットワーク接続が切断されました (NSURLErrorDomain \(url.code.rawValue))"
-            case .cannotFindHost:          return "サーバーが見つかりません (NSURLErrorDomain \(url.code.rawValue))"
-            default:                       return "通信エラー (NSURLErrorDomain \(url.code.rawValue))"
+            case .notConnectedToInternet:  return "\(String(localized: "No internet connection")) \(code)"
+            case .cannotConnectToHost:     return "\(String(localized: "Cannot connect to server")) \(code)"
+            case .timedOut:                return "\(String(localized: "Connection timed out")) \(code)"
+            case .networkConnectionLost:   return "\(String(localized: "Network connection lost")) \(code)"
+            case .cannotFindHost:          return "\(String(localized: "Server not found")) \(code)"
+            default:                       return "\(String(localized: "Network error")) \(code)"
             }
         }
         return localizedDescription
@@ -226,6 +227,7 @@ class APIClient {
         var req = URLRequest(url: url)
         req.httpMethod = method
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        req.setValue(LanguageManager.shared.currentLanguage.acceptLanguageHeader, forHTTPHeaderField: "Accept-Language")
         if let token = accessToken {
             req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }

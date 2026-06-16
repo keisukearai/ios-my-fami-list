@@ -172,7 +172,7 @@ final class AuthViewModel: NSObject {
         do {
             let result = try await GIDSignIn.sharedInstance.signIn(withPresenting: root)
             guard let idToken = result.user.idToken?.tokenString else {
-                errorMessage = "Google Sign In に失敗しました"
+                errorMessage = String(localized: "Google Sign In failed")
                 return
             }
             await signIn(provider: "\(APIClient.apiBase)/auth/google/", body: ["id_token": idToken])

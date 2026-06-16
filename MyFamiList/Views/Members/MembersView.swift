@@ -9,12 +9,12 @@ struct MembersView: View {
 
     private var headerSub: String? {
         guard let group else { return nil }
-        return "\(group.members.count)人が参加中"
+        return String(format: String(localized: "%d members joined"), group.members.count)
     }
 
     var body: some View {
         VStack(spacing: 0) {
-            AppHeader("メンバー", sub: headerSub)
+            AppHeader(String(localized: "Members"), sub: headerSub)
 
             Group {
                 if let group {
@@ -26,11 +26,11 @@ struct MembersView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .toolbar(.hidden, for: .navigationBar)
-        .alert("エラー", isPresented: Binding(
+        .alert(String(localized: "Error"), isPresented: Binding(
             get: { groupVM.errorMessage != nil },
             set: { if !$0 { groupVM.errorMessage = nil } }
         )) {
-            Button("OK") {}
+            Button(String(localized: "OK")) {}
         } message: {
             Text(groupVM.errorMessage ?? "")
         }
@@ -40,11 +40,11 @@ struct MembersView: View {
             }
         }
         .confirmationDialog(
-            "「\(kickTargetMember?.displayName ?? "")」をグループから削除しますか？",
+            String(format: String(localized: "Remove \"%@\" from the group?"), kickTargetMember?.displayName ?? ""),
             isPresented: Binding(get: { kickTargetMember != nil }, set: { if !$0 { kickTargetMember = nil } }),
             titleVisibility: .visible
         ) {
-            Button("削除する", role: .destructive) {
+            Button(String(localized: "Remove"), role: .destructive) {
                 if let member = kickTargetMember, let groupId = group?.id {
                     Task { await groupVM.kickMember(groupId: groupId, userId: member.id) }
                 }
@@ -58,7 +58,7 @@ struct MembersView: View {
             VStack(spacing: AppTheme.secGap) {
                 memberListCard(group: group)
                 inviteButton
-                Text("無料プランは3人まで")
+                Text("Free plan: up to 3 members")
                     .font(.system(size: 12.5))
                     .foregroundStyle(AppTheme.textTer)
             }
@@ -78,7 +78,7 @@ struct MembersView: View {
                             Button(role: .destructive) {
                                 kickTargetMember = member
                             } label: {
-                                Label("グループから削除", systemImage: "person.fill.xmark")
+                                Label(String(localized: "Remove from Group"), systemImage: "person.fill.xmark")
                             }
                         }
                     }
@@ -106,7 +106,7 @@ struct MembersView: View {
                 Text(member.displayName)
                     .font(.system(size: 16.5, weight: .semibold))
                     .foregroundStyle(AppTheme.text)
-                Text(member.id == group.ownerId ? "オーナー" : "メンバー")
+                Text(member.id == group.ownerId ? String(localized: "Owner") : String(localized: "Members"))
                     .font(.system(size: 13))
                     .foregroundStyle(AppTheme.textSec)
             }
@@ -128,7 +128,7 @@ struct MembersView: View {
             HStack(spacing: 10) {
                 Image(systemName: "person.badge.plus")
                     .font(.system(size: 17))
-                Text("メンバーを招待")
+                Text("Invite Members")
                     .font(.system(size: 17, weight: .semibold))
             }
             .frame(maxWidth: .infinity)
@@ -145,7 +145,7 @@ struct MembersView: View {
             Image(systemName: "person.3")
                 .font(.system(size: 52))
                 .foregroundStyle(AppTheme.textTer)
-            Text("グループを選択してください")
+            Text("Please select a group")
                 .font(.system(size: 17))
                 .foregroundStyle(AppTheme.textSec)
         }
@@ -171,7 +171,7 @@ struct InviteCodeSheet: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 24) {
-                Text("このコードを相手に共有してください")
+                Text("Share this code with the person you want to invite.")
                     .font(.system(size: 14))
                     .foregroundStyle(AppTheme.textSec)
                     .multilineTextAlignment(.center)
@@ -189,10 +189,10 @@ struct InviteCodeSheet: View {
                 if let inviteURL = URL(string: "https://ios.kotoragk.com/invite/\(currentCode)") {
                     ShareLink(
                         item: inviteURL,
-                        subject: Text("FamiList グループへの招待"),
-                        message: Text("FamiList でグループ「\(group.name)」に参加してください")
+                        subject: Text("FamiList Group Invitation"),
+                        message: Text("Join the group \"\(group.name)\" on FamiList")
                     ) {
-                        Label("リンクを共有", systemImage: "square.and.arrow.up")
+                        Label("Share Link", systemImage: "square.and.arrow.up")
                             .frame(maxWidth: .infinity)
                             .frame(height: 52)
                             .background(AppTheme.primary)
@@ -202,7 +202,7 @@ struct InviteCodeSheet: View {
                 }
 
                 Button { copyCode() } label: {
-                    Label(copied ? "コピーしました" : "コードをコピー",
+                    Label(copied ? String(localized: "Copied!") : String(localized: "Copy Code"),
                           systemImage: copied ? "checkmark" : "doc.on.doc")
                         .frame(maxWidth: .infinity)
                         .frame(height: 52)
@@ -225,7 +225,7 @@ struct InviteCodeSheet: View {
                             if isRegenerating {
                                 ProgressView().tint(AppTheme.textSec)
                             } else {
-                                Label("招待コードを再生成", systemImage: "arrow.clockwise")
+                                Label(String(localized: "Regenerate Invite Code"), systemImage: "arrow.clockwise")
                                     .font(.system(size: 14))
                                     .foregroundStyle(AppTheme.textSec)
                             }
@@ -234,7 +234,7 @@ struct InviteCodeSheet: View {
                     .disabled(isRegenerating)
                 }
 
-                Text("リンクをタップするとアプリが開いてグループに参加できます。アプリ未インストールの場合は App Store に案内されます。")
+                Text("Tap the link to join the group in the app. If not installed, you'll be directed to the App Store.")
                     .font(.system(size: 13))
                     .foregroundStyle(AppTheme.textSec)
                     .multilineTextAlignment(.center)
@@ -243,11 +243,11 @@ struct InviteCodeSheet: View {
             }
             .padding(24)
             .background(AppTheme.bg)
-            .navigationTitle("「\(group.name)」に招待")
+            .navigationTitle(String(format: String(localized: "Invite to %@"), group.name))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("閉じる") { dismiss() }
+                    Button(String(localized: "Close")) { dismiss() }
                 }
             }
         }

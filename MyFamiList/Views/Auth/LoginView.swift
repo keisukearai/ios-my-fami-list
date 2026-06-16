@@ -77,7 +77,7 @@ struct LoginView: View {
                 Text("MyFamiList")
                     .font(.system(size: 33, weight: .bold))
                     .foregroundStyle(AppTheme.text)
-                Text("家族やグループの買い物リストを、\nみんなで共有。")
+                Text("Share shopping lists with family and groups.")
                     .font(.system(size: 15))
                     .foregroundStyle(AppTheme.textSec)
                     .multilineTextAlignment(.center)
@@ -105,7 +105,7 @@ struct LoginView: View {
             } label: {
                 HStack(spacing: 10) {
                     googleLogo
-                    Text("Googleで続ける")
+                    Text("Continue with Google")
                         .font(.system(size: 17, weight: .medium))
                 }
                 .frame(maxWidth: .infinity)
@@ -125,7 +125,7 @@ struct LoginView: View {
                 HStack(spacing: 10) {
                     Image(systemName: "envelope")
                         .font(.system(size: 17, weight: .medium))
-                    Text("メールアドレスで続ける")
+                    Text("Continue with Email")
                         .font(.system(size: 17, weight: .medium))
                 }
                 .frame(maxWidth: .infinity)
@@ -172,7 +172,7 @@ struct LoginView: View {
     // MARK: - Terms
 
     private var termsText: some View {
-        Text("続けることで利用規約とプライバシーポリシーに同意します。")
+        Text("By continuing, you agree to our Terms of Service and Privacy Policy.")
             .font(.system(size: 11.5))
             .foregroundStyle(AppTheme.textTer)
             .multilineTextAlignment(.center)

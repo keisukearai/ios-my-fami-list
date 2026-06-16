@@ -28,23 +28,23 @@ struct EditProfileSheet: View {
                 .padding(.bottom, 40)
             }
             .background(AppTheme.bg)
-            .navigationTitle("プロフィールを編集")
+            .navigationTitle(String(localized: "Edit Profile"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("キャンセル") { dismiss() }
+                    Button(String(localized: "Cancel")) { dismiss() }
                         .disabled(isSaving)
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     if isSaving {
                         ProgressView()
                     } else {
-                        Button("保存") { save() }
+                        Button(String(localized: "Save")) { save() }
                     }
                 }
             }
-            .alert("エラー", isPresented: .constant(errorMessage != nil), actions: {
-                Button("OK") { errorMessage = nil }
+            .alert(String(localized: "Error"), isPresented: .constant(errorMessage != nil), actions: {
+                Button(String(localized: "OK")) { errorMessage = nil }
             }, message: {
                 Text(errorMessage ?? "")
             })
@@ -74,7 +74,7 @@ struct EditProfileSheet: View {
 
             HStack(spacing: 16) {
                 PhotosPicker(selection: $selectedPhoto, matching: .images) {
-                    Label("写真を選択", systemImage: "photo")
+                    Label(String(localized: "Select Photo"), systemImage: "photo")
                         .font(.system(size: 14))
                         .foregroundStyle(AppTheme.primary)
                 }
@@ -84,7 +84,7 @@ struct EditProfileSheet: View {
                         photoBase64 = ""
                         selectedPhoto = nil
                     } label: {
-                        Label("写真を削除", systemImage: "trash")
+                        Label(String(localized: "Delete Photo"), systemImage: "trash")
                             .font(.system(size: 14))
                             .foregroundStyle(AppTheme.deleteText)
                     }
@@ -100,13 +100,13 @@ struct EditProfileSheet: View {
 
     private var formFields: some View {
         VStack(spacing: 0) {
-            formRow(label: "表示名") {
-                TextField("名前", text: $displayName)
+            formRow(label: String(localized: "Display Name")) {
+                TextField(String(localized: "Name"), text: $displayName)
                     .font(.system(size: 16))
                     .multilineTextAlignment(.trailing)
             }
             Divider().padding(.leading, 16)
-            formRow(label: "アイコン絵文字") {
+            formRow(label: String(localized: "Icon Emoji")) {
                 TextField("😊", text: $avatarEmoji)
                     .font(.system(size: 20))
                     .multilineTextAlignment(.trailing)
@@ -134,7 +134,7 @@ struct EditProfileSheet: View {
 
     private var colorSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("アイコンの色（写真なし時）")
+            Text("Icon Color (when no photo)")
                 .font(.system(size: 13))
                 .foregroundStyle(AppTheme.textSec)
                 .padding(.leading, 4)

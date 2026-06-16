@@ -45,34 +45,34 @@ struct GroupPickerSheet: View {
                 .padding(.bottom, 24)
             }
             .background(AppTheme.bg)
-            .navigationTitle("グループ")
+            .navigationTitle(String(localized: "Manage Groups"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("閉じる") { dismiss() }
+                    Button(String(localized: "Close")) { dismiss() }
                 }
             }
             .sheet(isPresented: $showCreateGroup) { createGroupSheet }
             .sheet(isPresented: $showJoinGroup) { joinGroupSheet }
             .sheet(isPresented: $showPaywall) { PaywallSheet() }
-            .alert("グループ名を変更", isPresented: $showRenameGroup) {
-                TextField("グループ名", text: $renameGroupText)
-                Button("保存") {
+            .alert(String(localized: "Rename Group"), isPresented: $showRenameGroup) {
+                TextField(String(localized: "Group name"), text: $renameGroupText)
+                Button(String(localized: "Save")) {
                     guard let id = renameGroupId else { return }
                     let name = renameGroupText.trimmingCharacters(in: .whitespaces)
                     guard !name.isEmpty else { return }
                     Task { await groupVM.updateGroup(id: id, name: name) }
                 }
-                Button("キャンセル", role: .cancel) {}
+                Button(String(localized: "Cancel"), role: .cancel) {}
             }
-            .confirmationDialog("グループを削除しますか？", isPresented: $showDeleteGroupConfirm, titleVisibility: .visible) {
-                Button("削除する", role: .destructive) {
+            .confirmationDialog(String(localized: "Delete this group?"), isPresented: $showDeleteGroupConfirm, titleVisibility: .visible) {
+                Button(String(localized: "Delete"), role: .destructive) {
                     guard let id = pendingDeleteGroupId else { return }
                     Task { await groupVM.deleteGroup(id: id); dismiss() }
                 }
             }
-            .confirmationDialog("グループを脱退しますか？", isPresented: $showLeaveGroupConfirm, titleVisibility: .visible) {
-                Button("脱退する", role: .destructive) {
+            .confirmationDialog(String(localized: "Leave this group?"), isPresented: $showLeaveGroupConfirm, titleVisibility: .visible) {
+                Button(String(localized: "Leave"), role: .destructive) {
                     guard let id = pendingLeaveGroupId else { return }
                     Task { await groupVM.leaveGroup(id: id); dismiss() }
                 }
@@ -80,11 +80,11 @@ struct GroupPickerSheet: View {
         }
         .presentationDetents([.medium, .large])
         .presentationDragIndicator(.visible)
-        .alert("エラー", isPresented: Binding(
+        .alert(String(localized: "Error"), isPresented: Binding(
             get: { groupVM.errorMessage != nil },
             set: { if !$0 { groupVM.errorMessage = nil } }
         )) {
-            Button("OK") {}
+            Button(String(localized: "OK")) {}
         } message: {
             Text(groupVM.errorMessage ?? "")
         }
@@ -108,17 +108,17 @@ struct GroupPickerSheet: View {
                             renameGroupId = group.id
                             renameGroupText = group.name
                             showRenameGroup = true
-                        } label: { Label("グループ名を変更", systemImage: "pencil") }
+                        } label: { Label(String(localized: "Rename Group"), systemImage: "pencil") }
                         Divider()
                         Button(role: .destructive) {
                             pendingDeleteGroupId = group.id
                             showDeleteGroupConfirm = true
-                        } label: { Label("グループを削除", systemImage: "trash") }
+                        } label: { Label(String(localized: "Delete Group"), systemImage: "trash") }
                     } else {
                         Button(role: .destructive) {
                             pendingLeaveGroupId = group.id
                             showLeaveGroupConfirm = true
-                        } label: { Label("グループを脱退", systemImage: "rectangle.portrait.and.arrow.right") }
+                        } label: { Label(String(localized: "Leave Group"), systemImage: "rectangle.portrait.and.arrow.right") }
                     }
                 }
 
@@ -145,7 +145,7 @@ struct GroupPickerSheet: View {
                 Text(group.name)
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundStyle(AppTheme.text)
-                Text("\(group.listCount)個のリスト ・ \(group.memberCount)人")
+                Text(String(format: String(localized: "%d lists · %d members"), group.listCount, group.memberCount))
                     .font(.system(size: 13))
                     .foregroundStyle(AppTheme.textSec)
             }
@@ -170,7 +170,7 @@ struct GroupPickerSheet: View {
             Image(systemName: "person.3")
                 .font(.system(size: 40))
                 .foregroundStyle(AppTheme.textTer)
-            Text("グループがありません")
+            Text("No groups")
                 .font(.system(size: 16))
                 .foregroundStyle(AppTheme.textSec)
         }
@@ -183,7 +183,7 @@ struct GroupPickerSheet: View {
             HStack(spacing: 10) {
                 Image(systemName: "person.badge.plus")
                     .font(.system(size: 15, weight: .medium))
-                Text("招待コードで参加")
+                Text("Join with Invite Code")
                     .font(.system(size: 16, weight: .medium))
             }
             .frame(maxWidth: .infinity)
@@ -205,7 +205,7 @@ struct GroupPickerSheet: View {
             HStack(spacing: 10) {
                 Image(systemName: "plus")
                     .font(.system(size: 15, weight: .medium))
-                Text("新しいグループ")
+                Text("New Group")
                     .font(.system(size: 16, weight: .medium))
             }
             .frame(maxWidth: .infinity)
@@ -222,10 +222,10 @@ struct GroupPickerSheet: View {
         NavigationStack {
             VStack(spacing: 24) {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("グループ名")
+                    Text("Group name")
                         .font(.system(size: 13))
                         .foregroundStyle(AppTheme.textSec)
-                    TextField("例: 山田家、職場の買い出し", text: $newGroupName)
+                    TextField(String(localized: "e.g. Smith Family, Office Groceries"), text: $newGroupName)
                         .font(.system(size: 16))
                         .padding(.horizontal, 14)
                         .frame(height: 50)
@@ -252,7 +252,7 @@ struct GroupPickerSheet: View {
                         if isProcessing {
                             ProgressView().tint(.white)
                         } else {
-                            Text("グループを作成")
+                            Text("Create Group")
                                 .font(.system(size: 17, weight: .semibold))
                         }
                     }
@@ -266,11 +266,11 @@ struct GroupPickerSheet: View {
             }
             .padding(20)
             .background(AppTheme.bg)
-            .navigationTitle("グループを作成")
+            .navigationTitle(String(localized: "Create Group"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("キャンセル") { showCreateGroup = false }
+                    Button(String(localized: "Cancel")) { showCreateGroup = false }
                 }
             }
         }
@@ -281,10 +281,10 @@ struct GroupPickerSheet: View {
         NavigationStack {
             VStack(spacing: 24) {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("招待コード")
+                    Text("Invite code")
                         .font(.system(size: 13))
                         .foregroundStyle(AppTheme.textSec)
-                    TextField("例: ABCD12", text: $inviteCode)
+                    TextField(String(localized: "e.g. ABCD12"), text: $inviteCode)
                         .font(.system(size: 20, design: .monospaced))
                         .textInputAutocapitalization(.characters)
                         .autocorrectionDisabled()
@@ -322,7 +322,7 @@ struct GroupPickerSheet: View {
                         if isProcessing {
                             ProgressView().tint(.white)
                         } else {
-                            Text("参加する")
+                            Text("Join")
                                 .font(.system(size: 17, weight: .semibold))
                         }
                     }
@@ -336,11 +336,11 @@ struct GroupPickerSheet: View {
             }
             .padding(20)
             .background(AppTheme.bg)
-            .navigationTitle("招待コードで参加")
+            .navigationTitle(String(localized: "Join with Invite Code"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("キャンセル") {
+                    Button(String(localized: "Cancel")) {
                         showJoinGroup = false
                         inviteCode = ""
                         sheetError = nil

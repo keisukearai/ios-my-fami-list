@@ -24,15 +24,15 @@ struct PaywallSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("キャンセル") { dismiss() }
+                    Button(String(localized: "Cancel")) { dismiss() }
                 }
             }
         }
         .task {
             product = await purchaseService.loadProduct()
         }
-        .alert("エラー", isPresented: $showingError) {
-            Button("OK") {}
+        .alert(String(localized: "Error"), isPresented: $showingError) {
+            Button(String(localized: "OK")) {}
         } message: {
             Text(errorMessage)
         }
@@ -47,12 +47,12 @@ struct PaywallSheet: View {
                 .font(.system(size: 60))
                 .foregroundStyle(.yellow)
 
-            Text("FamiList Pro にアップグレード")
+            Text("Upgrade to FamiList Pro")
                 .font(.title2)
                 .fontWeight(.bold)
                 .multilineTextAlignment(.center)
 
-            Text("家族みんなで使える\nすべての機能をロック解除")
+            Text("Unlock all features for your family")
                 .font(.body)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -62,9 +62,9 @@ struct PaywallSheet: View {
 
     private var featuresSection: some View {
         VStack(alignment: .leading, spacing: 16) {
-            ProFeatureRow(icon: "person.3.fill", text: "グループを何個でも作成できる")
-            ProFeatureRow(icon: "list.bullet", text: "リストを何個でも作成できる")
-            ProFeatureRow(icon: "person.badge.plus", text: "メンバーを何人でも招待できる")
+            ProFeatureRow(icon: "person.3.fill", text: String(localized: "Create unlimited groups"))
+            ProFeatureRow(icon: "list.bullet", text: String(localized: "Create unlimited lists"))
+            ProFeatureRow(icon: "person.badge.plus", text: String(localized: "Invite unlimited members"))
         }
         .padding(20)
         .background(Color(.systemGray6), in: RoundedRectangle(cornerRadius: 16))
@@ -95,13 +95,13 @@ struct PaywallSheet: View {
             .disabled(isPurchasing)
             .padding(.horizontal)
 
-            Button("購入を復元") {
+            Button(String(localized: "Restore Purchase")) {
                 Task { await performRestore() }
             }
             .font(.footnote)
             .foregroundStyle(.secondary)
 
-            Link("プライバシーポリシー", destination: URL(string: "https://kotoragk.com/familist/privacy")!)
+            Link(String(localized: "Privacy Policy"), destination: URL(string: "https://kotoragk.com/familist/privacy")!)
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }

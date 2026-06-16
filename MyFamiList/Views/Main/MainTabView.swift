@@ -47,21 +47,21 @@ struct MainTabView: View {
         .sheet(isPresented: $showGroupPicker) {
             GroupPickerSheet(groupVM: groupVM)
         }
-        .alert("グループへの招待", isPresented: Binding(
+        .alert(String(localized: "Join Group"), isPresented: Binding(
             get: { inviteHandler.pendingCode != nil },
             set: { if !$0 { inviteHandler.pendingCode = nil } }
         )) {
-            Button("参加する") {
+            Button(String(localized: "Join")) {
                 let code = inviteHandler.pendingCode ?? ""
                 inviteHandler.pendingCode = nil
                 Task { try? await groupVM.joinGroup(inviteCode: code) }
             }
-            Button("キャンセル", role: .cancel) {
+            Button(String(localized: "Cancel"), role: .cancel) {
                 inviteHandler.pendingCode = nil
             }
         } message: {
             if let code = inviteHandler.pendingCode {
-                Text("招待コード「\(code)」でグループに参加しますか？")
+                Text("Join group with invite code \"\(code)\"?")
             }
         }
         .task { groupVM.start() }
@@ -74,11 +74,13 @@ struct MainTabView: View {
 private struct CustomTabBar: View {
     @Binding var selectedTab: Int
 
-    private let items: [(icon: String, label: String)] = [
-        ("cart",      "リスト"),
-        ("person.2",  "メンバー"),
-        ("gearshape", "設定"),
-    ]
+    private var items: [(icon: String, label: String)] {
+        [
+            ("cart",      String(localized: "Lists")),
+            ("person.2",  String(localized: "Members")),
+            ("gearshape", String(localized: "Settings")),
+        ]
+    }
 
     var body: some View {
         VStack(spacing: 0) {

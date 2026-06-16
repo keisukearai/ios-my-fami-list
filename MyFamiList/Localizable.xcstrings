@@ -1,0 +1,543 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "System Default" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "システムデフォルト" } } }
+    },
+    "Language" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "言語" } } }
+    },
+    "Settings" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "設定" } } }
+    },
+    "Pro Plan" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "Pro プラン" } } }
+    },
+    "Free Plan" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "無料プラン" } } }
+    },
+    "Language changed. Please restart the app to apply." : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "言語を変更しました。アプリを再起動すると反映されます。" } } }
+    },
+    "OK" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "OK" } } }
+    },
+    "Cancel" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "キャンセル" } } }
+    },
+    "Save" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "保存" } } }
+    },
+    "Close" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "閉じる" } } }
+    },
+    "Error" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "エラー" } } }
+    },
+    "Done" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "完了" } } }
+    },
+    "Delete" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "削除" } } }
+    },
+    "Remove" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "削除する" } } }
+    },
+    "User" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "ユーザー" } } }
+    },
+    "None" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "なし" } } }
+    },
+    "5 min" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "5分" } } }
+    },
+    "15 min" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "15分" } } }
+    },
+    "30 min" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "30分" } } }
+    },
+    "1 hour" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "1時間" } } }
+    },
+    "Signed in with Apple ID" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "Apple ID でサインイン中" } } }
+    },
+    "Signed in with Google" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "Google でサインイン中" } } }
+    },
+    "Signed in with Email" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "メールでサインイン中" } } }
+    },
+    "Upgrade to Pro" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "Pro にアップグレード" } } }
+    },
+    "Notification Interval" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "通知間隔" } } }
+    },
+    "Change Password" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "パスワードを変更" } } }
+    },
+    "Manage Categories" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "カテゴリの管理" } } }
+    },
+    "Privacy Policy" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "プライバシーポリシー" } } }
+    },
+    "Sign Out" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "サインアウト" } } }
+    },
+    "Delete Account" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "アカウントを削除" } } }
+    },
+    "Network" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "ネットワーク" } } }
+    },
+    "Online" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "オンライン" } } }
+    },
+    "Offline" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "オフライン" } } }
+    },
+    "Sign out?" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "サインアウトしますか？" } } }
+    },
+    "Your account and all data will be deleted. This cannot be undone." : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "アカウントとすべてのデータが削除されます。この操作は取り消せません。" } } }
+    },
+    "Lists" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "リスト" } } }
+    },
+    "Members" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "メンバー" } } }
+    },
+    "Join Group" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "グループに参加" } } }
+    },
+    "Join" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "参加する" } } }
+    },
+    "No lists" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "リストがありません" } } }
+    },
+    "Add List" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "リストを追加" } } }
+    },
+    "List name" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "リスト名" } } }
+    },
+    "Add" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "追加" } } }
+    },
+    "Select Group" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "グループを選択" } } }
+    },
+    "Rename List" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "リスト名を変更" } } }
+    },
+    "Clear Checked Items" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "買い物完了（チェック済みを削除）" } } }
+    },
+    "Delete List" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "リストを削除" } } }
+    },
+    "Delete all checked items?" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "チェック済みをすべて削除しますか？" } } }
+    },
+    "Edit Item" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "商品を編集" } } }
+    },
+    "Delete This Item" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "このアイテムを削除" } } }
+    },
+    "Item Name" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "商品名" } } }
+    },
+    "Quantity" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "数量" } } }
+    },
+    "Category" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "カテゴリ" } } }
+    },
+    "Memo" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "メモ" } } }
+    },
+    "Name" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "名前" } } }
+    },
+    "Just now" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "たった今" } } }
+    },
+    "Manage Groups" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "グループを管理" } } }
+    },
+    "Rename Group" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "グループ名を変更" } } }
+    },
+    "Delete Group" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "グループを削除" } } }
+    },
+    "Leave Group" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "グループを脱退" } } }
+    },
+    "No groups yet\nCreate your first group" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "グループがありません\nまずはグループを作成しましょう" } } }
+    },
+    "Create Group" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "グループを作成" } } }
+    },
+    "Group name" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "グループ名" } } }
+    },
+    "Invite code" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "招待コード" } } }
+    },
+    "Create" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "作成" } } }
+    },
+    "Delete this group?" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "グループを削除してもよいですか？" } } }
+    },
+    "Leave this group?" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "グループから脱退しますか？" } } }
+    },
+    "Default (cannot be modified)" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "デフォルト（変更不可）" } } }
+    },
+    "Custom" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "カスタム" } } }
+    },
+    "Add Category" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "カテゴリを追加" } } }
+    },
+    "Edit Category" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "カテゴリを編集" } } }
+    },
+    "Category name" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "カテゴリ名" } } }
+    },
+    "Owner" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "オーナー" } } }
+    },
+    "Free plan: up to 3 members" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "無料プランは3人まで" } } }
+    },
+    "Copied!" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "コピーしました" } } }
+    },
+    "Copy Code" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "コードをコピー" } } }
+    },
+    "Regenerate Invite Code" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "招待コードを再生成" } } }
+    },
+    "Tap the link to join the group in the app. If not installed, you'll be directed to the App Store." : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "リンクをタップするとアプリが開いてグループに参加できます。アプリ未インストールの場合は App Store に案内されます。" } } }
+    },
+    "Reset Password" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "パスワードのリセット" } } }
+    },
+    "We'll send a confirmation code to your registered email address." : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "登録済みのメールアドレスに\n確認コードを送信します。" } } }
+    },
+    "Email Address" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "メールアドレス" } } }
+    },
+    "Send Code" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "コードを送信" } } }
+    },
+    "Confirmation code" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "確認コードを入力" } } }
+    },
+    "New password" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "新しいパスワード" } } }
+    },
+    "Reset" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "リセット" } } }
+    },
+    "Password Reset Complete" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "パスワードリセット完了" } } }
+    },
+    "Please sign in with your new password." : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "新しいパスワードでサインインしてください。" } } }
+    },
+    "Share shopping lists with family and groups." : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "家族やグループの買い物リストを、\nみんなで共有。" } } }
+    },
+    "Continue with Google" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "Googleで続ける" } } }
+    },
+    "Continue with Email" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "メールアドレスで続ける" } } }
+    },
+    "By continuing, you agree to our Terms of Service and Privacy Policy." : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "続けることで利用規約とプライバシーポリシーに同意します。" } } }
+    },
+    "Google Sign In failed" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "Google Sign In に失敗しました" } } }
+    },
+    "Invalid URL" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "URLが不正です" } } }
+    },
+    "Authentication required" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "認証が必要です" } } }
+    },
+    "Unknown error" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "不明なエラー" } } }
+    },
+    "No internet connection" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "インターネット接続がありません" } } }
+    },
+    "Cannot connect to server" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "サーバーに接続できません" } } }
+    },
+    "Connection timed out" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "接続がタイムアウトしました" } } }
+    },
+    "Network connection lost" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "ネットワーク接続が切断されました" } } }
+    },
+    "Server not found" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "サーバーが見つかりません" } } }
+    },
+    "Network error" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "通信エラー" } } }
+    },
+    "Edit Profile" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "プロフィールを編集" } } }
+    },
+    "Select Photo" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "写真を選択" } } }
+    },
+    "Delete Photo" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "写真を削除" } } }
+    },
+    "Display Name" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "表示名" } } }
+    },
+    "Icon Emoji" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "アイコン絵文字" } } }
+    },
+    "Icon Color (when no photo)" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "アイコンの色（写真なし時）" } } }
+    },
+    "Upgrade to FamiList Pro" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "FamiList Pro にアップグレード" } } }
+    },
+    "Unlock all features for your family" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "家族みんなで使える\nすべての機能をロック解除" } } }
+    },
+    "Create unlimited groups" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "グループを何個でも作成できる" } } }
+    },
+    "Create unlimited lists" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "リストを何個でも作成できる" } } }
+    },
+    "Invite unlimited members" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "メンバーを何人でも招待できる" } } }
+    },
+    "Restore Purchase" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "購入を復元" } } }
+    },
+    "Current Password" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "現在のパスワード" } } }
+    },
+    "New Password" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "新しいパスワード" } } }
+    },
+    "Confirm Password" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "確認" } } }
+    },
+    "Change" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "変更する" } } }
+    },
+    "Passwords do not match" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "パスワードが一致しません" } } }
+    },
+    "Password changed successfully" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "パスワードを変更しました" } } }
+    },
+    "Please sign in again." : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "再度サインインしてください。" } } }
+    },
+    "You can create a list from \"Add List\"" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "「リストを追加」からリストを作成できます" } } }
+    },
+    "added" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "が追加" } } }
+    },
+    "Deleting your account will also delete %d group(s) you own and all lists. This cannot be undone." : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "アカウントを削除すると、あなたがオーナーの%d個のグループとすべてのリストも削除されます。この操作は取り消せません。" } } }
+    },
+    "Sign in" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "サインイン" } } }
+    },
+    "Sign In" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "サインイン" } } }
+    },
+    "No groups" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "グループがありません" } } }
+    },
+    "Invite" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "招待" } } }
+    },
+    "%d members joined" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "%d人が参加中" } } }
+    },
+    "Remove \"%@\" from the group?" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "「%@」をグループから削除しますか？" } } }
+    },
+    "Remove from Group" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "グループから削除" } } }
+    },
+    "Please select a group" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "グループを選択してください" } } }
+    },
+    "Share this code with the person you want to invite." : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "このコードを相手に共有してください" } } }
+    },
+    "FamiList Group Invitation" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "FamiList グループへの招待" } } }
+    },
+    "Join the group \"%@\" on FamiList" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "FamiList でグループ「%@」に参加してください" } } }
+    },
+    "Share Link" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "リンクを共有" } } }
+    },
+    "Invite to %@" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "「%@」に招待" } } }
+    },
+    "Invite Members" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "メンバーを招待" } } }
+    },
+    "Join group with invite code \"%@\"?" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "招待コード「%@」でグループに参加しますか？" } } }
+    },
+    "Free plan: up to 2 lists" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "無料プランは2つまで" } } }
+    },
+    "Create a group or join with an invite code." : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "グループを作成するか\n招待コードで参加してください" } } }
+    },
+    "e.g. This week's supermarket" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "例: 今週のスーパー" } } }
+    },
+    "No items" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "商品なし" } } }
+    },
+    "Done 🎉" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "完了 🎉" } } }
+    },
+    "%d remaining · %d total" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "残り%d品 ・ 全%d品" } } }
+    },
+    "In Cart (%d)" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "カゴに入れた (%d)" } } }
+    },
+    "No unpurchased items" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "未購入の商品はありません" } } }
+    },
+    "Add items from the input below" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "下の入力欄から商品を追加してください" } } }
+    },
+    "+ Add item…" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "＋ 商品を追加…" } } }
+    },
+    "%d min ago" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "%d分前" } } }
+    },
+    "%d hr ago" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "%d時間前" } } }
+    },
+    "%d day ago" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "%d日前" } } }
+    },
+    "e.g. Milk" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "例: 牛乳" } } }
+    },
+    "e.g. 2 / 300g" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "例: 2本 / 300g" } } }
+    },
+    "Optional" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "任意" } } }
+    },
+    "%d lists · %d members" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "%d個のリスト ・ %d人" } } }
+    },
+    "Join with Invite Code" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "招待コードで参加" } } }
+    },
+    "New Group" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "新しいグループ" } } }
+    },
+    "e.g. Smith Family, Office Groceries" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "例: 山田家、職場の買い出し" } } }
+    },
+    "e.g. ABCD12" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "例: ABCD12" } } }
+    },
+    "Leave" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "脱退する" } } }
+    },
+    "No custom categories yet" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "カスタムカテゴリはまだありません" } } }
+    },
+    "Deleting will not affect existing items" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "削除しても既存のアイテムには変更が反映されません" } } }
+    },
+    "New Password (8+ characters)" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "新しいパスワード（8文字以上）" } } }
+    },
+    "New Password (confirm)" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "新しいパスワード（確認）" } } }
+    },
+    "Please fill in all fields" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "すべての項目を入力してください" } } }
+    },
+    "New password must be at least 8 characters" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "新しいパスワードは8文字以上にしてください" } } }
+    },
+    "Sign In with Email" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "メールでログイン" } } }
+    },
+    "Sign Up" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "新規登録" } } }
+    },
+    "Mode" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "モード" } } }
+    },
+    "Sign In" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "ログイン" } } }
+    },
+    "Register" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "登録する" } } }
+    },
+    "Password (8+ characters)" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "パスワード（8文字以上）" } } }
+    },
+    "Forgot your password?" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "パスワードを忘れた方はこちら" } } }
+    },
+    "Please enter your email and password" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "メールアドレスとパスワードを入力してください" } } }
+    },
+    "Enter the 6-digit code sent to %@." : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "%@ に送信した\n6桁のコードを入力してください。" } } }
+    },
+    "Confirmation code (6 digits)" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "確認コード（6桁）" } } }
+    },
+    "New password (8+ characters)" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "新しいパスワード（8文字以上）" } } }
+    },
+    "Please enter your email address" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "メールアドレスを入力してください" } } }
+    },
+    "Please enter the code and new password (8+ characters)" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "コードと新しいパスワード（8文字以上）を入力してください" } } }
+    }
+  },
+  "version" : "1.0"
+}

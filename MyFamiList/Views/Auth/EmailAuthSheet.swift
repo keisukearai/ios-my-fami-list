@@ -28,11 +28,11 @@ struct EmailAuthSheet: View {
                     .padding(.top, 32)
                 }
             }
-            .navigationTitle(isLogin ? "メールでログイン" : "新規登録")
+            .navigationTitle(isLogin ? String(localized: "Sign In with Email") : String(localized: "Sign Up"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("キャンセル") { dismiss() }
+                    Button(String(localized: "Cancel")) { dismiss() }
                 }
             }
             .disabled(authVM.isLoading)
@@ -53,9 +53,9 @@ struct EmailAuthSheet: View {
     }
 
     private var modePicker: some View {
-        Picker("モード", selection: $isLogin) {
-            Text("ログイン").tag(true)
-            Text("新規登録").tag(false)
+        Picker(String(localized: "Mode"), selection: $isLogin) {
+            Text("Sign In").tag(true)
+            Text("Sign Up").tag(false)
         }
         .pickerStyle(.segmented)
         .onChange(of: isLogin) { _, _ in
@@ -74,13 +74,13 @@ struct EmailAuthSheet: View {
             }
 
             VStack(spacing: 0) {
-                TextField("メールアドレス", text: $email)
+                TextField(String(localized: "Email Address"), text: $email)
                     .textContentType(.emailAddress)
                     .keyboardType(.emailAddress)
                     .autocapitalization(.none)
                     .padding(14)
                 Divider()
-                SecureField("パスワード（8文字以上）", text: $password)
+                SecureField(String(localized: "Password (8+ characters)"), text: $password)
                     .textContentType(isLogin ? .password : .newPassword)
                     .padding(14)
             }
@@ -94,7 +94,7 @@ struct EmailAuthSheet: View {
         Button {
             Task { await submit() }
         } label: {
-            Text(isLogin ? "ログイン" : "登録する")
+            Text(isLogin ? String(localized: "Sign In") : String(localized: "Register"))
                 .font(.system(size: 17, weight: .semibold))
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity)
@@ -105,7 +105,7 @@ struct EmailAuthSheet: View {
     }
 
     private var forgotPasswordButton: some View {
-        Button("パスワードを忘れた方はこちら") {
+        Button(String(localized: "Forgot your password?")) {
             showPasswordReset = true
         }
         .font(.system(size: 14))
@@ -117,7 +117,7 @@ struct EmailAuthSheet: View {
         authVM.errorMessage = nil
         let trimmedEmail = email.trimmingCharacters(in: .whitespaces)
         guard !trimmedEmail.isEmpty, !password.isEmpty else {
-            localError = "メールアドレスとパスワードを入力してください"
+            localError = String(localized: "Please enter your email and password")
             return
         }
         if isLogin {
@@ -158,11 +158,11 @@ struct PasswordResetSheet: View {
                 .padding(.horizontal, 24)
                 .padding(.top, 32)
             }
-            .navigationTitle("パスワードリセット")
+            .navigationTitle(String(localized: "Reset Password"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("キャンセル") { dismiss() }
+                    Button(String(localized: "Cancel")) { dismiss() }
                 }
             }
             .disabled(isLoading)
@@ -178,7 +178,7 @@ struct PasswordResetSheet: View {
 
     private var emailStep: some View {
         VStack(spacing: 20) {
-            Text("登録済みのメールアドレスに\n確認コードを送信します。")
+            Text("We'll send a confirmation code to your registered email address.")
                 .font(.system(size: 15))
                 .foregroundStyle(AppTheme.textSec)
                 .multilineTextAlignment(.center)
@@ -187,7 +187,7 @@ struct PasswordResetSheet: View {
                 Text(error).font(.caption).foregroundStyle(.red).frame(maxWidth: .infinity, alignment: .leading)
             }
 
-            TextField("メールアドレス", text: $email)
+            TextField(String(localized: "Email Address"), text: $email)
                 .textContentType(.emailAddress)
                 .keyboardType(.emailAddress)
                 .autocapitalization(.none)
@@ -199,7 +199,7 @@ struct PasswordResetSheet: View {
             Button {
                 Task { await sendCode() }
             } label: {
-                Text("コードを送信")
+                Text("Send Code")
                     .font(.system(size: 17, weight: .semibold))
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity).frame(height: 54)
@@ -211,7 +211,7 @@ struct PasswordResetSheet: View {
 
     private var codeStep: some View {
         VStack(spacing: 20) {
-            Text("\(email) に送信した\n6桁のコードを入力してください。")
+            Text(String(format: String(localized: "Enter the 6-digit code sent to %@."), email))
                 .font(.system(size: 15))
                 .foregroundStyle(AppTheme.textSec)
                 .multilineTextAlignment(.center)
@@ -221,11 +221,11 @@ struct PasswordResetSheet: View {
             }
 
             VStack(spacing: 0) {
-                TextField("確認コード（6桁）", text: $code)
+                TextField(String(localized: "Confirmation code (6 digits)"), text: $code)
                     .keyboardType(.numberPad)
                     .padding(14)
                 Divider()
-                SecureField("新しいパスワード（8文字以上）", text: $newPassword)
+                SecureField(String(localized: "New password (8+ characters)"), text: $newPassword)
                     .textContentType(.newPassword)
                     .padding(14)
             }
@@ -236,7 +236,7 @@ struct PasswordResetSheet: View {
             Button {
                 Task { await confirmReset() }
             } label: {
-                Text("パスワードをリセット")
+                Text("Reset Password")
                     .font(.system(size: 17, weight: .semibold))
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity).frame(height: 54)
@@ -251,10 +251,10 @@ struct PasswordResetSheet: View {
             Image(systemName: "checkmark.circle.fill")
                 .font(.system(size: 56))
                 .foregroundStyle(AppTheme.primary)
-            Text("パスワードをリセットしました")
+            Text("Password Reset Complete")
                 .font(.system(size: 18, weight: .semibold))
                 .foregroundStyle(AppTheme.text)
-            Button("閉じる") { dismiss() }
+            Button(String(localized: "Close")) { dismiss() }
                 .font(.system(size: 17, weight: .semibold))
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity).frame(height: 54)
@@ -266,7 +266,7 @@ struct PasswordResetSheet: View {
     private func sendCode() async {
         errorMessage = nil
         let trimmed = email.trimmingCharacters(in: .whitespaces)
-        guard !trimmed.isEmpty else { errorMessage = "メールアドレスを入力してください"; return }
+        guard !trimmed.isEmpty else { errorMessage = String(localized: "Please enter your email address"); return }
         isLoading = true
         defer { isLoading = false }
         do {
@@ -280,7 +280,7 @@ struct PasswordResetSheet: View {
     private func confirmReset() async {
         errorMessage = nil
         guard !code.isEmpty, newPassword.count >= 8 else {
-            errorMessage = "コードと新しいパスワード（8文字以上）を入力してください"
+            errorMessage = String(localized: "Please enter the code and new password (8+ characters)")
             return
         }
         isLoading = true

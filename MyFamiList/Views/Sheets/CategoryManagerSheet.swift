@@ -20,11 +20,11 @@ struct CategoryManagerSheet: View {
                 .padding(.bottom, 32)
             }
             .background(AppTheme.bg)
-            .navigationTitle("カテゴリの管理")
+            .navigationTitle(String(localized: "Manage Categories"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("閉じる") { dismiss() }
+                    Button(String(localized: "Close")) { dismiss() }
                 }
                 ToolbarItem(placement: .primaryAction) {
                     Button {
@@ -42,11 +42,11 @@ struct CategoryManagerSheet: View {
             .sheet(item: $editTarget) { cat in
                 CategoryFormSheet(groupVM: groupVM, editing: cat)
             }
-            .alert("エラー", isPresented: Binding(
+            .alert(String(localized: "Error"), isPresented: Binding(
                 get: { errorMessage != nil },
                 set: { if !$0 { errorMessage = nil } }
             )) {
-                Button("OK") {}
+                Button(String(localized: "OK")) {}
             } message: {
                 Text(errorMessage ?? "")
             }
@@ -56,7 +56,7 @@ struct CategoryManagerSheet: View {
 
     private var defaultsSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("デフォルト（変更不可）")
+            Text("Default (cannot be modified)")
                 .font(.system(size: 13))
                 .foregroundStyle(AppTheme.textSec)
                 .padding(.leading, 4)
@@ -88,13 +88,13 @@ struct CategoryManagerSheet: View {
 
     private var customSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("カスタム")
+            Text("Custom")
                 .font(.system(size: 13))
                 .foregroundStyle(AppTheme.textSec)
                 .padding(.leading, 4)
 
             if groupVM.customCategories.isEmpty {
-                Text("カスタムカテゴリはまだありません")
+                Text("No custom categories yet")
                     .font(.system(size: 15))
                     .foregroundStyle(AppTheme.textTer)
                     .frame(maxWidth: .infinity, alignment: .center)
@@ -116,7 +116,7 @@ struct CategoryManagerSheet: View {
                 .cardShadow()
             }
 
-            Text("削除しても既存のアイテムには変更が反映されません")
+            Text("Deleting will not affect existing items")
                 .font(.system(size: 12))
                 .foregroundStyle(AppTheme.textTer)
                 .padding(.leading, 4)
@@ -184,7 +184,7 @@ struct CategoryFormSheet: View {
         NavigationStack {
             VStack(spacing: 24) {
                 VStack(spacing: 16) {
-                    TextField("カテゴリ名", text: $name)
+                    TextField(String(localized: "Category name"), text: $name)
                         .font(.system(size: 16))
                         .padding(12)
                         .background(AppTheme.fieldBg)
@@ -198,22 +198,22 @@ struct CategoryFormSheet: View {
             }
             .padding(.top, 24)
             .background(AppTheme.bg)
-            .navigationTitle(editing == nil ? "カテゴリを追加" : "カテゴリを編集")
+            .navigationTitle(editing == nil ? String(localized: "Add Category") : String(localized: "Edit Category"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("キャンセル") { dismiss() }
+                    Button(String(localized: "Cancel")) { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("保存") { save() }
+                    Button(String(localized: "Save")) { save() }
                         .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty || isSaving)
                 }
             }
-            .alert("エラー", isPresented: Binding(
+            .alert(String(localized: "Error"), isPresented: Binding(
                 get: { errorMessage != nil },
                 set: { if !$0 { errorMessage = nil } }
             )) {
-                Button("OK") {}
+                Button(String(localized: "OK")) {}
             } message: {
                 Text(errorMessage ?? "")
             }

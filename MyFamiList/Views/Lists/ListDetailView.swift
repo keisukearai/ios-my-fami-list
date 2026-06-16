@@ -55,17 +55,17 @@ struct ListDetailView: View {
             ItemDetailEditSheet(itemVM: itemVM, item: item, groupColor: groupColor, customCategories: groupVM.customCategories)
         }
         .confirmationDialog(
-            "チェック済みをすべて削除しますか？",
+            String(localized: "Delete all checked items?"),
             isPresented: $showClearConfirm,
             titleVisibility: .visible
         ) {
-            Button("削除する", role: .destructive) {
+            Button(String(localized: "Delete"), role: .destructive) {
                 Task { await itemVM.clearCheckedItems() }
             }
         }
-        .alert("リスト名を変更", isPresented: $showRenameAlert) {
-            TextField("リスト名", text: $renameText)
-            Button("保存") {
+        .alert(String(localized: "Rename List"), isPresented: $showRenameAlert) {
+            TextField(String(localized: "List name"), text: $renameText)
+            Button(String(localized: "Save")) {
                 let name = renameText.trimmingCharacters(in: .whitespaces)
                 guard !name.isEmpty else { return }
                 Task {
@@ -75,13 +75,13 @@ struct ListDetailView: View {
                     }
                 }
             }
-            Button("キャンセル", role: .cancel) {}
+            Button(String(localized: "Cancel"), role: .cancel) {}
         }
-        .alert("エラー", isPresented: Binding(
+        .alert(String(localized: "Error"), isPresented: Binding(
             get: { itemVM.errorMessage != nil },
             set: { if !$0 { itemVM.errorMessage = nil } }
         )) {
-            Button("OK") { itemVM.errorMessage = nil }
+            Button(String(localized: "OK")) { itemVM.errorMessage = nil }
         } message: {
             Text(itemVM.errorMessage ?? "")
         }
@@ -95,20 +95,20 @@ struct ListDetailView: View {
                 renameText = list.name
                 showRenameAlert = true
             } label: {
-                Label("リスト名を変更", systemImage: "pencil")
+                Label(String(localized: "Rename List"), systemImage: "pencil")
             }
             if !itemVM.checkedItems.isEmpty {
                 Button(role: .destructive) {
                     showClearConfirm = true
                 } label: {
-                    Label("買い物完了（チェック済みを削除）", systemImage: "checkmark.circle")
+                    Label(String(localized: "Clear Checked Items"), systemImage: "checkmark.circle")
                 }
             }
             if groupVM.currentGroup?.isOwner == true {
                 Button(role: .destructive) {
                     Task { await groupVM.deleteList(list); dismiss() }
                 } label: {
-                    Label("リストを削除", systemImage: "trash")
+                    Label(String(localized: "Delete List"), systemImage: "trash")
                 }
             }
         } label: {
@@ -141,7 +141,7 @@ struct ListDetailView: View {
                         Button(role: .destructive) {
                             Task { await itemVM.deleteItem(item) }
                         } label: {
-                            Label("削除", systemImage: "trash")
+                            Label(String(localized: "Delete"), systemImage: "trash")
                         }
                     }
                 }
@@ -197,7 +197,7 @@ struct ListDetailView: View {
                                 Button(role: .destructive) {
                                     Task { await itemVM.deleteItem(item) }
                                 } label: {
-                                    Label("削除", systemImage: "trash")
+                                    Label(String(localized: "Delete"), systemImage: "trash")
                                 }
                             }
                         }
@@ -207,7 +207,7 @@ struct ListDetailView: View {
                         withAnimation(.spring(duration: 0.3)) { checkedExpanded.toggle() }
                     } label: {
                         HStack {
-                            Text("カゴに入れた (\(itemVM.checkedItems.count))")
+                            Text(String(format: String(localized: "In Cart (%d)"), itemVM.checkedItems.count))
                                 .font(.system(size: 14, weight: .medium))
                                 .foregroundStyle(AppTheme.textSec)
                             Spacer()
@@ -235,10 +235,10 @@ struct ListDetailView: View {
     private var emptyState: some View {
         VStack(spacing: 14) {
             Text("🛒").font(.system(size: 48))
-            Text("未購入の商品はありません")
+            Text("No unpurchased items")
                 .font(.system(size: 16))
                 .foregroundStyle(AppTheme.textSec)
-            Text("下の入力欄から商品を追加してください")
+            Text("Add items from the input below")
                 .font(.system(size: 13))
                 .foregroundStyle(AppTheme.textTer)
         }
@@ -276,7 +276,7 @@ struct ListDetailView: View {
             }
 
             HStack(spacing: 10) {
-                TextField("＋ 商品を追加…", text: $composerText)
+                TextField(String(localized: "+ Add item…"), text: $composerText)
                     .focused($composerFocused)
                     .accessibilityIdentifier("itemComposer")
                     .font(.system(size: AppTheme.fs))
@@ -287,7 +287,7 @@ struct ListDetailView: View {
 
                 if composerFocused {
                     if !composerText.isEmpty {
-                        Button("追加") { addItem() }
+                        Button(String(localized: "Add")) { addItem() }
                             .font(.system(size: 15, weight: .semibold))
                             .foregroundStyle(.white)
                             .padding(.horizontal, 16)
@@ -296,7 +296,7 @@ struct ListDetailView: View {
                             .clipShape(RoundedRectangle(cornerRadius: AppTheme.rField))
                             .transition(.scale.combined(with: .opacity))
                     } else {
-                        Button("閉じる") { composerFocused = false }
+                        Button(String(localized: "Close")) { composerFocused = false }
                             .font(.system(size: 15))
                             .foregroundStyle(AppTheme.textSec)
                             .transition(.scale.combined(with: .opacity))
@@ -396,7 +396,7 @@ struct ItemRowView: View {
                         .lineLimit(1)
                 }
             } else if !item.addedByName.isEmpty {
-                Text("\(item.addedByName)が追加 ・ \(relativeTime(from: item.createdAt))")
+                Text("\(item.addedByName) \(String(localized: "added")) ・ \(relativeTime(from: item.createdAt))")
                     .font(.system(size: 12.5))
                     .foregroundStyle(AppTheme.textTer)
             }
@@ -409,10 +409,10 @@ private func relativeTime(from iso: String) -> String {
     fmt.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
     guard let date = fmt.date(from: iso) ?? ISO8601DateFormatter().date(from: iso) else { return "" }
     let secs = Int(-date.timeIntervalSinceNow)
-    if secs < 60 { return "たった今" }
-    if secs < 3600 { return "\(secs / 60)分前" }
-    if secs < 86400 { return "\(secs / 3600)時間前" }
-    return "\(secs / 86400)日前"
+    if secs < 60 { return String(localized: "Just now") }
+    if secs < 3600 { return String(format: String(localized: "%d min ago"), secs / 60) }
+    if secs < 86400 { return String(format: String(localized: "%d hr ago"), secs / 3600) }
+    return String(format: String(localized: "%d day ago"), secs / 86400)
 }
 
 // MARK: - Item Edit Sheet
@@ -437,8 +437,8 @@ struct ItemDetailEditSheet: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 20) {
-                    field(label: "商品名") {
-                        TextField("例: 牛乳", text: $name)
+                    field(label: String(localized: "Item Name")) {
+                        TextField(String(localized: "e.g. Milk"), text: $name)
                             .font(.system(size: 16))
                             .padding(.horizontal, 14)
                             .frame(height: 50)
@@ -446,8 +446,8 @@ struct ItemDetailEditSheet: View {
                             .clipShape(RoundedRectangle(cornerRadius: AppTheme.rField))
                     }
 
-                    field(label: "数量") {
-                        TextField("例: 2本 / 300g", text: $quantity)
+                    field(label: String(localized: "Quantity")) {
+                        TextField(String(localized: "e.g. 2 / 300g"), text: $quantity)
                             .font(.system(size: 16))
                             .padding(.horizontal, 14)
                             .frame(height: 50)
@@ -455,7 +455,7 @@ struct ItemDetailEditSheet: View {
                             .clipShape(RoundedRectangle(cornerRadius: AppTheme.rField))
                     }
 
-                    field(label: "カテゴリ") {
+                    field(label: String(localized: "Category")) {
                         LazyVGrid(
                             columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 3),
                             spacing: 8
@@ -482,8 +482,8 @@ struct ItemDetailEditSheet: View {
                         }
                     }
 
-                    field(label: "メモ") {
-                        TextField("任意", text: $memo, axis: .vertical)
+                    field(label: String(localized: "Memo")) {
+                        TextField(String(localized: "Optional"), text: $memo, axis: .vertical)
                             .font(.system(size: 16))
                             .padding(14)
                             .background(AppTheme.fieldBg)
@@ -494,7 +494,7 @@ struct ItemDetailEditSheet: View {
                     Button {
                         Task { await itemVM.deleteItem(item); dismiss() }
                     } label: {
-                        Text("このアイテムを削除")
+                        Text("Delete This Item")
                             .font(.system(size: 16, weight: .medium))
                             .frame(maxWidth: .infinity)
                             .frame(height: 52)
@@ -506,14 +506,14 @@ struct ItemDetailEditSheet: View {
                 .padding(20)
             }
             .background(AppTheme.bg)
-            .navigationTitle("商品を編集")
+            .navigationTitle(String(localized: "Edit Item"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("キャンセル") { dismiss() }
+                    Button(String(localized: "Cancel")) { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("保存") {
+                    Button(String(localized: "Save")) {
                         Task {
                             await itemVM.updateItem(item, name: name, quantity: quantity, category: category, memo: memo)
                             if itemVM.errorMessage == nil { dismiss() }

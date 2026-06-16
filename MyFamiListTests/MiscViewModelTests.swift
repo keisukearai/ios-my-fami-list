@@ -45,6 +45,58 @@ final class InviteHandlerTests: XCTestCase {
     }
 }
 
+// MARK: - LanguageManager Tests
+
+final class LanguageManagerTests: XCTestCase {
+
+    private let manager = LanguageManager()
+    private let appleKey = "AppleLanguages"
+    private let appKey = LanguageManager.userDefaultsKey
+
+    override func tearDown() {
+        UserDefaults.standard.removeObject(forKey: appleKey)
+        UserDefaults.standard.removeObject(forKey: appKey)
+        super.tearDown()
+    }
+
+    func test_setLanguage_english_writes_AppleLanguages() {
+        manager.setLanguage(.english)
+        let langs = UserDefaults.standard.array(forKey: appleKey) as? [String]
+        XCTAssertEqual(langs, ["en"])
+    }
+
+    func test_setLanguage_japanese_writes_AppleLanguages() {
+        manager.setLanguage(.japanese)
+        let langs = UserDefaults.standard.array(forKey: appleKey) as? [String]
+        XCTAssertEqual(langs, ["ja"])
+    }
+
+    func test_setLanguage_system_clears_app_language_key() {
+        manager.setLanguage(.english)
+        manager.setLanguage(.system)
+        // currentLanguage reads from appKey, not appleKey
+        XCTAssertEqual(manager.currentLanguage, .system)
+    }
+
+    func test_acceptLanguageHeader_english() {
+        XCTAssertEqual(AppLanguage.english.acceptLanguageHeader, "en")
+    }
+
+    func test_acceptLanguageHeader_japanese() {
+        XCTAssertEqual(AppLanguage.japanese.acceptLanguageHeader, "ja")
+    }
+
+    func test_currentLanguage_reflects_stored_value() {
+        UserDefaults.standard.set("en", forKey: appKey)
+        XCTAssertEqual(manager.currentLanguage, .english)
+    }
+
+    func test_currentLanguage_defaults_to_system() {
+        UserDefaults.standard.removeObject(forKey: appKey)
+        XCTAssertEqual(manager.currentLanguage, .system)
+    }
+}
+
 // MARK: - GroupViewModel Mock Tests
 
 @MainActor

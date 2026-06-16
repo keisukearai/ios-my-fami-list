@@ -12,7 +12,7 @@ struct ListsScreenView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            AppHeader("リスト") {
+            AppHeader(String(localized: "Lists")) {
                 groupPickerPill
             } right: {
                 HStack(spacing: 8) {
@@ -77,7 +77,7 @@ struct ListsScreenView: View {
                             Button(role: .destructive) {
                                 Task { await groupVM.deleteList(list) }
                             } label: {
-                                Label("削除", systemImage: "trash")
+                                Label(String(localized: "Delete"), systemImage: "trash")
                             }
                         }
                     }
@@ -88,7 +88,7 @@ struct ListsScreenView: View {
                 .listRowSeparator(.hidden)
                 .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
             if !purchaseService.isPro {
-                Text("無料プランは2つまで")
+                Text("Free plan: up to 2 lists")
                     .font(.system(size: 12.5))
                     .foregroundStyle(AppTheme.textTer)
                     .frame(maxWidth: .infinity)
@@ -111,7 +111,7 @@ struct ListsScreenView: View {
                         .font(.system(size: 15, weight: .medium))
                         .foregroundStyle(AppTheme.text)
                 } else {
-                    Text("グループを選択")
+                    Text("Select Group")
                         .font(.system(size: 15, weight: .medium))
                         .foregroundStyle(AppTheme.textSec)
                 }
@@ -168,7 +168,7 @@ struct ListsScreenView: View {
             HStack(spacing: 8) {
                 Image(systemName: "plus")
                     .font(.system(size: 15, weight: .medium))
-                Text("リストを追加")
+                Text("Add List")
                     .font(.system(size: 16, weight: .medium))
             }
             .frame(maxWidth: .infinity)
@@ -186,10 +186,10 @@ struct ListsScreenView: View {
             Image(systemName: "list.bullet.clipboard")
                 .font(.system(size: 44))
                 .foregroundStyle(AppTheme.textTer)
-            Text("リストがありません")
+            Text("No lists")
                 .font(.system(size: 17, weight: .medium))
                 .foregroundStyle(AppTheme.textSec)
-            Text("「リストを追加」からリストを作成できます")
+            Text("You can create a list from \"Add List\"")
                 .font(.system(size: 14))
                 .foregroundStyle(AppTheme.textTer)
                 .multilineTextAlignment(.center)
@@ -203,15 +203,15 @@ struct ListsScreenView: View {
             Image(systemName: "person.3")
                 .font(.system(size: 52))
                 .foregroundStyle(AppTheme.textTer)
-            Text("グループがありません")
+            Text("No groups")
                 .font(.system(size: 20, weight: .bold))
                 .foregroundStyle(AppTheme.text)
-            Text("グループを作成するか\n招待コードで参加してください")
+            Text("Create a group or join with an invite code.")
                 .font(.system(size: 15))
                 .foregroundStyle(AppTheme.textSec)
                 .multilineTextAlignment(.center)
             Button { onGroupPickerTap() } label: {
-                Text("グループを作成")
+                Text("Create Group")
                     .font(.system(size: 16, weight: .semibold))
                     .frame(height: 50)
                     .padding(.horizontal, 28)
@@ -228,19 +228,19 @@ struct ListsScreenView: View {
     private var addListSheet: some View {
         NavigationStack {
             Form {
-                Section("リスト名") {
-                    TextField("例: 今週のスーパー", text: $newListName)
+                Section(String(localized: "List name")) {
+                    TextField(String(localized: "e.g. This week's supermarket"), text: $newListName)
                         .accessibilityIdentifier("addListTextField")
                 }
             }
-            .navigationTitle("リストを追加")
+            .navigationTitle(String(localized: "Add List"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("キャンセル") { showAddSheet = false; newListName = "" }
+                    Button(String(localized: "Cancel")) { showAddSheet = false; newListName = "" }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("追加") {
+                    Button(String(localized: "Add")) {
                         Task {
                             await groupVM.createList(name: newListName)
                             showAddSheet = false
@@ -269,9 +269,9 @@ struct ListCard: View {
     private var isDone: Bool { list.itemCount > 0 && list.uncheckedCount == 0 }
 
     private var subtitle: String {
-        if list.itemCount == 0 { return "商品なし" }
-        if isDone { return "完了 🎉" }
-        return "残り \(list.uncheckedCount)品 ・ 全\(list.itemCount)品"
+        if list.itemCount == 0 { return String(localized: "No items") }
+        if isDone { return String(localized: "Done 🎉") }
+        return String(format: String(localized: "%d remaining · %d total"), list.uncheckedCount, list.itemCount)
     }
 
     var body: some View {
