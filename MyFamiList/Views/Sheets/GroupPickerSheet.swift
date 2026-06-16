@@ -196,7 +196,7 @@ struct GroupPickerSheet: View {
 
     private var createGroupButton: some View {
         Button {
-            if purchaseService.isPro {
+            if purchaseService.isPro || groupVM.groups.count < 2 {
                 showCreateGroup = true
             } else {
                 showPaywall = true
