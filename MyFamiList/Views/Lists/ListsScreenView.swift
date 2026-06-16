@@ -87,6 +87,15 @@ struct ListsScreenView: View {
                 .listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)
                 .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
+            if !purchaseService.isPro {
+                Text("無料プランは2つまで")
+                    .font(.system(size: 12.5))
+                    .foregroundStyle(AppTheme.textTer)
+                    .frame(maxWidth: .infinity)
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 0, trailing: 16))
+            }
         }
         .listStyle(.plain)
         .scrollContentBackground(.hidden)
