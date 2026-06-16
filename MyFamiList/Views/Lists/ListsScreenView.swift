@@ -221,6 +221,7 @@ struct ListsScreenView: View {
             Form {
                 Section("リスト名") {
                     TextField("例: 今週のスーパー", text: $newListName)
+                        .accessibilityIdentifier("addListTextField")
                 }
             }
             .navigationTitle("リストを追加")
@@ -238,6 +239,7 @@ struct ListsScreenView: View {
                         }
                     }
                     .disabled(newListName.trimmingCharacters(in: .whitespaces).isEmpty)
+                    .accessibilityIdentifier("addListConfirmButton")
                 }
             }
         }

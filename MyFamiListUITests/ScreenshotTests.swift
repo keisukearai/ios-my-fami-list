@@ -66,11 +66,17 @@ final class ScreenshotTests: E2EBaseTest {
             sleep(1)
         }
 
+        // キーボードを閉じてからアイテムをチェック
+        if app.keyboards.firstMatch.exists {
+            composer.typeText("\n")
+            sleep(1)
+        }
+
         // 最初の2つをチェック
         let milk = app.staticTexts["🥛 牛乳"]
-        if milk.waitForExistence(timeout: 5) { milk.tap(); sleep(1) }
+        if milk.waitForExistence(timeout: 5), milk.isHittable { milk.tap(); sleep(1) }
         let egg = app.staticTexts["🥚 卵"]
-        if egg.waitForExistence(timeout: 3) { egg.tap(); sleep(1) }
+        if egg.waitForExistence(timeout: 3), egg.isHittable { egg.tap(); sleep(1) }
 
         app.swipeDown()
         sleep(1)
@@ -154,11 +160,11 @@ final class ScreenshotTests: E2EBaseTest {
         guard addListBtn.waitForExistence(timeout: 15) else { return false }
         addListBtn.tap()
 
-        let tf = app.textFields["例: 今週のスーパー"]
+        let tf = app.textFields["addListTextField"]
         guard tf.waitForExistence(timeout: 10) else { return false }
         tf.tap(); tf.typeText(name)
 
-        let confirmBtn = app.navigationBars.buttons["追加"]
+        let confirmBtn = app.buttons["addListConfirmButton"]
         guard confirmBtn.waitForExistence(timeout: 8) else { return false }
         confirmBtn.tap()
         sleep(2)

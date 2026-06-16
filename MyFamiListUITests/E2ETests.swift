@@ -218,9 +218,9 @@ final class E2EShoppingTests: E2EBaseTest {
 
         // リスト作成
         app.buttons["リストを追加"].tap()
-        let listTF = app.textFields.firstMatch
-        listTF.waitForExistence(timeout: 3); listTF.tap(); listTF.typeText("週末の買い物")
-        app.buttons["追加"].tap()
+        let listTF = app.textFields["addListTextField"]
+        listTF.waitForExistence(timeout: 5); listTF.tap(); listTF.typeText("週末の買い物")
+        app.buttons["addListConfirmButton"].tap()
         sleep(1)
     }
 
@@ -283,15 +283,15 @@ final class E2EShoppingTests: E2EBaseTest {
 
         // リスト2個まで追加
         addListBtn.tap()
-        var tf = app.textFields.firstMatch
-        tf.waitForExistence(timeout: 3); tf.tap(); tf.typeText("リスト1")
-        app.buttons["追加"].tap()
+        var tf = app.textFields["addListTextField"]
+        tf.waitForExistence(timeout: 5); tf.tap(); tf.typeText("リスト1")
+        app.buttons["addListConfirmButton"].tap()
         sleep(1)
 
         app.buttons["リストを追加"].tap()
-        tf = app.textFields.firstMatch
-        tf.waitForExistence(timeout: 3); tf.tap(); tf.typeText("リスト2")
-        app.buttons["追加"].tap()
+        tf = app.textFields["addListTextField"]
+        tf.waitForExistence(timeout: 5); tf.tap(); tf.typeText("リスト2")
+        app.buttons["addListConfirmButton"].tap()
         sleep(1)
 
         // 3個目でPaywall
