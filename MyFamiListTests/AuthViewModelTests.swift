@@ -277,6 +277,53 @@ final class AuthViewModelTests: XCTestCase {
         }
     }
 
+    // MARK: - deleteAccount
+
+    func test_deleteAccount_success_clears_currentUser() async {
+        let mock = MockAPIClient()
+        let vm = AuthViewModel(api: mock)
+        vm.currentUser = makeUser(id: 1)
+
+        await vm.deleteAccount()
+
+        XCTAssertNil(vm.currentUser)
+        XCTAssertNil(vm.errorMessage)
+    }
+
+    func test_deleteAccount_failure_sets_errorMessage() async {
+        let mock = MockAPIClient()
+        mock.deleteAccountError = APIError.httpError(500, "Server Error")
+        let vm = AuthViewModel(api: mock)
+        vm.currentUser = makeUser(id: 1)
+
+        await vm.deleteAccount()
+
+        XCTAssertNotNil(vm.currentUser)
+        XCTAssertNotNil(vm.errorMessage)
+    }
+
+    // MARK: - AppUser isPro decoding
+
+    func test_appUser_decodes_isPro_true() throws {
+        let json = """
+        {"id":1,"uid":"u1","provider":"apple","email":"","display_name":"A",
+         "avatar_emoji":"😀","avatar_color":"","avatar_photo":"","is_pro":true}
+        """.data(using: .utf8)!
+        let decoder = JSONDecoder(); decoder.keyDecodingStrategy = .convertFromSnakeCase
+        let user = try decoder.decode(AppUser.self, from: json)
+        XCTAssertTrue(user.isPro)
+    }
+
+    func test_appUser_decodes_isPro_false() throws {
+        let json = """
+        {"id":1,"uid":"u1","provider":"apple","email":"","display_name":"A",
+         "avatar_emoji":"😀","avatar_color":"","avatar_photo":"","is_pro":false}
+        """.data(using: .utf8)!
+        let decoder = JSONDecoder(); decoder.keyDecodingStrategy = .convertFromSnakeCase
+        let user = try decoder.decode(AppUser.self, from: json)
+        XCTAssertFalse(user.isPro)
+    }
+
     // MARK: - Helpers
 
     private func makeUser(id: Int) -> AppUser {
@@ -294,6 +341,7 @@ private class MockAPIClient: APIClient {
     var passwordResetError: Error? = nil
     var passwordResetConfirmError: Error? = nil
     var passwordChangeError: Error? = nil
+    var deleteAccountError: Error? = nil
 
     private let mockMe = AppUser(
         id: 1, uid: "email_1", provider: "email", email: "new@example.com",
@@ -318,6 +366,10 @@ private class MockAPIClient: APIClient {
 
     override func changePassword(currentPassword: String, newPassword: String) async throws {
         if let e = passwordChangeError { throw e }
+    }
+
+    override func deleteAccount() async throws {
+        if let e = deleteAccountError { throw e }
     }
 
     override func request<T: Decodable>(_ path: String, method: String = "GET", body: [String: Any]? = nil, retry: Bool = true) async throws -> T {

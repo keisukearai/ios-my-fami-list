@@ -246,6 +246,7 @@ struct SettingsView: View {
                     EmptyView()
                 }
                 .onTapGesture { showDeleteAccountConfirm = true }
+                .accessibilityIdentifier("deleteAccountRow")
             }
 
             settingsCard {

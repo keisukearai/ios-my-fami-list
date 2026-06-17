@@ -79,10 +79,12 @@ struct EmailAuthSheet: View {
                     .keyboardType(.emailAddress)
                     .autocapitalization(.none)
                     .padding(14)
+                    .accessibilityIdentifier("emailAuthEmailField")
                 Divider()
                 SecureField(String(localized: "Password (8+ characters)"), text: $password)
                     .textContentType(isLogin ? .password : .newPassword)
                     .padding(14)
+                    .accessibilityIdentifier("emailAuthPasswordField")
             }
             .background(AppTheme.surface)
             .clipShape(RoundedRectangle(cornerRadius: AppTheme.rCard))
@@ -102,6 +104,7 @@ struct EmailAuthSheet: View {
                 .background(AppTheme.primary)
                 .clipShape(RoundedRectangle(cornerRadius: AppTheme.rBtn))
         }
+        .accessibilityIdentifier("emailAuthSubmitButton")
     }
 
     private var forgotPasswordButton: some View {

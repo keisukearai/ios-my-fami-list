@@ -459,3 +459,167 @@ final class E2EMultiUserTests: E2EBaseTest {
         XCTAssertTrue(app.buttons["tab_リスト"].waitForExistence(timeout: 10))
     }
 }
+
+// MARK: - アイテム操作（編集・削除・一括削除）
+
+extension E2EShoppingTests {
+
+    func test_edit_item() {
+        setupGroupAndList()
+
+        let listCell = app.staticTexts["週末の買い物"]
+        XCTAssertTrue(listCell.waitForExistence(timeout: 5))
+        listCell.tap()
+
+        // アイテム追加
+        let composer = app.textFields["itemComposer"]
+        XCTAssertTrue(composer.waitForExistence(timeout: 5))
+        composer.tap(); composer.typeText("編集前")
+        app.buttons["追加"].tap()
+        if app.keyboards.firstMatch.exists { composer.typeText("\n") }
+
+        // スワイプ編集
+        let itemCell = app.staticTexts["編集前"]
+        XCTAssertTrue(itemCell.waitForExistence(timeout: 5))
+        itemCell.swipeLeft()
+        let editBtn = app.buttons.matching(NSPredicate(format: "label CONTAINS '編集'")).firstMatch
+        XCTAssertTrue(editBtn.waitForExistence(timeout: 3))
+        editBtn.tap()
+
+        // 編集シートで名前変更
+        let nameTF = app.textFields.firstMatch
+        XCTAssertTrue(nameTF.waitForExistence(timeout: 3))
+        nameTF.clearAndType("編集後")
+        app.buttons.matching(NSPredicate(format: "label CONTAINS '保存' OR label CONTAINS 'Save'")).firstMatch.tap()
+
+        XCTAssertTrue(app.staticTexts["編集後"].waitForExistence(timeout: 5))
+    }
+
+    func test_delete_item_via_swipe() {
+        setupGroupAndList()
+
+        let listCell = app.staticTexts["週末の買い物"]
+        XCTAssertTrue(listCell.waitForExistence(timeout: 5))
+        listCell.tap()
+
+        let composer = app.textFields["itemComposer"]
+        XCTAssertTrue(composer.waitForExistence(timeout: 5))
+        composer.tap(); composer.typeText("削除対象")
+        app.buttons["追加"].tap()
+        if app.keyboards.firstMatch.exists { composer.typeText("\n") }
+
+        let itemCell = app.staticTexts["削除対象"]
+        XCTAssertTrue(itemCell.waitForExistence(timeout: 5))
+        itemCell.swipeLeft()
+        let deleteBtn = app.buttons.matching(NSPredicate(format: "label CONTAINS '削除' OR label CONTAINS 'Delete'")).firstMatch
+        XCTAssertTrue(deleteBtn.waitForExistence(timeout: 3))
+        deleteBtn.tap()
+
+        sleep(1)
+        XCTAssertFalse(app.staticTexts["削除対象"].exists)
+    }
+
+    func test_bulk_delete_checked_items() {
+        setupGroupAndList()
+
+        let listCell = app.staticTexts["週末の買い物"]
+        XCTAssertTrue(listCell.waitForExistence(timeout: 5))
+        listCell.tap()
+
+        let composer = app.textFields["itemComposer"]
+        XCTAssertTrue(composer.waitForExistence(timeout: 5))
+        composer.tap(); composer.typeText("チェック商品")
+        app.buttons["追加"].tap()
+        if app.keyboards.firstMatch.exists { composer.typeText("\n") }
+
+        // チェックしてチェック済みセクションへ
+        let item = app.staticTexts["チェック商品"]
+        XCTAssertTrue(item.waitForExistence(timeout: 5))
+        item.tap()
+        sleep(1)
+
+        // チェック済みを一括削除
+        let bulkDeleteBtn = app.buttons.matching(NSPredicate(format: "label CONTAINS 'チェック済みを削除' OR label CONTAINS 'Clear Checked'")).firstMatch
+        XCTAssertTrue(bulkDeleteBtn.waitForExistence(timeout: 5))
+        bulkDeleteBtn.tap()
+
+        sleep(1)
+        XCTAssertFalse(app.staticTexts["チェック商品"].exists)
+    }
+}
+
+// MARK: - メール認証 E2E
+
+final class E2EAuthTests: E2EBaseTest {
+
+    func test_email_register_and_login() {
+        let email = "uitest_\(Int.random(in: 10000...99999))@example.com"
+        let password = "TestPass123"
+
+        app.launchArguments = ["UI_TESTING_CLEAR_AUTH"]
+        app.launch()
+
+        // メールアドレスで続けるボタンをタップ
+        let emailBtn = app.buttons.matching(NSPredicate(format: "label CONTAINS 'メールアドレス' OR label CONTAINS 'Email'")).firstMatch
+        XCTAssertTrue(emailBtn.waitForExistence(timeout: 5))
+        emailBtn.tap()
+
+        // 「新規登録」タブへ切り替え
+        let registerTab = app.buttons.matching(NSPredicate(format: "label CONTAINS '新規登録' OR label CONTAINS 'Sign Up'")).firstMatch
+        if registerTab.waitForExistence(timeout: 3) { registerTab.tap() }
+
+        // メール・パスワード入力
+        let emailField = app.textFields["emailAuthEmailField"]
+        XCTAssertTrue(emailField.waitForExistence(timeout: 5))
+        emailField.tap(); emailField.typeText(email)
+
+        let passField = app.secureTextFields["emailAuthPasswordField"]
+        XCTAssertTrue(passField.waitForExistence(timeout: 3))
+        passField.tap(); passField.typeText(password)
+
+        // 登録ボタン
+        app.buttons["emailAuthSubmitButton"].tap()
+
+        // メイン画面に到達
+        XCTAssertTrue(app.buttons["tab_リスト"].waitForExistence(timeout: 10))
+    }
+}
+
+// MARK: - アカウント削除 E2E
+
+extension E2ELoginTests {
+
+    func test_delete_account_returns_to_login() {
+        DevServer.reset(username: "devuser", isPro: false)
+        devLoginAndWait()
+
+        switchTab("設定")
+        let deleteRow = app.otherElements["deleteAccountRow"]
+        XCTAssertTrue(deleteRow.waitForExistence(timeout: 5))
+        deleteRow.tap()
+
+        // 確認ダイアログ → 「削除する」
+        let confirmBtn = app.buttons.matching(NSPredicate(format: "label CONTAINS '削除' OR label CONTAINS 'Delete'")).firstMatch
+        XCTAssertTrue(confirmBtn.waitForExistence(timeout: 3))
+        confirmBtn.tap()
+
+        // ログイン画面に戻る
+        XCTAssertTrue(app.buttons["devLoginButton"].waitForExistence(timeout: 10))
+    }
+}
+
+// MARK: - XCUIElement helper
+
+private extension XCUIElement {
+    func clearAndType(_ text: String) {
+        tap()
+        let selectAll = XCUIApplication().menuItems["Select All"]
+        if selectAll.waitForExistence(timeout: 1) {
+            selectAll.tap()
+            typeText(text)
+        } else {
+            let deleteString = String(repeating: XCUIKeyboardKey.delete.rawValue, count: (value as? String)?.count ?? 0)
+            typeText(deleteString + text)
+        }
+    }
+}
