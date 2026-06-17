@@ -125,6 +125,7 @@ struct SettingsView: View {
             .cardShadow()
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier("editProfileButton")
     }
 
     private func intervalLabel(_ minutes: Int) -> String {

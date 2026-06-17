@@ -40,6 +40,7 @@ struct EditProfileSheet: View {
                         ProgressView()
                     } else {
                         Button(String(localized: "Save")) { save() }
+                            .accessibilityIdentifier("editProfileSaveButton")
                     }
                 }
             }
@@ -107,10 +108,23 @@ struct EditProfileSheet: View {
             }
             Divider().padding(.leading, 16)
             formRow(label: String(localized: "Icon Emoji")) {
-                TextField("😊", text: $avatarEmoji)
-                    .font(.system(size: 20))
-                    .multilineTextAlignment(.trailing)
-                    .frame(width: 48)
+                HStack(spacing: 8) {
+                    TextField(String(localized: "None"), text: $avatarEmoji)
+                        .font(.system(size: 20))
+                        .multilineTextAlignment(.trailing)
+                        .frame(width: 48)
+                        .accessibilityIdentifier("editProfileEmojiField")
+                    if !avatarEmoji.isEmpty {
+                        Button {
+                            avatarEmoji = ""
+                        } label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundStyle(AppTheme.textTer)
+                                .font(.system(size: 16))
+                        }
+                        .accessibilityIdentifier("editProfileEmojiClearButton")
+                    }
+                }
             }
         }
         .background(AppTheme.surface)

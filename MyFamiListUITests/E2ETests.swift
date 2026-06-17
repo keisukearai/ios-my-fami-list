@@ -608,6 +608,46 @@ extension E2ELoginTests {
     }
 }
 
+// MARK: - プロフィール編集 E2E
+
+final class E2EProfileTests: E2EBaseTest {
+
+    func test_clear_emoji_via_button_and_save() {
+        DevServer.reset(username: "devuser", isPro: false)
+        devLoginAndWait()
+
+        switchTab("設定")
+
+        // プロフィール編集シートを開く
+        let editBtn = app.buttons["editProfileButton"]
+        XCTAssertTrue(editBtn.waitForExistence(timeout: 5))
+        editBtn.tap()
+
+        // 絵文字フィールドに何か入力して × ボタンが出ることを確認
+        let emojiField = app.textFields["editProfileEmojiField"]
+        XCTAssertTrue(emojiField.waitForExistence(timeout: 5))
+        emojiField.tap()
+        emojiField.typeText("🎉")
+
+        let clearBtn = app.buttons["editProfileEmojiClearButton"]
+        XCTAssertTrue(clearBtn.waitForExistence(timeout: 3), "絵文字入力後に × ボタンが表示されるはず")
+
+        // × ボタンで絵文字を削除
+        clearBtn.tap()
+
+        // × ボタンが消える（絵文字が空になった）
+        XCTAssertFalse(app.buttons["editProfileEmojiClearButton"].exists, "絵文字削除後に × ボタンが消えるはず")
+
+        // 保存
+        let saveBtn = app.buttons["editProfileSaveButton"]
+        XCTAssertTrue(saveBtn.waitForExistence(timeout: 3))
+        saveBtn.tap()
+
+        // 設定画面に戻る
+        XCTAssertTrue(app.buttons["tab_設定"].waitForExistence(timeout: 5))
+    }
+}
+
 // MARK: - XCUIElement helper
 
 private extension XCUIElement {
