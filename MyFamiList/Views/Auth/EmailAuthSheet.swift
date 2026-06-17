@@ -28,11 +28,11 @@ struct EmailAuthSheet: View {
                     .padding(.top, 32)
                 }
             }
-            .navigationTitle(isLogin ? String(localized: "Sign In with Email") : String(localized: "Sign Up"))
+            .navigationTitle(isLogin ? loc("Sign In with Email") : loc("Sign Up"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "Cancel")) { dismiss() }
+                    Button(loc("Cancel")) { dismiss() }
                 }
             }
             .disabled(authVM.isLoading)
@@ -53,7 +53,7 @@ struct EmailAuthSheet: View {
     }
 
     private var modePicker: some View {
-        Picker(String(localized: "Mode"), selection: $isLogin) {
+        Picker(loc("Mode"), selection: $isLogin) {
             Text("Sign In").tag(true)
             Text("Sign Up").tag(false)
         }
@@ -74,14 +74,14 @@ struct EmailAuthSheet: View {
             }
 
             VStack(spacing: 0) {
-                TextField(String(localized: "Email Address"), text: $email)
+                TextField(loc("Email Address"), text: $email)
                     .textContentType(.emailAddress)
                     .keyboardType(.emailAddress)
                     .autocapitalization(.none)
                     .padding(14)
                     .accessibilityIdentifier("emailAuthEmailField")
                 Divider()
-                SecureField(String(localized: "Password (8+ characters)"), text: $password)
+                SecureField(loc("Password (8+ characters)"), text: $password)
                     .textContentType(isLogin ? .password : .newPassword)
                     .padding(14)
                     .accessibilityIdentifier("emailAuthPasswordField")
@@ -96,7 +96,7 @@ struct EmailAuthSheet: View {
         Button {
             Task { await submit() }
         } label: {
-            Text(isLogin ? String(localized: "Sign In") : String(localized: "Register"))
+            Text(isLogin ? loc("Sign In") : loc("Register"))
                 .font(.system(size: 17, weight: .semibold))
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity)
@@ -108,7 +108,7 @@ struct EmailAuthSheet: View {
     }
 
     private var forgotPasswordButton: some View {
-        Button(String(localized: "Forgot your password?")) {
+        Button(loc("Forgot your password?")) {
             showPasswordReset = true
         }
         .font(.system(size: 14))
@@ -120,7 +120,7 @@ struct EmailAuthSheet: View {
         authVM.errorMessage = nil
         let trimmedEmail = email.trimmingCharacters(in: .whitespaces)
         guard !trimmedEmail.isEmpty, !password.isEmpty else {
-            localError = String(localized: "Please enter your email and password")
+            localError = loc("Please enter your email and password")
             return
         }
         if isLogin {
@@ -161,11 +161,11 @@ struct PasswordResetSheet: View {
                 .padding(.horizontal, 24)
                 .padding(.top, 32)
             }
-            .navigationTitle(String(localized: "Reset Password"))
+            .navigationTitle(loc("Reset Password"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "Cancel")) { dismiss() }
+                    Button(loc("Cancel")) { dismiss() }
                 }
             }
             .disabled(isLoading)
@@ -190,7 +190,7 @@ struct PasswordResetSheet: View {
                 Text(error).font(.caption).foregroundStyle(.red).frame(maxWidth: .infinity, alignment: .leading)
             }
 
-            TextField(String(localized: "Email Address"), text: $email)
+            TextField(loc("Email Address"), text: $email)
                 .textContentType(.emailAddress)
                 .keyboardType(.emailAddress)
                 .autocapitalization(.none)
@@ -214,7 +214,7 @@ struct PasswordResetSheet: View {
 
     private var codeStep: some View {
         VStack(spacing: 20) {
-            Text(String(format: String(localized: "Enter the 6-digit code sent to %@."), email))
+            Text(String(format: loc("Enter the 6-digit code sent to %@."), email))
                 .font(.system(size: 15))
                 .foregroundStyle(AppTheme.textSec)
                 .multilineTextAlignment(.center)
@@ -224,11 +224,11 @@ struct PasswordResetSheet: View {
             }
 
             VStack(spacing: 0) {
-                TextField(String(localized: "Confirmation code (6 digits)"), text: $code)
+                TextField(loc("Confirmation code (6 digits)"), text: $code)
                     .keyboardType(.numberPad)
                     .padding(14)
                 Divider()
-                SecureField(String(localized: "New password (8+ characters)"), text: $newPassword)
+                SecureField(loc("New password (8+ characters)"), text: $newPassword)
                     .textContentType(.newPassword)
                     .padding(14)
             }
@@ -257,7 +257,7 @@ struct PasswordResetSheet: View {
             Text("Password Reset Complete")
                 .font(.system(size: 18, weight: .semibold))
                 .foregroundStyle(AppTheme.text)
-            Button(String(localized: "Close")) { dismiss() }
+            Button(loc("Close")) { dismiss() }
                 .font(.system(size: 17, weight: .semibold))
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity).frame(height: 54)
@@ -269,7 +269,7 @@ struct PasswordResetSheet: View {
     private func sendCode() async {
         errorMessage = nil
         let trimmed = email.trimmingCharacters(in: .whitespaces)
-        guard !trimmed.isEmpty else { errorMessage = String(localized: "Please enter your email address"); return }
+        guard !trimmed.isEmpty else { errorMessage = loc("Please enter your email address"); return }
         isLoading = true
         defer { isLoading = false }
         do {
@@ -283,7 +283,7 @@ struct PasswordResetSheet: View {
     private func confirmReset() async {
         errorMessage = nil
         guard !code.isEmpty, newPassword.count >= 8 else {
-            errorMessage = String(localized: "Please enter the code and new password (8+ characters)")
+            errorMessage = loc("Please enter the code and new password (8+ characters)")
             return
         }
         isLoading = true

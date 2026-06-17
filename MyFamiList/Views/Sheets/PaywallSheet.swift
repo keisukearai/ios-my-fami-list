@@ -24,15 +24,15 @@ struct PaywallSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "Cancel")) { dismiss() }
+                    Button(loc("Cancel")) { dismiss() }
                 }
             }
         }
         .task {
             product = await purchaseService.loadProduct()
         }
-        .alert(String(localized: "Error"), isPresented: $showingError) {
-            Button(String(localized: "OK")) {}
+        .alert(loc("Error"), isPresented: $showingError) {
+            Button(loc("OK")) {}
         } message: {
             Text(errorMessage)
         }
@@ -62,9 +62,9 @@ struct PaywallSheet: View {
 
     private var featuresSection: some View {
         VStack(alignment: .leading, spacing: 16) {
-            ProFeatureRow(icon: "person.3.fill", text: String(localized: "Create unlimited groups"))
-            ProFeatureRow(icon: "list.bullet", text: String(localized: "Create unlimited lists"))
-            ProFeatureRow(icon: "person.badge.plus", text: String(localized: "Invite unlimited members"))
+            ProFeatureRow(icon: "person.3.fill", text: loc("Create unlimited groups"))
+            ProFeatureRow(icon: "list.bullet", text: loc("Create unlimited lists"))
+            ProFeatureRow(icon: "person.badge.plus", text: loc("Invite unlimited members"))
         }
         .padding(20)
         .background(Color(.systemGray6), in: RoundedRectangle(cornerRadius: 16))
@@ -95,13 +95,13 @@ struct PaywallSheet: View {
             .disabled(isPurchasing)
             .padding(.horizontal)
 
-            Button(String(localized: "Restore Purchase")) {
+            Button(loc("Restore Purchase")) {
                 Task { await performRestore() }
             }
             .font(.footnote)
             .foregroundStyle(.secondary)
 
-            Link(String(localized: "Privacy Policy"), destination: URL(string: "https://kotoragk.com/familist/privacy")!)
+            Link(loc("Privacy Policy"), destination: URL(string: "https://kotoragk.com/familist/privacy")!)
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }

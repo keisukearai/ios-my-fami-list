@@ -26,11 +26,11 @@ struct PasswordChangeSheet: View {
                 .padding(.horizontal, 24)
                 .padding(.top, 32)
             }
-            .navigationTitle(String(localized: "Change Password"))
+            .navigationTitle(loc("Change Password"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "Cancel")) { dismiss() }
+                    Button(loc("Cancel")) { dismiss() }
                 }
             }
             .disabled(isLoading)
@@ -54,15 +54,15 @@ struct PasswordChangeSheet: View {
             }
 
             VStack(spacing: 0) {
-                SecureField(String(localized: "Current Password"), text: $currentPassword)
+                SecureField(loc("Current Password"), text: $currentPassword)
                     .textContentType(.password)
                     .padding(14)
                 Divider()
-                SecureField(String(localized: "New Password (8+ characters)"), text: $newPassword)
+                SecureField(loc("New Password (8+ characters)"), text: $newPassword)
                     .textContentType(.newPassword)
                     .padding(14)
                 Divider()
-                SecureField(String(localized: "New Password (confirm)"), text: $confirmPassword)
+                SecureField(loc("New Password (confirm)"), text: $confirmPassword)
                     .textContentType(.newPassword)
                     .padding(14)
             }
@@ -92,7 +92,7 @@ struct PasswordChangeSheet: View {
             Text("Password changed successfully")
                 .font(.system(size: 18, weight: .semibold))
                 .foregroundStyle(AppTheme.text)
-            Button(String(localized: "Close")) { dismiss() }
+            Button(loc("Close")) { dismiss() }
                 .font(.system(size: 17, weight: .semibold))
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity).frame(height: 54)
@@ -104,15 +104,15 @@ struct PasswordChangeSheet: View {
     private func submit() async {
         errorMessage = nil
         guard !currentPassword.isEmpty, !newPassword.isEmpty else {
-            errorMessage = String(localized: "Please fill in all fields")
+            errorMessage = loc("Please fill in all fields")
             return
         }
         guard newPassword.count >= 8 else {
-            errorMessage = String(localized: "New password must be at least 8 characters")
+            errorMessage = loc("New password must be at least 8 characters")
             return
         }
         guard newPassword == confirmPassword else {
-            errorMessage = String(localized: "Passwords do not match")
+            errorMessage = loc("Passwords do not match")
             return
         }
         isLoading = true

@@ -12,7 +12,7 @@ struct ListsScreenView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            AppHeader(String(localized: "Lists")) {
+            AppHeader(loc("Lists")) {
                 groupPickerPill
             } right: {
                 HStack(spacing: 8) {
@@ -77,7 +77,7 @@ struct ListsScreenView: View {
                             Button(role: .destructive) {
                                 Task { await groupVM.deleteList(list) }
                             } label: {
-                                Label(String(localized: "Delete"), systemImage: "trash")
+                                Label(loc("Delete"), systemImage: "trash")
                             }
                         }
                     }
@@ -228,19 +228,19 @@ struct ListsScreenView: View {
     private var addListSheet: some View {
         NavigationStack {
             Form {
-                Section(String(localized: "List name")) {
-                    TextField(String(localized: "e.g. This week's supermarket"), text: $newListName)
+                Section(loc("List name")) {
+                    TextField(loc("e.g. This week's supermarket"), text: $newListName)
                         .accessibilityIdentifier("addListTextField")
                 }
             }
-            .navigationTitle(String(localized: "Add List"))
+            .navigationTitle(loc("Add List"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "Cancel")) { showAddSheet = false; newListName = "" }
+                    Button(loc("Cancel")) { showAddSheet = false; newListName = "" }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(String(localized: "Add")) {
+                    Button(loc("Add")) {
                         Task {
                             await groupVM.createList(name: newListName)
                             showAddSheet = false
@@ -269,9 +269,9 @@ struct ListCard: View {
     private var isDone: Bool { list.itemCount > 0 && list.uncheckedCount == 0 }
 
     private var subtitle: String {
-        if list.itemCount == 0 { return String(localized: "No items") }
-        if isDone { return String(localized: "Done 🎉") }
-        return String(format: String(localized: "%d remaining · %d total"), list.uncheckedCount, list.itemCount)
+        if list.itemCount == 0 { return loc("No items") }
+        if isDone { return loc("Done 🎉") }
+        return String(format: loc("%d remaining · %d total"), list.uncheckedCount, list.itemCount)
     }
 
     var body: some View {

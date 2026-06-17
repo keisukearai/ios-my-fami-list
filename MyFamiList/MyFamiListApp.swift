@@ -50,6 +50,7 @@ struct MyFamiListApp: App {
     @State private var inviteHandler = InviteHandler.shared
     @State private var purchaseService = PurchaseService()
     @State private var networkMonitor = NetworkMonitor()
+    @AppStorage(LanguageManager.userDefaultsKey) private var appLanguageRaw: String = "system"
 
     var body: some Scene {
         WindowGroup {
@@ -60,6 +61,7 @@ struct MyFamiListApp: App {
                     LoginView()
                 }
             }
+            .id(appLanguageRaw)
             .environment(authVM)
             .environment(inviteHandler)
             .environment(purchaseService)

@@ -28,24 +28,24 @@ struct EditProfileSheet: View {
                 .padding(.bottom, 40)
             }
             .background(AppTheme.bg)
-            .navigationTitle(String(localized: "Edit Profile"))
+            .navigationTitle(loc("Edit Profile"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "Cancel")) { dismiss() }
+                    Button(loc("Cancel")) { dismiss() }
                         .disabled(isSaving)
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     if isSaving {
                         ProgressView()
                     } else {
-                        Button(String(localized: "Save")) { save() }
+                        Button(loc("Save")) { save() }
                             .accessibilityIdentifier("editProfileSaveButton")
                     }
                 }
             }
-            .alert(String(localized: "Error"), isPresented: .constant(errorMessage != nil), actions: {
-                Button(String(localized: "OK")) { errorMessage = nil }
+            .alert(loc("Error"), isPresented: .constant(errorMessage != nil), actions: {
+                Button(loc("OK")) { errorMessage = nil }
             }, message: {
                 Text(errorMessage ?? "")
             })
@@ -75,7 +75,7 @@ struct EditProfileSheet: View {
 
             HStack(spacing: 16) {
                 PhotosPicker(selection: $selectedPhoto, matching: .images) {
-                    Label(String(localized: "Select Photo"), systemImage: "photo")
+                    Label(loc("Select Photo"), systemImage: "photo")
                         .font(.system(size: 14))
                         .foregroundStyle(AppTheme.primary)
                 }
@@ -85,7 +85,7 @@ struct EditProfileSheet: View {
                         photoBase64 = ""
                         selectedPhoto = nil
                     } label: {
-                        Label(String(localized: "Delete Photo"), systemImage: "trash")
+                        Label(loc("Delete Photo"), systemImage: "trash")
                             .font(.system(size: 14))
                             .foregroundStyle(AppTheme.deleteText)
                     }
@@ -101,15 +101,15 @@ struct EditProfileSheet: View {
 
     private var formFields: some View {
         VStack(spacing: 0) {
-            formRow(label: String(localized: "Display Name")) {
-                TextField(String(localized: "Name"), text: $displayName)
+            formRow(label: loc("Display Name")) {
+                TextField(loc("Name"), text: $displayName)
                     .font(.system(size: 16))
                     .multilineTextAlignment(.trailing)
             }
             Divider().padding(.leading, 16)
-            formRow(label: String(localized: "Icon Emoji")) {
+            formRow(label: loc("Icon Emoji")) {
                 HStack(spacing: 8) {
-                    TextField(String(localized: "None"), text: $avatarEmoji)
+                    TextField(loc("None"), text: $avatarEmoji)
                         .font(.system(size: 20))
                         .multilineTextAlignment(.trailing)
                         .frame(width: 48)

@@ -45,34 +45,34 @@ struct GroupPickerSheet: View {
                 .padding(.bottom, 24)
             }
             .background(AppTheme.bg)
-            .navigationTitle(String(localized: "Manage Groups"))
+            .navigationTitle(loc("Manage Groups"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "Close")) { dismiss() }
+                    Button(loc("Close")) { dismiss() }
                 }
             }
             .sheet(isPresented: $showCreateGroup) { createGroupSheet }
             .sheet(isPresented: $showJoinGroup) { joinGroupSheet }
             .sheet(isPresented: $showPaywall) { PaywallSheet() }
-            .alert(String(localized: "Rename Group"), isPresented: $showRenameGroup) {
-                TextField(String(localized: "Group name"), text: $renameGroupText)
-                Button(String(localized: "Save")) {
+            .alert(loc("Rename Group"), isPresented: $showRenameGroup) {
+                TextField(loc("Group name"), text: $renameGroupText)
+                Button(loc("Save")) {
                     guard let id = renameGroupId else { return }
                     let name = renameGroupText.trimmingCharacters(in: .whitespaces)
                     guard !name.isEmpty else { return }
                     Task { await groupVM.updateGroup(id: id, name: name) }
                 }
-                Button(String(localized: "Cancel"), role: .cancel) {}
+                Button(loc("Cancel"), role: .cancel) {}
             }
-            .confirmationDialog(String(localized: "Delete this group?"), isPresented: $showDeleteGroupConfirm, titleVisibility: .visible) {
-                Button(String(localized: "Delete"), role: .destructive) {
+            .confirmationDialog(loc("Delete this group?"), isPresented: $showDeleteGroupConfirm, titleVisibility: .visible) {
+                Button(loc("Delete"), role: .destructive) {
                     guard let id = pendingDeleteGroupId else { return }
                     Task { await groupVM.deleteGroup(id: id); dismiss() }
                 }
             }
-            .confirmationDialog(String(localized: "Leave this group?"), isPresented: $showLeaveGroupConfirm, titleVisibility: .visible) {
-                Button(String(localized: "Leave"), role: .destructive) {
+            .confirmationDialog(loc("Leave this group?"), isPresented: $showLeaveGroupConfirm, titleVisibility: .visible) {
+                Button(loc("Leave"), role: .destructive) {
                     guard let id = pendingLeaveGroupId else { return }
                     Task { await groupVM.leaveGroup(id: id); dismiss() }
                 }
@@ -80,11 +80,11 @@ struct GroupPickerSheet: View {
         }
         .presentationDetents([.medium, .large])
         .presentationDragIndicator(.visible)
-        .alert(String(localized: "Error"), isPresented: Binding(
+        .alert(loc("Error"), isPresented: Binding(
             get: { groupVM.errorMessage != nil },
             set: { if !$0 { groupVM.errorMessage = nil } }
         )) {
-            Button(String(localized: "OK")) {}
+            Button(loc("OK")) {}
         } message: {
             Text(groupVM.errorMessage ?? "")
         }
@@ -108,17 +108,17 @@ struct GroupPickerSheet: View {
                             renameGroupId = group.id
                             renameGroupText = group.name
                             showRenameGroup = true
-                        } label: { Label(String(localized: "Rename Group"), systemImage: "pencil") }
+                        } label: { Label(loc("Rename Group"), systemImage: "pencil") }
                         Divider()
                         Button(role: .destructive) {
                             pendingDeleteGroupId = group.id
                             showDeleteGroupConfirm = true
-                        } label: { Label(String(localized: "Delete Group"), systemImage: "trash") }
+                        } label: { Label(loc("Delete Group"), systemImage: "trash") }
                     } else {
                         Button(role: .destructive) {
                             pendingLeaveGroupId = group.id
                             showLeaveGroupConfirm = true
-                        } label: { Label(String(localized: "Leave Group"), systemImage: "rectangle.portrait.and.arrow.right") }
+                        } label: { Label(loc("Leave Group"), systemImage: "rectangle.portrait.and.arrow.right") }
                     }
                 }
 
@@ -145,7 +145,7 @@ struct GroupPickerSheet: View {
                 Text(group.name)
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundStyle(AppTheme.text)
-                Text(String(format: String(localized: "%d lists · %d members"), group.listCount, group.memberCount))
+                Text(String(format: loc("%d lists · %d members"), group.listCount, group.memberCount))
                     .font(.system(size: 13))
                     .foregroundStyle(AppTheme.textSec)
             }
@@ -225,7 +225,7 @@ struct GroupPickerSheet: View {
                     Text("Group name")
                         .font(.system(size: 13))
                         .foregroundStyle(AppTheme.textSec)
-                    TextField(String(localized: "e.g. Smith Family, Office Groceries"), text: $newGroupName)
+                    TextField(loc("e.g. Smith Family, Office Groceries"), text: $newGroupName)
                         .font(.system(size: 16))
                         .padding(.horizontal, 14)
                         .frame(height: 50)
@@ -266,11 +266,11 @@ struct GroupPickerSheet: View {
             }
             .padding(20)
             .background(AppTheme.bg)
-            .navigationTitle(String(localized: "Create Group"))
+            .navigationTitle(loc("Create Group"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "Cancel")) { showCreateGroup = false }
+                    Button(loc("Cancel")) { showCreateGroup = false }
                 }
             }
         }
@@ -284,7 +284,7 @@ struct GroupPickerSheet: View {
                     Text("Invite code")
                         .font(.system(size: 13))
                         .foregroundStyle(AppTheme.textSec)
-                    TextField(String(localized: "e.g. ABCD12"), text: $inviteCode)
+                    TextField(loc("e.g. ABCD12"), text: $inviteCode)
                         .font(.system(size: 20, design: .monospaced))
                         .textInputAutocapitalization(.characters)
                         .autocorrectionDisabled()
@@ -336,11 +336,11 @@ struct GroupPickerSheet: View {
             }
             .padding(20)
             .background(AppTheme.bg)
-            .navigationTitle(String(localized: "Join with Invite Code"))
+            .navigationTitle(loc("Join with Invite Code"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "Cancel")) {
+                    Button(loc("Cancel")) {
                         showJoinGroup = false
                         inviteCode = ""
                         sheetError = nil

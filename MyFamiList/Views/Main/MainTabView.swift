@@ -47,16 +47,16 @@ struct MainTabView: View {
         .sheet(isPresented: $showGroupPicker) {
             GroupPickerSheet(groupVM: groupVM)
         }
-        .alert(String(localized: "Join Group"), isPresented: Binding(
+        .alert(loc("Join Group"), isPresented: Binding(
             get: { inviteHandler.pendingCode != nil },
             set: { if !$0 { inviteHandler.pendingCode = nil } }
         )) {
-            Button(String(localized: "Join")) {
+            Button(loc("Join")) {
                 let code = inviteHandler.pendingCode ?? ""
                 inviteHandler.pendingCode = nil
                 Task { try? await groupVM.joinGroup(inviteCode: code) }
             }
-            Button(String(localized: "Cancel"), role: .cancel) {
+            Button(loc("Cancel"), role: .cancel) {
                 inviteHandler.pendingCode = nil
             }
         } message: {
@@ -76,9 +76,9 @@ private struct CustomTabBar: View {
 
     private var items: [(icon: String, label: String)] {
         [
-            ("cart",      String(localized: "Lists")),
-            ("person.2",  String(localized: "Members")),
-            ("gearshape", String(localized: "Settings")),
+            ("cart",      loc("Lists")),
+            ("person.2",  loc("Members")),
+            ("gearshape", loc("Settings")),
         ]
     }
 

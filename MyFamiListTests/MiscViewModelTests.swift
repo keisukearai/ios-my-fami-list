@@ -50,32 +50,37 @@ final class InviteHandlerTests: XCTestCase {
 final class LanguageManagerTests: XCTestCase {
 
     private let manager = LanguageManager()
-    private let appleKey = "AppleLanguages"
     private let appKey = LanguageManager.userDefaultsKey
 
     override func tearDown() {
-        UserDefaults.standard.removeObject(forKey: appleKey)
         UserDefaults.standard.removeObject(forKey: appKey)
         super.tearDown()
     }
 
-    func test_setLanguage_english_writes_AppleLanguages() {
+    func test_setLanguage_english_stores_rawValue() {
         manager.setLanguage(.english)
-        let langs = UserDefaults.standard.array(forKey: appleKey) as? [String]
-        XCTAssertEqual(langs, ["en"])
+        XCTAssertEqual(manager.currentLanguage, .english)
     }
 
-    func test_setLanguage_japanese_writes_AppleLanguages() {
+    func test_setLanguage_japanese_stores_rawValue() {
         manager.setLanguage(.japanese)
-        let langs = UserDefaults.standard.array(forKey: appleKey) as? [String]
-        XCTAssertEqual(langs, ["ja"])
+        XCTAssertEqual(manager.currentLanguage, .japanese)
     }
 
     func test_setLanguage_system_clears_app_language_key() {
         manager.setLanguage(.english)
         manager.setLanguage(.system)
-        // currentLanguage reads from appKey, not appleKey
         XCTAssertEqual(manager.currentLanguage, .system)
+    }
+
+    func test_setLanguage_posts_languageDidChange_notification() {
+        let exp = expectation(description: "languageDidChange posted")
+        let token = NotificationCenter.default.addObserver(
+            forName: .languageDidChange, object: nil, queue: .main
+        ) { _ in exp.fulfill() }
+        manager.setLanguage(.english)
+        waitForExpectations(timeout: 1)
+        NotificationCenter.default.removeObserver(token)
     }
 
     func test_acceptLanguageHeader_english() {

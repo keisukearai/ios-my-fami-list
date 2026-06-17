@@ -8,8 +8,8 @@ enum APIError: Error, LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .invalidURL:              return String(localized: "Invalid URL")
-        case .unauthorized:            return String(localized: "Authentication required")
+        case .invalidURL:              return loc("Invalid URL")
+        case .unauthorized:            return loc("Authentication required")
         case .httpError(let c, let m): return m ?? "Server error (\(c))"
         case .decodingError(let e):    return "Failed to load data: \(e.localizedDescription)"
         }
@@ -24,12 +24,12 @@ extension Error {
         if let url = self as? URLError {
             let code = "(NSURLErrorDomain \(url.code.rawValue))"
             switch url.code {
-            case .notConnectedToInternet:  return "\(String(localized: "No internet connection")) \(code)"
-            case .cannotConnectToHost:     return "\(String(localized: "Cannot connect to server")) \(code)"
-            case .timedOut:                return "\(String(localized: "Connection timed out")) \(code)"
-            case .networkConnectionLost:   return "\(String(localized: "Network connection lost")) \(code)"
-            case .cannotFindHost:          return "\(String(localized: "Server not found")) \(code)"
-            default:                       return "\(String(localized: "Network error")) \(code)"
+            case .notConnectedToInternet:  return "\(loc("No internet connection")) \(code)"
+            case .cannotConnectToHost:     return "\(loc("Cannot connect to server")) \(code)"
+            case .timedOut:                return "\(loc("Connection timed out")) \(code)"
+            case .networkConnectionLost:   return "\(loc("Network connection lost")) \(code)"
+            case .cannotFindHost:          return "\(loc("Server not found")) \(code)"
+            default:                       return "\(loc("Network error")) \(code)"
             }
         }
         return localizedDescription

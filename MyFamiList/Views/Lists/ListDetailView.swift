@@ -55,17 +55,17 @@ struct ListDetailView: View {
             ItemDetailEditSheet(itemVM: itemVM, item: item, groupColor: groupColor, customCategories: groupVM.customCategories)
         }
         .confirmationDialog(
-            String(localized: "Delete all checked items?"),
+            loc("Delete all checked items?"),
             isPresented: $showClearConfirm,
             titleVisibility: .visible
         ) {
-            Button(String(localized: "Delete"), role: .destructive) {
+            Button(loc("Delete"), role: .destructive) {
                 Task { await itemVM.clearCheckedItems() }
             }
         }
-        .alert(String(localized: "Rename List"), isPresented: $showRenameAlert) {
-            TextField(String(localized: "List name"), text: $renameText)
-            Button(String(localized: "Save")) {
+        .alert(loc("Rename List"), isPresented: $showRenameAlert) {
+            TextField(loc("List name"), text: $renameText)
+            Button(loc("Save")) {
                 let name = renameText.trimmingCharacters(in: .whitespaces)
                 guard !name.isEmpty else { return }
                 Task {
@@ -75,13 +75,13 @@ struct ListDetailView: View {
                     }
                 }
             }
-            Button(String(localized: "Cancel"), role: .cancel) {}
+            Button(loc("Cancel"), role: .cancel) {}
         }
-        .alert(String(localized: "Error"), isPresented: Binding(
+        .alert(loc("Error"), isPresented: Binding(
             get: { itemVM.errorMessage != nil },
             set: { if !$0 { itemVM.errorMessage = nil } }
         )) {
-            Button(String(localized: "OK")) { itemVM.errorMessage = nil }
+            Button(loc("OK")) { itemVM.errorMessage = nil }
         } message: {
             Text(itemVM.errorMessage ?? "")
         }
@@ -95,20 +95,20 @@ struct ListDetailView: View {
                 renameText = list.name
                 showRenameAlert = true
             } label: {
-                Label(String(localized: "Rename List"), systemImage: "pencil")
+                Label(loc("Rename List"), systemImage: "pencil")
             }
             if !itemVM.checkedItems.isEmpty {
                 Button(role: .destructive) {
                     showClearConfirm = true
                 } label: {
-                    Label(String(localized: "Clear Checked Items"), systemImage: "checkmark.circle")
+                    Label(loc("Clear Checked Items"), systemImage: "checkmark.circle")
                 }
             }
             if groupVM.currentGroup?.isOwner == true {
                 Button(role: .destructive) {
                     Task { await groupVM.deleteList(list); dismiss() }
                 } label: {
-                    Label(String(localized: "Delete List"), systemImage: "trash")
+                    Label(loc("Delete List"), systemImage: "trash")
                 }
             }
         } label: {
@@ -141,7 +141,7 @@ struct ListDetailView: View {
                         Button(role: .destructive) {
                             Task { await itemVM.deleteItem(item) }
                         } label: {
-                            Label(String(localized: "Delete"), systemImage: "trash")
+                            Label(loc("Delete"), systemImage: "trash")
                         }
                     }
                 }
@@ -197,7 +197,7 @@ struct ListDetailView: View {
                                 Button(role: .destructive) {
                                     Task { await itemVM.deleteItem(item) }
                                 } label: {
-                                    Label(String(localized: "Delete"), systemImage: "trash")
+                                    Label(loc("Delete"), systemImage: "trash")
                                 }
                             }
                         }
@@ -207,7 +207,7 @@ struct ListDetailView: View {
                         withAnimation(.spring(duration: 0.3)) { checkedExpanded.toggle() }
                     } label: {
                         HStack {
-                            Text(String(format: String(localized: "In Cart (%d)"), itemVM.checkedItems.count))
+                            Text(String(format: loc("In Cart (%d)"), itemVM.checkedItems.count))
                                 .font(.system(size: 14, weight: .medium))
                                 .foregroundStyle(AppTheme.textSec)
                             Spacer()
@@ -276,7 +276,7 @@ struct ListDetailView: View {
             }
 
             HStack(spacing: 10) {
-                TextField(String(localized: "+ Add item…"), text: $composerText)
+                TextField(loc("+ Add item…"), text: $composerText)
                     .focused($composerFocused)
                     .accessibilityIdentifier("itemComposer")
                     .font(.system(size: AppTheme.fs))
@@ -287,7 +287,7 @@ struct ListDetailView: View {
 
                 if composerFocused {
                     if !composerText.isEmpty {
-                        Button(String(localized: "Add")) { addItem() }
+                        Button(loc("Add")) { addItem() }
                             .font(.system(size: 15, weight: .semibold))
                             .foregroundStyle(.white)
                             .padding(.horizontal, 16)
@@ -296,7 +296,7 @@ struct ListDetailView: View {
                             .clipShape(RoundedRectangle(cornerRadius: AppTheme.rField))
                             .transition(.scale.combined(with: .opacity))
                     } else {
-                        Button(String(localized: "Close")) { composerFocused = false }
+                        Button(loc("Close")) { composerFocused = false }
                             .font(.system(size: 15))
                             .foregroundStyle(AppTheme.textSec)
                             .transition(.scale.combined(with: .opacity))
@@ -396,7 +396,7 @@ struct ItemRowView: View {
                         .lineLimit(1)
                 }
             } else if !item.addedByName.isEmpty {
-                Text("\(item.addedByName) \(String(localized: "added")) ・ \(relativeTime(from: item.createdAt))")
+                Text("\(item.addedByName) \(loc("added")) ・ \(relativeTime(from: item.createdAt))")
                     .font(.system(size: 12.5))
                     .foregroundStyle(AppTheme.textTer)
             }
@@ -409,10 +409,10 @@ private func relativeTime(from iso: String) -> String {
     fmt.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
     guard let date = fmt.date(from: iso) ?? ISO8601DateFormatter().date(from: iso) else { return "" }
     let secs = Int(-date.timeIntervalSinceNow)
-    if secs < 60 { return String(localized: "Just now") }
-    if secs < 3600 { return String(format: String(localized: "%d min ago"), secs / 60) }
-    if secs < 86400 { return String(format: String(localized: "%d hr ago"), secs / 3600) }
-    return String(format: String(localized: "%d day ago"), secs / 86400)
+    if secs < 60 { return loc("Just now") }
+    if secs < 3600 { return String(format: loc("%d min ago"), secs / 60) }
+    if secs < 86400 { return String(format: loc("%d hr ago"), secs / 3600) }
+    return String(format: loc("%d day ago"), secs / 86400)
 }
 
 // MARK: - Item Edit Sheet
@@ -437,8 +437,8 @@ struct ItemDetailEditSheet: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 20) {
-                    field(label: String(localized: "Item Name")) {
-                        TextField(String(localized: "e.g. Milk"), text: $name)
+                    field(label: loc("Item Name")) {
+                        TextField(loc("e.g. Milk"), text: $name)
                             .font(.system(size: 16))
                             .padding(.horizontal, 14)
                             .frame(height: 50)
@@ -446,8 +446,8 @@ struct ItemDetailEditSheet: View {
                             .clipShape(RoundedRectangle(cornerRadius: AppTheme.rField))
                     }
 
-                    field(label: String(localized: "Quantity")) {
-                        TextField(String(localized: "e.g. 2 / 300g"), text: $quantity)
+                    field(label: loc("Quantity")) {
+                        TextField(loc("e.g. 2 / 300g"), text: $quantity)
                             .font(.system(size: 16))
                             .padding(.horizontal, 14)
                             .frame(height: 50)
@@ -455,7 +455,7 @@ struct ItemDetailEditSheet: View {
                             .clipShape(RoundedRectangle(cornerRadius: AppTheme.rField))
                     }
 
-                    field(label: String(localized: "Category")) {
+                    field(label: loc("Category")) {
                         LazyVGrid(
                             columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 3),
                             spacing: 8
@@ -482,8 +482,8 @@ struct ItemDetailEditSheet: View {
                         }
                     }
 
-                    field(label: String(localized: "Memo")) {
-                        TextField(String(localized: "Optional"), text: $memo, axis: .vertical)
+                    field(label: loc("Memo")) {
+                        TextField(loc("Optional"), text: $memo, axis: .vertical)
                             .font(.system(size: 16))
                             .padding(14)
                             .background(AppTheme.fieldBg)
@@ -506,14 +506,14 @@ struct ItemDetailEditSheet: View {
                 .padding(20)
             }
             .background(AppTheme.bg)
-            .navigationTitle(String(localized: "Edit Item"))
+            .navigationTitle(loc("Edit Item"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "Cancel")) { dismiss() }
+                    Button(loc("Cancel")) { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(String(localized: "Save")) {
+                    Button(loc("Save")) {
                         Task {
                             await itemVM.updateItem(item, name: name, quantity: quantity, category: category, memo: memo)
                             if itemVM.errorMessage == nil { dismiss() }

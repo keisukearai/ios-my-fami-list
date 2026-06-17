@@ -9,12 +9,12 @@ struct MembersView: View {
 
     private var headerSub: String? {
         guard let group else { return nil }
-        return String(format: String(localized: "%d members joined"), group.members.count)
+        return String(format: loc("%d members joined"), group.members.count)
     }
 
     var body: some View {
         VStack(spacing: 0) {
-            AppHeader(String(localized: "Members"), sub: headerSub)
+            AppHeader(loc("Members"), sub: headerSub)
 
             Group {
                 if let group {
@@ -26,11 +26,11 @@ struct MembersView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .toolbar(.hidden, for: .navigationBar)
-        .alert(String(localized: "Error"), isPresented: Binding(
+        .alert(loc("Error"), isPresented: Binding(
             get: { groupVM.errorMessage != nil },
             set: { if !$0 { groupVM.errorMessage = nil } }
         )) {
-            Button(String(localized: "OK")) {}
+            Button(loc("OK")) {}
         } message: {
             Text(groupVM.errorMessage ?? "")
         }
@@ -40,11 +40,11 @@ struct MembersView: View {
             }
         }
         .confirmationDialog(
-            String(format: String(localized: "Remove \"%@\" from the group?"), kickTargetMember?.displayName ?? ""),
+            String(format: loc("Remove \"%@\" from the group?"), kickTargetMember?.displayName ?? ""),
             isPresented: Binding(get: { kickTargetMember != nil }, set: { if !$0 { kickTargetMember = nil } }),
             titleVisibility: .visible
         ) {
-            Button(String(localized: "Remove"), role: .destructive) {
+            Button(loc("Remove"), role: .destructive) {
                 if let member = kickTargetMember, let groupId = group?.id {
                     Task { await groupVM.kickMember(groupId: groupId, userId: member.id) }
                 }
@@ -78,7 +78,7 @@ struct MembersView: View {
                             Button(role: .destructive) {
                                 kickTargetMember = member
                             } label: {
-                                Label(String(localized: "Remove from Group"), systemImage: "person.fill.xmark")
+                                Label(loc("Remove from Group"), systemImage: "person.fill.xmark")
                             }
                         }
                     }
@@ -106,7 +106,7 @@ struct MembersView: View {
                 Text(member.displayName)
                     .font(.system(size: 16.5, weight: .semibold))
                     .foregroundStyle(AppTheme.text)
-                Text(member.id == group.ownerId ? String(localized: "Owner") : String(localized: "Members"))
+                Text(member.id == group.ownerId ? loc("Owner") : loc("Members"))
                     .font(.system(size: 13))
                     .foregroundStyle(AppTheme.textSec)
             }
@@ -202,7 +202,7 @@ struct InviteCodeSheet: View {
                 }
 
                 Button { copyCode() } label: {
-                    Label(copied ? String(localized: "Copied!") : String(localized: "Copy Code"),
+                    Label(copied ? loc("Copied!") : loc("Copy Code"),
                           systemImage: copied ? "checkmark" : "doc.on.doc")
                         .frame(maxWidth: .infinity)
                         .frame(height: 52)
@@ -225,7 +225,7 @@ struct InviteCodeSheet: View {
                             if isRegenerating {
                                 ProgressView().tint(AppTheme.textSec)
                             } else {
-                                Label(String(localized: "Regenerate Invite Code"), systemImage: "arrow.clockwise")
+                                Label(loc("Regenerate Invite Code"), systemImage: "arrow.clockwise")
                                     .font(.system(size: 14))
                                     .foregroundStyle(AppTheme.textSec)
                             }
@@ -243,11 +243,11 @@ struct InviteCodeSheet: View {
             }
             .padding(24)
             .background(AppTheme.bg)
-            .navigationTitle(String(format: String(localized: "Invite to %@"), group.name))
+            .navigationTitle(String(format: loc("Invite to %@"), group.name))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "Close")) { dismiss() }
+                    Button(loc("Close")) { dismiss() }
                 }
             }
         }

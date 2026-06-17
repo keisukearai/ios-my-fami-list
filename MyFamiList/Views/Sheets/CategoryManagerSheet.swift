@@ -20,11 +20,11 @@ struct CategoryManagerSheet: View {
                 .padding(.bottom, 32)
             }
             .background(AppTheme.bg)
-            .navigationTitle(String(localized: "Manage Categories"))
+            .navigationTitle(loc("Manage Categories"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "Close")) { dismiss() }
+                    Button(loc("Close")) { dismiss() }
                 }
                 ToolbarItem(placement: .primaryAction) {
                     Button {
@@ -42,11 +42,11 @@ struct CategoryManagerSheet: View {
             .sheet(item: $editTarget) { cat in
                 CategoryFormSheet(groupVM: groupVM, editing: cat)
             }
-            .alert(String(localized: "Error"), isPresented: Binding(
+            .alert(loc("Error"), isPresented: Binding(
                 get: { errorMessage != nil },
                 set: { if !$0 { errorMessage = nil } }
             )) {
-                Button(String(localized: "OK")) {}
+                Button(loc("OK")) {}
             } message: {
                 Text(errorMessage ?? "")
             }
@@ -184,7 +184,7 @@ struct CategoryFormSheet: View {
         NavigationStack {
             VStack(spacing: 24) {
                 VStack(spacing: 16) {
-                    TextField(String(localized: "Category name"), text: $name)
+                    TextField(loc("Category name"), text: $name)
                         .font(.system(size: 16))
                         .padding(12)
                         .background(AppTheme.fieldBg)
@@ -198,22 +198,22 @@ struct CategoryFormSheet: View {
             }
             .padding(.top, 24)
             .background(AppTheme.bg)
-            .navigationTitle(editing == nil ? String(localized: "Add Category") : String(localized: "Edit Category"))
+            .navigationTitle(editing == nil ? loc("Add Category") : loc("Edit Category"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "Cancel")) { dismiss() }
+                    Button(loc("Cancel")) { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(String(localized: "Save")) { save() }
+                    Button(loc("Save")) { save() }
                         .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty || isSaving)
                 }
             }
-            .alert(String(localized: "Error"), isPresented: Binding(
+            .alert(loc("Error"), isPresented: Binding(
                 get: { errorMessage != nil },
                 set: { if !$0 { errorMessage = nil } }
             )) {
-                Button(String(localized: "OK")) {}
+                Button(loc("OK")) {}
             } message: {
                 Text(errorMessage ?? "")
             }
