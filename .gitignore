@@ -32,3 +32,8 @@ GoogleService-Info.plist
 
 # Design files (not committed to repo)
 MyFamiList_design/
+
+# Fastlane
+fastlane/.env.local
+fastlane/report.xml
+vendor/bundle/
