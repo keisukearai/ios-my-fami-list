@@ -86,6 +86,46 @@ final class LocalDataStore {
         try? context.save()
     }
 
+    /// サーバー取得済みアイテムを端末にキャッシュする（オフライン・コールドスタート表示用）。
+    /// 同期待ちのローカル変更（isSynced == false）は上書きせず保持する。
+    func cacheServerItems(_ serverItems: [Item], apiListId: Int, groupApiId: Int) {
+        let pred = #Predicate<LocalItem> { $0.apiListId == apiListId }
+        let allLocal = (try? context.fetch(FetchDescriptor(predicate: pred))) ?? []
+
+        // 同期待ちのローカル変更が紐づく apiId は触らない
+        let pendingApiIds = Set(allLocal.filter { !$0.isSynced }.compactMap { $0.apiId })
+        // 既存のクリーンなキャッシュ（同期済みサーバーコピー）
+        var clean: [Int: LocalItem] = [:]
+        for local in allLocal where local.isSynced {
+            if let aid = local.apiId { clean[aid] = local }
+        }
+
+        let serverIds = Set(serverItems.map { $0.id })
+        // サーバーから消えたクリーンキャッシュを削除
+        for (aid, local) in clean where !serverIds.contains(aid) {
+            context.delete(local)
+        }
+        for item in serverItems {
+            if pendingApiIds.contains(item.id) { continue }
+            if let local = clean[item.id] {
+                local.name = item.name
+                local.quantity = item.quantity
+                local.category = item.category
+                local.memo = item.memo
+                local.isChecked = item.isChecked
+            } else {
+                let local = LocalItem(name: item.name, category: item.category, groupApiId: groupApiId, apiListId: apiListId)
+                local.apiId = item.id
+                local.quantity = item.quantity
+                local.memo = item.memo
+                local.isChecked = item.isChecked
+                local.isSynced = true
+                context.insert(local)
+            }
+        }
+        try? context.save()
+    }
+
     func markDeleted(apiId: Int, apiListId: Int, groupApiId: Int, item: Item) {
         let pred = #Predicate<LocalItem> { $0.apiId == apiId }
         if let existing = try? context.fetch(FetchDescriptor(predicate: pred)).first {

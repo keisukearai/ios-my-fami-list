@@ -268,3 +268,81 @@ final class ItemViewModelOfflineTests: XCTestCase {
         XCTAssertEqual(cached.first?.name, "ローカルアイテム")
     }
 }
+
+// MARK: - サーバーアイテムキャッシュテスト（オフライン・コールドスタート表示用）
+
+@MainActor
+final class LocalDataStoreCacheTests: XCTestCase {
+
+    private var store: LocalDataStore!
+
+    override func setUp() async throws {
+        store = LocalDataStore(inMemory: true)
+    }
+
+    override func tearDown() async throws {
+        await Task.yield()
+        try await super.tearDown()
+    }
+
+    private func makeItem(id: Int, name: String, isChecked: Bool = false) -> Item {
+        Item(id: id, name: name, quantity: "", category: "食品", memo: "",
+             isChecked: isChecked, addedByName: "", createdAt: "", updatedAt: "")
+    }
+
+    func test_cacheServerItems_persists_for_offline_display() throws {
+        store.cacheServerItems([makeItem(id: 100, name: "牛乳"),
+                                makeItem(id: 101, name: "卵")],
+                               apiListId: 10, groupApiId: 1)
+
+        let cached = try store.cachedItems(apiListId: 10)
+        XCTAssertEqual(cached.count, 2)
+        XCTAssertEqual(Set(cached.map { $0.name }), ["牛乳", "卵"])
+        XCTAssertTrue(cached.allSatisfy { $0.isSynced })
+        XCTAssertTrue(cached.allSatisfy { $0.apiId != nil })
+    }
+
+    func test_cacheServerItems_updates_existing_clean_cache() throws {
+        store.cacheServerItems([makeItem(id: 100, name: "牛乳", isChecked: false)],
+                               apiListId: 10, groupApiId: 1)
+        // 同じ apiId をチェック済みで再キャッシュ
+        store.cacheServerItems([makeItem(id: 100, name: "牛乳", isChecked: true)],
+                               apiListId: 10, groupApiId: 1)
+
+        let cached = try store.cachedItems(apiListId: 10)
+        XCTAssertEqual(cached.count, 1)
+        XCTAssertTrue(cached.first?.isChecked ?? false)
+    }
+
+    func test_cacheServerItems_removes_items_deleted_on_server() throws {
+        store.cacheServerItems([makeItem(id: 100, name: "牛乳"),
+                                makeItem(id: 101, name: "卵")],
+                               apiListId: 10, groupApiId: 1)
+        // 101 がサーバーから消えた
+        store.cacheServerItems([makeItem(id: 100, name: "牛乳")],
+                               apiListId: 10, groupApiId: 1)
+
+        let cached = try store.cachedItems(apiListId: 10)
+        XCTAssertEqual(cached.count, 1)
+        XCTAssertEqual(cached.first?.apiId, 100)
+    }
+
+    func test_cacheServerItems_does_not_overwrite_pending_local_change() throws {
+        // 同期待ちのトグル（apiId=100, isSynced=false, チェック済み）
+        let pending = LocalItem(name: "牛乳", category: "食品", groupApiId: 1, apiListId: 10)
+        pending.apiId = 100
+        pending.isChecked = true
+        pending.isSynced = false
+        store.context.insert(pending)
+        store.save()
+
+        // サーバーは未チェックで返す
+        store.cacheServerItems([makeItem(id: 100, name: "牛乳", isChecked: false)],
+                               apiListId: 10, groupApiId: 1)
+
+        let pendingToggles = try store.pendingToggles()
+        XCTAssertEqual(pendingToggles.count, 1)
+        XCTAssertTrue(pendingToggles.first?.isChecked ?? false)  // ローカル変更が保持される
+        XCTAssertFalse(pendingToggles.first?.isSynced ?? true)
+    }
+}

@@ -54,6 +54,7 @@ final class ItemViewModel {
             let fetched: [Item] = try await api.request(basePath)
             let localOnly = items.filter { $0.id < 0 }
             items = fetched + localOnly
+            store.cacheServerItems(fetched, apiListId: listId, groupApiId: groupId)
         } catch {
             if !(error is CancellationError) && items.isEmpty {
                 loadFromStore()
