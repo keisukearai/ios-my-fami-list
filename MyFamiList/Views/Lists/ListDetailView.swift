@@ -168,7 +168,7 @@ struct ListDetailView: View {
                         Circle()
                             .fill(AppTheme.textTer)
                             .frame(width: 3, height: 3)
-                        Text("\(itemVM.uncheckedItems.count)品 未購入")
+                        Text(String(format: loc("%d unpurchased"), itemVM.uncheckedItems.count))
                             .font(.system(size: 13.5))
                             .foregroundStyle(AppTheme.textSec)
                         Spacer()
@@ -235,10 +235,10 @@ struct ListDetailView: View {
     private var emptyState: some View {
         VStack(spacing: 14) {
             Text("🛒").font(.system(size: 48))
-            Text("No unpurchased items")
+            Text(loc("No unpurchased items"))
                 .font(.system(size: 16))
                 .foregroundStyle(AppTheme.textSec)
-            Text("Add items from the input below")
+            Text(loc("Add items from the input below"))
                 .font(.system(size: 13))
                 .foregroundStyle(AppTheme.textTer)
         }
@@ -494,7 +494,7 @@ struct ItemDetailEditSheet: View {
                     Button {
                         Task { await itemVM.deleteItem(item); dismiss() }
                     } label: {
-                        Text("Delete This Item")
+                        Text(loc("Delete This Item"))
                             .font(.system(size: 16, weight: .medium))
                             .frame(maxWidth: .infinity)
                             .frame(height: 52)

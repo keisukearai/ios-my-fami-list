@@ -61,7 +61,7 @@ struct MainTabView: View {
             }
         } message: {
             if let code = inviteHandler.pendingCode {
-                Text("Join group with invite code \"\(code)\"?")
+                Text(String(format: loc("Join group with invite code \"%@\"?"), code))
             }
         }
         .task { groupVM.start() }

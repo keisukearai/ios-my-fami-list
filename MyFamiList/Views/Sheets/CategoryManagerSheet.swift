@@ -56,7 +56,7 @@ struct CategoryManagerSheet: View {
 
     private var defaultsSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Default (cannot be modified)")
+            Text(loc("Default (cannot be modified)"))
                 .font(.system(size: 13))
                 .foregroundStyle(AppTheme.textSec)
                 .padding(.leading, 4)
@@ -88,13 +88,13 @@ struct CategoryManagerSheet: View {
 
     private var customSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Custom")
+            Text(loc("Custom"))
                 .font(.system(size: 13))
                 .foregroundStyle(AppTheme.textSec)
                 .padding(.leading, 4)
 
             if groupVM.customCategories.isEmpty {
-                Text("No custom categories yet")
+                Text(loc("No custom categories yet"))
                     .font(.system(size: 15))
                     .foregroundStyle(AppTheme.textTer)
                     .frame(maxWidth: .infinity, alignment: .center)
@@ -116,7 +116,7 @@ struct CategoryManagerSheet: View {
                 .cardShadow()
             }
 
-            Text("Deleting will not affect existing items")
+            Text(loc("Deleting will not affect existing items"))
                 .font(.system(size: 12))
                 .foregroundStyle(AppTheme.textTer)
                 .padding(.leading, 4)

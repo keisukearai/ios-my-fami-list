@@ -1,6 +1,24 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Apple Sign In failed" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "Apple Sign In に失敗しました" } } }
+    },
+    "Loading…" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "読み込み中…" } } }
+    },
+    "Product not found" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "商品が見つかりませんでした" } } }
+    },
+    "Purchase for %@ (one-time)" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "%@ で購入（買い切り）" } } }
+    },
+    "Purchase verification failed" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "購入の検証に失敗しました" } } }
+    },
+    "%d unpurchased" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "%d品 未購入" } } }
+    },
     "System Default" : {
       "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "システムデフォルト" } } }
     },

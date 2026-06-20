@@ -170,7 +170,7 @@ struct GroupPickerSheet: View {
             Image(systemName: "person.3")
                 .font(.system(size: 40))
                 .foregroundStyle(AppTheme.textTer)
-            Text("No groups")
+            Text(loc("No groups"))
                 .font(.system(size: 16))
                 .foregroundStyle(AppTheme.textSec)
         }
@@ -183,7 +183,7 @@ struct GroupPickerSheet: View {
             HStack(spacing: 10) {
                 Image(systemName: "person.badge.plus")
                     .font(.system(size: 15, weight: .medium))
-                Text("Join with Invite Code")
+                Text(loc("Join with Invite Code"))
                     .font(.system(size: 16, weight: .medium))
             }
             .frame(maxWidth: .infinity)
@@ -205,7 +205,7 @@ struct GroupPickerSheet: View {
             HStack(spacing: 10) {
                 Image(systemName: "plus")
                     .font(.system(size: 15, weight: .medium))
-                Text("New Group")
+                Text(loc("New Group"))
                     .font(.system(size: 16, weight: .medium))
             }
             .frame(maxWidth: .infinity)
@@ -222,7 +222,7 @@ struct GroupPickerSheet: View {
         NavigationStack {
             VStack(spacing: 24) {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Group name")
+                    Text(loc("Group name"))
                         .font(.system(size: 13))
                         .foregroundStyle(AppTheme.textSec)
                     TextField(loc("e.g. Smith Family, Office Groceries"), text: $newGroupName)
@@ -252,7 +252,7 @@ struct GroupPickerSheet: View {
                         if isProcessing {
                             ProgressView().tint(.white)
                         } else {
-                            Text("Create Group")
+                            Text(loc("Create Group"))
                                 .font(.system(size: 17, weight: .semibold))
                         }
                     }
@@ -281,7 +281,7 @@ struct GroupPickerSheet: View {
         NavigationStack {
             VStack(spacing: 24) {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Invite code")
+                    Text(loc("Invite code"))
                         .font(.system(size: 13))
                         .foregroundStyle(AppTheme.textSec)
                     TextField(loc("e.g. ABCD12"), text: $inviteCode)
@@ -322,7 +322,7 @@ struct GroupPickerSheet: View {
                         if isProcessing {
                             ProgressView().tint(.white)
                         } else {
-                            Text("Join")
+                            Text(loc("Join"))
                                 .font(.system(size: 17, weight: .semibold))
                         }
                     }

@@ -47,12 +47,12 @@ struct PaywallSheet: View {
                 .font(.system(size: 60))
                 .foregroundStyle(.yellow)
 
-            Text("Upgrade to FamiList Pro")
+            Text(loc("Upgrade to FamiList Pro"))
                 .font(.title2)
                 .fontWeight(.bold)
                 .multilineTextAlignment(.center)
 
-            Text("Unlock all features for your family")
+            Text(loc("Unlock all features for your family"))
                 .font(.body)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -109,9 +109,9 @@ struct PaywallSheet: View {
 
     private var purchaseButtonLabel: String {
         if let product {
-            return "\(product.displayPrice) で購入（買い切り）"
+            return String(format: loc("Purchase for %@ (one-time)"), product.displayPrice)
         }
-        return "読み込み中…"
+        return loc("Loading…")
     }
 
     private func performPurchase() async {

@@ -58,7 +58,7 @@ struct MembersView: View {
             VStack(spacing: AppTheme.secGap) {
                 memberListCard(group: group)
                 inviteButton
-                Text("Free plan: up to 3 members")
+                Text(loc("Free plan: up to 3 members"))
                     .font(.system(size: 12.5))
                     .foregroundStyle(AppTheme.textTer)
             }
@@ -128,7 +128,7 @@ struct MembersView: View {
             HStack(spacing: 10) {
                 Image(systemName: "person.badge.plus")
                     .font(.system(size: 17))
-                Text("Invite Members")
+                Text(loc("Invite Members"))
                     .font(.system(size: 17, weight: .semibold))
             }
             .frame(maxWidth: .infinity)
@@ -145,7 +145,7 @@ struct MembersView: View {
             Image(systemName: "person.3")
                 .font(.system(size: 52))
                 .foregroundStyle(AppTheme.textTer)
-            Text("Please select a group")
+            Text(loc("Please select a group"))
                 .font(.system(size: 17))
                 .foregroundStyle(AppTheme.textSec)
         }
@@ -171,7 +171,7 @@ struct InviteCodeSheet: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 24) {
-                Text("Share this code with the person you want to invite.")
+                Text(loc("Share this code with the person you want to invite."))
                     .font(.system(size: 14))
                     .foregroundStyle(AppTheme.textSec)
                     .multilineTextAlignment(.center)
@@ -189,10 +189,10 @@ struct InviteCodeSheet: View {
                 if let inviteURL = URL(string: "https://ios.kotoragk.com/invite/\(currentCode)") {
                     ShareLink(
                         item: inviteURL,
-                        subject: Text("FamiList Group Invitation"),
-                        message: Text("Join the group \"\(group.name)\" on FamiList")
+                        subject: Text(loc("FamiList Group Invitation")),
+                        message: Text(String(format: loc("Join the group \"%@\" on FamiList"), group.name))
                     ) {
-                        Label("Share Link", systemImage: "square.and.arrow.up")
+                        Label(loc("Share Link"), systemImage: "square.and.arrow.up")
                             .frame(maxWidth: .infinity)
                             .frame(height: 52)
                             .background(AppTheme.primary)
@@ -234,7 +234,7 @@ struct InviteCodeSheet: View {
                     .disabled(isRegenerating)
                 }
 
-                Text("Tap the link to join the group in the app. If not installed, you'll be directed to the App Store.")
+                Text(loc("Tap the link to join the group in the app. If not installed, you'll be directed to the App Store."))
                     .font(.system(size: 13))
                     .foregroundStyle(AppTheme.textSec)
                     .multilineTextAlignment(.center)

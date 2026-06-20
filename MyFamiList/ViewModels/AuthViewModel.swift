@@ -97,7 +97,7 @@ final class AuthViewModel: NSObject {
                 let tokenData = credential.identityToken,
                 let idToken = String(data: tokenData, encoding: .utf8)
             else {
-                errorMessage = "Apple Sign In に失敗しました"
+                errorMessage = loc("Apple Sign In failed")
                 return
             }
             let displayName = [credential.fullName?.givenName, credential.fullName?.familyName]

@@ -47,11 +47,11 @@ final class PurchaseServiceTests: XCTestCase {
     func test_purchaseError_descriptions_are_localized() {
         XCTAssertEqual(
             PurchaseService.PurchaseError.productNotFound.errorDescription,
-            "商品が見つかりませんでした"
+            loc("Product not found")
         )
         XCTAssertEqual(
             PurchaseService.PurchaseError.failedVerification.errorDescription,
-            "購入の検証に失敗しました"
+            loc("Purchase verification failed")
         )
     }
 }

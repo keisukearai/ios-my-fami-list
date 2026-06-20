@@ -88,7 +88,7 @@ struct ListsScreenView: View {
                 .listRowSeparator(.hidden)
                 .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
             if !purchaseService.isPro {
-                Text("Free plan: up to 2 lists")
+                Text(loc("Free plan: up to 2 lists"))
                     .font(.system(size: 12.5))
                     .foregroundStyle(AppTheme.textTer)
                     .frame(maxWidth: .infinity)
@@ -111,7 +111,7 @@ struct ListsScreenView: View {
                         .font(.system(size: 15, weight: .medium))
                         .foregroundStyle(AppTheme.text)
                 } else {
-                    Text("Select Group")
+                    Text(loc("Select Group"))
                         .font(.system(size: 15, weight: .medium))
                         .foregroundStyle(AppTheme.textSec)
                 }
@@ -168,7 +168,7 @@ struct ListsScreenView: View {
             HStack(spacing: 8) {
                 Image(systemName: "plus")
                     .font(.system(size: 15, weight: .medium))
-                Text("Add List")
+                Text(loc("Add List"))
                     .font(.system(size: 16, weight: .medium))
             }
             .frame(maxWidth: .infinity)
@@ -186,10 +186,10 @@ struct ListsScreenView: View {
             Image(systemName: "list.bullet.clipboard")
                 .font(.system(size: 44))
                 .foregroundStyle(AppTheme.textTer)
-            Text("No lists")
+            Text(loc("No lists"))
                 .font(.system(size: 17, weight: .medium))
                 .foregroundStyle(AppTheme.textSec)
-            Text("You can create a list from \"Add List\"")
+            Text(loc("You can create a list from \"Add List\""))
                 .font(.system(size: 14))
                 .foregroundStyle(AppTheme.textTer)
                 .multilineTextAlignment(.center)
@@ -203,15 +203,15 @@ struct ListsScreenView: View {
             Image(systemName: "person.3")
                 .font(.system(size: 52))
                 .foregroundStyle(AppTheme.textTer)
-            Text("No groups")
+            Text(loc("No groups"))
                 .font(.system(size: 20, weight: .bold))
                 .foregroundStyle(AppTheme.text)
-            Text("Create a group or join with an invite code.")
+            Text(loc("Create a group or join with an invite code."))
                 .font(.system(size: 15))
                 .foregroundStyle(AppTheme.textSec)
                 .multilineTextAlignment(.center)
             Button { onGroupPickerTap() } label: {
-                Text("Create Group")
+                Text(loc("Create Group"))
                     .font(.system(size: 16, weight: .semibold))
                     .frame(height: 50)
                     .padding(.horizontal, 28)

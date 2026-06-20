@@ -106,8 +106,8 @@ class PurchaseService {
 
         var errorDescription: String? {
             switch self {
-            case .productNotFound: return "商品が見つかりませんでした"
-            case .failedVerification: return "購入の検証に失敗しました"
+            case .productNotFound: return loc("Product not found")
+            case .failedVerification: return loc("Purchase verification failed")
             }
         }
     }

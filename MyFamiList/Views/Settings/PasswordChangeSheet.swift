@@ -73,7 +73,7 @@ struct PasswordChangeSheet: View {
             Button {
                 Task { await submit() }
             } label: {
-                Text("Change")
+                Text(loc("Change"))
                     .font(.system(size: 17, weight: .semibold))
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
@@ -89,7 +89,7 @@ struct PasswordChangeSheet: View {
             Image(systemName: "checkmark.circle.fill")
                 .font(.system(size: 56))
                 .foregroundStyle(AppTheme.primary)
-            Text("Password changed successfully")
+            Text(loc("Password changed successfully"))
                 .font(.system(size: 18, weight: .semibold))
                 .foregroundStyle(AppTheme.text)
             Button(loc("Close")) { dismiss() }

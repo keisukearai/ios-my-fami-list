@@ -148,7 +148,7 @@ struct EditProfileSheet: View {
 
     private var colorSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Icon Color (when no photo)")
+            Text(loc("Icon Color (when no photo)"))
                 .font(.system(size: 13))
                 .foregroundStyle(AppTheme.textSec)
                 .padding(.leading, 4)

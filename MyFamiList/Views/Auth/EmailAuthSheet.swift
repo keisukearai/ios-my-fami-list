@@ -54,8 +54,8 @@ struct EmailAuthSheet: View {
 
     private var modePicker: some View {
         Picker(loc("Mode"), selection: $isLogin) {
-            Text("Sign In").tag(true)
-            Text("Sign Up").tag(false)
+            Text(loc("Sign In")).tag(true)
+            Text(loc("Sign Up")).tag(false)
         }
         .pickerStyle(.segmented)
         .onChange(of: isLogin) { _, _ in
@@ -181,7 +181,7 @@ struct PasswordResetSheet: View {
 
     private var emailStep: some View {
         VStack(spacing: 20) {
-            Text("We'll send a confirmation code to your registered email address.")
+            Text(loc("We'll send a confirmation code to your registered email address."))
                 .font(.system(size: 15))
                 .foregroundStyle(AppTheme.textSec)
                 .multilineTextAlignment(.center)
@@ -202,7 +202,7 @@ struct PasswordResetSheet: View {
             Button {
                 Task { await sendCode() }
             } label: {
-                Text("Send Code")
+                Text(loc("Send Code"))
                     .font(.system(size: 17, weight: .semibold))
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity).frame(height: 54)
@@ -239,7 +239,7 @@ struct PasswordResetSheet: View {
             Button {
                 Task { await confirmReset() }
             } label: {
-                Text("Reset Password")
+                Text(loc("Reset Password"))
                     .font(.system(size: 17, weight: .semibold))
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity).frame(height: 54)
@@ -254,7 +254,7 @@ struct PasswordResetSheet: View {
             Image(systemName: "checkmark.circle.fill")
                 .font(.system(size: 56))
                 .foregroundStyle(AppTheme.primary)
-            Text("Password Reset Complete")
+            Text(loc("Password Reset Complete"))
                 .font(.system(size: 18, weight: .semibold))
                 .foregroundStyle(AppTheme.text)
             Button(loc("Close")) { dismiss() }
