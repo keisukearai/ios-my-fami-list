@@ -248,8 +248,13 @@ class APIClient {
 
     private func refreshAccessToken() async throws {
         guard let refresh = refreshToken else { throw APIError.unauthorized }
-        struct Resp: Decodable { let access: String }
+        // ROTATE_REFRESH_TOKENS=True のためレスポンスには新しい refresh も含まれる。
+        // 旧 refresh は BLACKLIST_AFTER_ROTATION=True で失効するので、新 refresh を必ず保存する。
+        struct Resp: Decodable { let access: String; let refresh: String? }
         let resp: Resp = try await request("\(Self.apiBase)/auth/refresh/", method: "POST", body: ["refresh": refresh], retry: false)
         keychain.set("access_token", value: resp.access)
+        if let newRefresh = resp.refresh {
+            keychain.set("refresh_token", value: newRefresh)
+        }
     }
 }

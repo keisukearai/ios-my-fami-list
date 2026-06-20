@@ -13,6 +13,7 @@ final class StubURLProtocol: URLProtocol {
     static var protectedStatusAfter = 200   // 2 回目以降のステータス
     static var protectedPayload = Data()
     static var refreshAccess = "new_access"
+    static var refreshRotated = "rotated_refresh"   // ローテーションで返る新 refresh
     static var capturedAuthHeaders: [String] = []
 
     static func reset() {
@@ -22,6 +23,7 @@ final class StubURLProtocol: URLProtocol {
         protectedStatusAfter = 200
         protectedPayload = Data()
         refreshAccess = "new_access"
+        refreshRotated = "rotated_refresh"
         capturedAuthHeaders = []
     }
 
@@ -36,7 +38,7 @@ final class StubURLProtocol: URLProtocol {
         if urlString.contains("/auth/refresh") {
             Self.refreshCallCount += 1
             status = 200
-            data = try! JSONSerialization.data(withJSONObject: ["access": Self.refreshAccess])
+            data = try! JSONSerialization.data(withJSONObject: ["access": Self.refreshAccess, "refresh": Self.refreshRotated])
         } else {
             Self.capturedAuthHeaders.append(request.value(forHTTPHeaderField: "Authorization") ?? "")
             Self.protectedCallCount += 1
@@ -98,6 +100,21 @@ final class APIClientRetryTests: XCTestCase {
         XCTAssertEqual(StubURLProtocol.capturedAuthHeaders.first, "Bearer old_access")
         XCTAssertEqual(StubURLProtocol.capturedAuthHeaders.last, "Bearer new_access",
                        "再試行はリフレッシュ後の新アクセストークンを使うはず")
+    }
+
+    // refresh 時にローテーションで返る新 refresh トークンを Keychain に保存する
+    // （ROTATE_REFRESH_TOKENS=True + BLACKLIST_AFTER_ROTATION=True 対応）
+    func test_refresh_persists_rotated_refresh_token() async throws {
+        api.saveTokens(access: "old_access", refresh: "r1")
+        StubURLProtocol.protectedPayload = mePayload
+        StubURLProtocol.protectedStatusFirst = 401
+        StubURLProtocol.protectedStatusAfter = 200
+        StubURLProtocol.refreshRotated = "r2"
+
+        let _: AppUser = try await api.request("\(APIClient.apiBase)/auth/me/")
+
+        XCTAssertEqual(api.refreshToken, "r2",
+                       "ローテーションで返った新 refresh が保存されないと次回 refresh が失効済みトークンで 401 になる")
     }
 
     // refresh トークンが無い場合は再試行せず unauthorized を投げる
