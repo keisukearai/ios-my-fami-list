@@ -100,7 +100,6 @@ struct LoginView: View {
                 .frame(maxWidth: .infinity)
                 .frame(height: 54)
                 .clipShape(RoundedRectangle(cornerRadius: AppTheme.rBtn))
-                .opacity(0.011)
 
                 HStack(spacing: 10) {
                     Image(systemName: "apple.logo")
