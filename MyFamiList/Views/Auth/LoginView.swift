@@ -90,15 +90,32 @@ struct LoginView: View {
 
     private var buttonsArea: some View {
         VStack(spacing: 12) {
-            SignInWithAppleButton(.signIn) { request in
-                request.requestedScopes = [.fullName, .email]
-                request.nonce = authVM.prepareAppleSignIn()
-            } onCompletion: { result in
-                Task { await authVM.handleAppleSignIn(result: result) }
+            ZStack {
+                SignInWithAppleButton(.signIn) { request in
+                    request.requestedScopes = [.fullName, .email]
+                    request.nonce = authVM.prepareAppleSignIn()
+                } onCompletion: { result in
+                    Task { await authVM.handleAppleSignIn(result: result) }
+                }
+                .frame(maxWidth: .infinity)
+                .frame(height: 54)
+                .clipShape(RoundedRectangle(cornerRadius: AppTheme.rBtn))
+                .opacity(0.011)
+
+                HStack(spacing: 10) {
+                    Image(systemName: "apple.logo")
+                        .font(.system(size: 17, weight: .medium))
+                    Text(loc("Sign in with Apple"))
+                        .font(.system(size: 17, weight: .medium))
+                }
+                .frame(maxWidth: .infinity)
+                .frame(height: 54)
+                .background(Color.black)
+                .foregroundStyle(Color.white)
+                .clipShape(RoundedRectangle(cornerRadius: AppTheme.rBtn))
+                .allowsHitTesting(false)
             }
-            .signInWithAppleButtonStyle(.black)
             .frame(height: 54)
-            .clipShape(RoundedRectangle(cornerRadius: AppTheme.rBtn))
 
             Button {
                 Task { await authVM.signInWithGoogle() }
@@ -139,17 +156,6 @@ struct LoginView: View {
                 )
             }
 
-#if DEBUG
-            Button {
-                Task { await authVM.devLogin() }
-            } label: {
-                Text("🛠 開発用ログイン")
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundStyle(AppTheme.textSec)
-                    .frame(height: 44)
-            }
-            .accessibilityIdentifier("devLoginButton")
-#endif
         }
         .padding(.horizontal, 24)
         .sheet(isPresented: $showEmailAuth) {

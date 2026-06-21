@@ -52,6 +52,14 @@ struct MyFamiListApp: App {
     @State private var networkMonitor = NetworkMonitor()
     @AppStorage(LanguageManager.userDefaultsKey) private var appLanguageRaw: String = "system"
 
+    private var appLocale: Locale {
+        switch AppLanguage(rawValue: appLanguageRaw) ?? .system {
+        case .english:  return Locale(identifier: "en")
+        case .japanese: return Locale(identifier: "ja")
+        case .system:   return Locale.current
+        }
+    }
+
     var body: some Scene {
         WindowGroup {
             Group {
@@ -62,6 +70,7 @@ struct MyFamiListApp: App {
                 }
             }
             .id(appLanguageRaw)
+            .environment(\.locale, appLocale)
             .environment(authVM)
             .environment(inviteHandler)
             .environment(purchaseService)

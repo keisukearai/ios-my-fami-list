@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Sign in with Apple" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "Appleでサインイン" } } }
+    },
     "Vegetables & Fruits" : {
       "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "野菜・果物" } } }
     },
