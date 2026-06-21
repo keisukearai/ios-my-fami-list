@@ -67,7 +67,7 @@ struct CategoryManagerSheet: View {
                         Circle()
                             .fill(cat.color)
                             .frame(width: 14, height: 14)
-                        Text(cat.name)
+                        Text(loc(cat.name))
                             .font(.system(size: 16))
                             .foregroundStyle(AppTheme.text)
                         Spacer()

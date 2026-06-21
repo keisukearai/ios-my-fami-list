@@ -1,6 +1,33 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Vegetables & Fruits" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "野菜・果物" } } }
+    },
+    "Meat & Fish" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "肉・魚" } } }
+    },
+    "Dairy & Eggs" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "乳製品・卵" } } }
+    },
+    "Bread & Rice" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "パン・米" } } }
+    },
+    "Beverages" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "飲料" } } }
+    },
+    "Condiments" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "調味料" } } }
+    },
+    "Snacks" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "お菓子" } } }
+    },
+    "Household" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "日用品" } } }
+    },
+    "Other" : {
+      "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "その他" } } }
+    },
     "Apple Sign In failed" : {
       "localizations" : { "ja" : { "stringUnit" : { "state" : "translated", "value" : "Apple Sign In に失敗しました" } } }
     },

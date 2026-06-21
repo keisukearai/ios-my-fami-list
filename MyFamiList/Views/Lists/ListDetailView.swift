@@ -27,8 +27,8 @@ struct ListDetailView: View {
         _itemVM = State(initialValue: ItemViewModel(groupId: groupId, listId: list.id))
     }
 
-    var allCategories: [(name: String, color: Color)] {
-        AppTheme.categories + groupVM.customCategories.map { (name: $0.name, color: Color(hex: $0.color)) }
+    var allCategories: [(key: String, name: String, color: Color)] {
+        AppTheme.categories + groupVM.customCategories.map { (key: $0.name, name: $0.name, color: Color(hex: $0.color)) }
     }
 
     var body: some View {
@@ -251,20 +251,20 @@ struct ListDetailView: View {
             if composerFocused {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
-                        ForEach(allCategories, id: \.name) { cat in
+                        ForEach(allCategories, id: \.key) { cat in
                             Button {
-                                selectedCategory = (selectedCategory == cat.name) ? "" : cat.name
+                                selectedCategory = (selectedCategory == cat.key) ? "" : cat.key
                             } label: {
                                 HStack(spacing: 5) {
-                                    if selectedCategory != cat.name {
+                                    if selectedCategory != cat.key {
                                         Circle().fill(cat.color).frame(width: 8, height: 8)
                                     }
-                                    Text(cat.name).font(.system(size: 13))
+                                    Text(loc(cat.name)).font(.system(size: 13))
                                 }
                                 .padding(.horizontal, 12)
                                 .padding(.vertical, 7)
-                                .background(selectedCategory == cat.name ? cat.color : AppTheme.fieldBg)
-                                .foregroundStyle(selectedCategory == cat.name ? .white : AppTheme.text)
+                                .background(selectedCategory == cat.key ? cat.color : AppTheme.fieldBg)
+                                .foregroundStyle(selectedCategory == cat.key ? .white : AppTheme.text)
                                 .clipShape(Capsule())
                             }
                         }
@@ -423,8 +423,8 @@ struct ItemDetailEditSheet: View {
     let groupColor: Color
     var customCategories: [GroupCategory] = []
 
-    var allCategories: [(name: String, color: Color)] {
-        AppTheme.categories + customCategories.map { (name: $0.name, color: Color(hex: $0.color)) }
+    var allCategories: [(key: String, name: String, color: Color)] {
+        AppTheme.categories + customCategories.map { (key: $0.name, name: $0.name, color: Color(hex: $0.color)) }
     }
 
     @Environment(\.dismiss) private var dismiss
@@ -460,22 +460,22 @@ struct ItemDetailEditSheet: View {
                             columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 3),
                             spacing: 8
                         ) {
-                            ForEach(allCategories, id: \.name) { cat in
+                            ForEach(allCategories, id: \.key) { cat in
                                 Button {
-                                    category = (category == cat.name) ? "" : cat.name
+                                    category = (category == cat.key) ? "" : cat.key
                                 } label: {
                                     HStack(spacing: 5) {
                                         Circle().fill(cat.color).frame(width: 7, height: 7)
-                                        Text(cat.name).font(.system(size: 13)).lineLimit(1)
+                                        Text(loc(cat.name)).font(.system(size: 13)).lineLimit(1)
                                     }
                                     .frame(maxWidth: .infinity)
                                     .padding(.vertical, 10)
-                                    .background(category == cat.name ? cat.color.opacity(0.15) : AppTheme.fieldBg)
-                                    .foregroundStyle(category == cat.name ? cat.color : AppTheme.textSec)
+                                    .background(category == cat.key ? cat.color.opacity(0.15) : AppTheme.fieldBg)
+                                    .foregroundStyle(category == cat.key ? cat.color : AppTheme.textSec)
                                     .clipShape(RoundedRectangle(cornerRadius: AppTheme.rChip))
                                     .overlay(
                                         RoundedRectangle(cornerRadius: AppTheme.rChip)
-                                            .stroke(category == cat.name ? cat.color : Color.clear, lineWidth: 1.5)
+                                            .stroke(category == cat.key ? cat.color : Color.clear, lineWidth: 1.5)
                                     )
                                 }
                             }

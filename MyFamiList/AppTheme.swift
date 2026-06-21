@@ -60,20 +60,20 @@ enum AppTheme {
     static let secGap: CGFloat = 30
     static let fs:     CGFloat = 17
 
-    static let categories: [(name: String, color: Color)] = [
-        ("野菜・果物", Color(hex: "#54A862")),
-        ("肉・魚",     Color(hex: "#D9695F")),
-        ("乳製品・卵", Color(hex: "#E0A03A")),
-        ("パン・米",   Color(hex: "#C5934F")),
-        ("飲料",       Color(hex: "#5690C9")),
-        ("調味料",     Color(hex: "#B179B0")),
-        ("お菓子",     Color(hex: "#D981A6")),
-        ("日用品",     Color(hex: "#7C8AA1")),
-        ("その他",     Color(hex: "#98A0A4")),
+    static let categories: [(key: String, name: String, color: Color)] = [
+        (key: "vegetables", name: "Vegetables & Fruits", color: Color(hex: "#54A862")),
+        (key: "meat",       name: "Meat & Fish",         color: Color(hex: "#D9695F")),
+        (key: "dairy",      name: "Dairy & Eggs",        color: Color(hex: "#E0A03A")),
+        (key: "bread",      name: "Bread & Rice",        color: Color(hex: "#C5934F")),
+        (key: "drinks",     name: "Beverages",           color: Color(hex: "#5690C9")),
+        (key: "condiments", name: "Condiments",          color: Color(hex: "#B179B0")),
+        (key: "snacks",     name: "Snacks",              color: Color(hex: "#D981A6")),
+        (key: "household",  name: "Household",           color: Color(hex: "#7C8AA1")),
+        (key: "other",      name: "Other",               color: Color(hex: "#98A0A4")),
     ]
 
-    static func categoryColor(_ name: String) -> Color {
-        categories.first { $0.name == name }?.color ?? Color(hex: "#98A0A4")
+    static func categoryColor(_ key: String) -> Color {
+        categories.first { $0.key == key }?.color ?? Color(hex: "#98A0A4")
     }
 }
 
