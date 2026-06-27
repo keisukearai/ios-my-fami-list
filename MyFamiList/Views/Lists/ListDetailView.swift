@@ -131,6 +131,7 @@ struct ListDetailView: View {
                     ItemRowView(
                         item: item,
                         groupColor: groupColor,
+                        customCategories: groupVM.customCategories,
                         onCheck: { Task { await itemVM.toggleCheck(item) } },
                         onTap: { editingItem = item }
                     )
@@ -186,6 +187,7 @@ struct ListDetailView: View {
                             ItemRowView(
                                 item: item,
                                 groupColor: groupColor,
+                                customCategories: groupVM.customCategories,
                                 onCheck: { Task { await itemVM.toggleCheck(item) } },
                                 onTap: { editingItem = item }
                             )
@@ -329,6 +331,7 @@ struct ListDetailView: View {
 struct ItemRowView: View {
     let item: Item
     let groupColor: Color
+    var customCategories: [GroupCategory] = []
     let onCheck: () -> Void
     let onTap: () -> Void
 
@@ -340,7 +343,7 @@ struct ItemRowView: View {
 
                 if !item.category.isEmpty {
                     Circle()
-                        .fill(AppTheme.categoryColor(item.category))
+                        .fill(AppTheme.categoryColor(item.category, customCategories: customCategories))
                         .frame(width: 10, height: 10)
                 }
 

@@ -67,7 +67,7 @@ struct ListsScreenView: View {
                 ForEach(group.lists) { list in
                     ZStack {
                         NavigationLink(value: list) { EmptyView() }.opacity(0)
-                        ListCard(list: list, groupColor: AppTheme.primary)
+                        ListCard(list: list, groupColor: AppTheme.primary, customCategories: groupVM.customCategories)
                     }
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
@@ -259,6 +259,7 @@ struct ListsScreenView: View {
 struct ListCard: View {
     let list: ShoppingListBrief
     let groupColor: Color
+    var customCategories: [GroupCategory] = []
 
     private var progress: Double {
         guard list.itemCount > 0 else { return 0 }
@@ -336,9 +337,9 @@ struct ListCard: View {
             ForEach(list.categories, id: \.self) { cat in
                 HStack(spacing: 4) {
                     Circle()
-                        .fill(AppTheme.categoryColor(cat))
+                        .fill(AppTheme.categoryColor(cat, customCategories: customCategories))
                         .frame(width: 8, height: 8)
-                    Text(cat)
+                    Text(loc(AppTheme.categoryName(cat)))
                         .font(.system(size: 12.5))
                         .foregroundStyle(AppTheme.textTer)
                         .lineLimit(1)

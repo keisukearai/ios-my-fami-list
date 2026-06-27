@@ -75,6 +75,17 @@ enum AppTheme {
     static func categoryColor(_ key: String) -> Color {
         categories.first { $0.key == key }?.color ?? Color(hex: "#98A0A4")
     }
+
+    static func categoryColor(_ key: String, customCategories: [GroupCategory]) -> Color {
+        if let custom = customCategories.first(where: { $0.name == key }) {
+            return Color(hex: custom.color)
+        }
+        return categoryColor(key)
+    }
+
+    static func categoryName(_ key: String) -> String {
+        categories.first { $0.key == key }?.name ?? key
+    }
 }
 
 extension View {

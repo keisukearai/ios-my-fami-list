@@ -75,3 +75,30 @@ final class LanguageManagerLocalizationTests: XCTestCase {
         XCTAssertEqual(loc("Settings"), "Settings")
     }
 }
+
+final class AppThemeCategoryNameTests: XCTestCase {
+
+    func test_categoryName_returns_name_for_known_key() {
+        XCTAssertEqual(AppTheme.categoryName("drinks"), "Beverages")
+        XCTAssertEqual(AppTheme.categoryName("vegetables"), "Vegetables & Fruits")
+        XCTAssertEqual(AppTheme.categoryName("meat"), "Meat & Fish")
+    }
+
+    func test_categoryName_falls_back_to_key_for_unknown() {
+        XCTAssertEqual(AppTheme.categoryName("custom_cat"), "custom_cat")
+    }
+
+    func test_categoryName_japanese_via_loc() {
+        LanguageManager.shared.setLanguage(.japanese)
+        defer { UserDefaults.standard.removeObject(forKey: LanguageManager.userDefaultsKey) }
+        XCTAssertEqual(loc(AppTheme.categoryName("drinks")), "飲料")
+        XCTAssertEqual(loc(AppTheme.categoryName("vegetables")), "野菜・果物")
+        XCTAssertEqual(loc(AppTheme.categoryName("condiments")), "調味料")
+    }
+
+    func test_categoryName_english_via_loc() {
+        LanguageManager.shared.setLanguage(.english)
+        defer { UserDefaults.standard.removeObject(forKey: LanguageManager.userDefaultsKey) }
+        XCTAssertEqual(loc(AppTheme.categoryName("drinks")), "Beverages")
+    }
+}
