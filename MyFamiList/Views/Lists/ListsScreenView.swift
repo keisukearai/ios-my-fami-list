@@ -15,14 +15,19 @@ struct ListsScreenView: View {
             AppHeader(loc("Lists")) {
                 groupPickerPill
             } right: {
-                HStack(spacing: 8) {
-                    if !networkMonitor.isConnected {
-                        Image(systemName: "wifi.slash")
-                            .font(.system(size: 14))
-                            .foregroundStyle(AppTheme.textTer)
+                VStack(spacing: 6) {
+                    HStack(spacing: 8) {
+                        if !networkMonitor.isConnected {
+                            Image(systemName: "wifi.slash")
+                                .font(.system(size: 14))
+                                .foregroundStyle(AppTheme.textTer)
+                        }
+                        memberAvatarStack
+                            .onTapGesture { onGroupPickerTap() }
                     }
-                    memberAvatarStack
-                        .onTapGesture { onGroupPickerTap() }
+                    if groupVM.currentGroup != nil {
+                        addHeaderButton
+                    }
                 }
             }
 
@@ -58,13 +63,14 @@ struct ListsScreenView: View {
     }
 
     private func mainContent(group: FamilyGroup) -> some View {
-        List {
-            if group.lists.isEmpty {
+        let sortedLists = group.lists.sorted { $0.createdAt > $1.createdAt }
+        return List {
+            if sortedLists.isEmpty {
                 emptyListsView
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
             } else {
-                ForEach(group.lists) { list in
+                ForEach(sortedLists) { list in
                     ZStack {
                         NavigationLink(value: list) { EmptyView() }.opacity(0)
                         ListCard(list: list, groupColor: AppTheme.primary, customCategories: groupVM.customCategories)
@@ -153,6 +159,24 @@ struct ListsScreenView: View {
                 .overlay(Circle().stroke(AppTheme.bg, lineWidth: 2))
                 .zIndex(0)
             }
+        }
+    }
+
+    private var addHeaderButton: some View {
+        Button {
+            let listCount = groupVM.currentGroup?.lists.count ?? 0
+            if purchaseService.isPro || listCount < 2 {
+                showAddSheet = true
+            } else {
+                showPaywall = true
+            }
+        } label: {
+            Image(systemName: "plus")
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(.white)
+                .frame(width: 30, height: 30)
+                .background(AppTheme.primary)
+                .clipShape(Circle())
         }
     }
 
@@ -275,6 +299,20 @@ struct ListCard: View {
         return String(format: loc("%d remaining · %d total"), list.uncheckedCount, list.itemCount)
     }
 
+    private var createdDateString: String {
+        let iso = ISO8601DateFormatter()
+        iso.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        var date = iso.date(from: list.createdAt)
+        if date == nil {
+            iso.formatOptions = [.withInternetDateTime]
+            date = iso.date(from: list.createdAt)
+        }
+        guard let date else { return "" }
+        let fmt = DateFormatter()
+        fmt.dateFormat = "yyyy/MM/dd"
+        return fmt.string(from: date)
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: 14) {
@@ -284,9 +322,22 @@ struct ListCard: View {
                         .font(.system(size: 17.5, weight: .semibold))
                         .foregroundStyle(AppTheme.text)
                         .lineLimit(1)
-                    Text(subtitle)
-                        .font(.system(size: 13.5))
-                        .foregroundStyle(AppTheme.textSec)
+                    HStack(spacing: 4) {
+                        Text(subtitle)
+                            .font(.system(size: 13.5))
+                            .foregroundStyle(AppTheme.textSec)
+                        if !createdDateString.isEmpty {
+                            Text("·")
+                                .font(.system(size: 13.5))
+                                .foregroundStyle(AppTheme.textTer)
+                            Image(systemName: "calendar")
+                                .font(.system(size: 11))
+                                .foregroundStyle(AppTheme.textTer)
+                            Text(createdDateString)
+                                .font(.system(size: 13.5))
+                                .foregroundStyle(AppTheme.textTer)
+                        }
+                    }
                 }
                 Spacer()
                 Image(systemName: "chevron.right")

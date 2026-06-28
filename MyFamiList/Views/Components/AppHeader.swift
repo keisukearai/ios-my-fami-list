@@ -47,9 +47,9 @@ struct AppHeader<Top: View, Right: View>: View {
                     }
                 }
                 Spacer(minLength: 12)
-                right.padding(.bottom, 2)
+                right
             }
-            .frame(minHeight: 40)
+            .frame(minHeight: 64)
             ZStack(alignment: .leading) {
                 Color.clear.frame(height: 34)
                 top

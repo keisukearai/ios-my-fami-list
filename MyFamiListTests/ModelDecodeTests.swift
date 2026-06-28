@@ -78,6 +78,45 @@ final class ShoppingListDecodeTests: XCTestCase {
     }
 }
 
+// MARK: - ListCard 作成日フォーマット
+
+final class ListCardCreatedDateTests: XCTestCase {
+
+    private func formatDate(_ isoString: String) -> String {
+        let iso = ISO8601DateFormatter()
+        iso.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        var date = iso.date(from: isoString)
+        if date == nil {
+            iso.formatOptions = [.withInternetDateTime]
+            date = iso.date(from: isoString)
+        }
+        guard let date else { return "" }
+        let fmt = DateFormatter()
+        fmt.dateFormat = "yyyy/MM/dd"
+        return fmt.string(from: date)
+    }
+
+    func test_iso8601_formats_to_yyyy_mm_dd() {
+        XCTAssertEqual(formatDate("2026-06-28T10:30:00Z"), "2026/06/28")
+    }
+
+    func test_iso8601_with_fractional_seconds_formats_correctly() {
+        XCTAssertEqual(formatDate("2026-06-28T10:30:00.123456Z"), "2026/06/28")
+    }
+
+    func test_different_month_formats_with_zero_padding() {
+        XCTAssertEqual(formatDate("2026-01-05T00:00:00Z"), "2026/01/05")
+    }
+
+    func test_empty_string_returns_empty() {
+        XCTAssertEqual(formatDate(""), "")
+    }
+
+    func test_invalid_string_returns_empty() {
+        XCTAssertEqual(formatDate("not-a-date"), "")
+    }
+}
+
 // MARK: - LocalList
 
 @MainActor

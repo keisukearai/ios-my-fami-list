@@ -339,6 +339,53 @@ final class GroupViewModelTests: XCTestCase {
         XCTAssertEqual(sheet.allCategories.last?.name, "カスタム")
     }
 
+    // MARK: - ListsScreenView: リスト並び順（createdAt 降順）
+
+    func test_lists_sort_descending_by_createdAt_newest_first() {
+        let old = ShoppingListBrief(id: 1, name: "古いリスト", itemCount: 0, uncheckedCount: 0,
+                                    categories: [], createdAt: "2026-01-01T00:00:00Z", updatedAt: "")
+        let mid = ShoppingListBrief(id: 2, name: "中間リスト", itemCount: 0, uncheckedCount: 0,
+                                    categories: [], createdAt: "2026-03-15T12:00:00Z", updatedAt: "")
+        let new = ShoppingListBrief(id: 3, name: "新しいリスト", itemCount: 0, uncheckedCount: 0,
+                                    categories: [], createdAt: "2026-06-28T00:00:00Z", updatedAt: "")
+
+        let sorted = [old, mid, new].sorted { $0.createdAt > $1.createdAt }
+
+        XCTAssertEqual(sorted[0].name, "新しいリスト")
+        XCTAssertEqual(sorted[1].name, "中間リスト")
+        XCTAssertEqual(sorted[2].name, "古いリスト")
+    }
+
+    func test_lists_sort_already_newest_first_stays_unchanged() {
+        let new = ShoppingListBrief(id: 1, name: "新しい", itemCount: 0, uncheckedCount: 0,
+                                    categories: [], createdAt: "2026-06-28T00:00:00Z", updatedAt: "")
+        let old = ShoppingListBrief(id: 2, name: "古い", itemCount: 0, uncheckedCount: 0,
+                                    categories: [], createdAt: "2026-01-01T00:00:00Z", updatedAt: "")
+
+        let sorted = [new, old].sorted { $0.createdAt > $1.createdAt }
+
+        XCTAssertEqual(sorted[0].id, 1)
+        XCTAssertEqual(sorted[1].id, 2)
+    }
+
+    func test_lists_sort_single_item_unchanged() {
+        let list = ShoppingListBrief(id: 1, name: "単一リスト", itemCount: 0, uncheckedCount: 0,
+                                     categories: [], createdAt: "2026-06-28T00:00:00Z", updatedAt: "")
+        let sorted = [list].sorted { $0.createdAt > $1.createdAt }
+        XCTAssertEqual(sorted.count, 1)
+        XCTAssertEqual(sorted[0].id, 1)
+    }
+
+    func test_lists_sort_empty_createdAt_goes_last() {
+        let withDate = ShoppingListBrief(id: 1, name: "日付あり", itemCount: 0, uncheckedCount: 0,
+                                         categories: [], createdAt: "2026-06-28T00:00:00Z", updatedAt: "")
+        let noDate = ShoppingListBrief(id: 2, name: "日付なし", itemCount: 0, uncheckedCount: 0,
+                                       categories: [], createdAt: "", updatedAt: "")
+        let sorted = [noDate, withDate].sorted { $0.createdAt > $1.createdAt }
+        XCTAssertEqual(sorted[0].id, 1)
+        XCTAssertEqual(sorted[1].id, 2)
+    }
+
     // MARK: - Helpers
 
     private func makeGroupBrief(id: Int, name: String, isOwner: Bool) -> FamilyGroupBrief {
